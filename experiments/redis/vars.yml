@@ -1,0 +1,79 @@
+---
+repetitions: 3
+remote_results_path: "/tmp/results"
+measure_runtime: no
+
+benchmarks:
+- name: stressng-cpu
+  image: ivotron/stress-ng:v0.07.09
+  entrypoint: /bin/bash
+  command: "-c 'stress-ng
+               --sequential 1
+               --class cpu
+               --exclude context,cpu-online,getrandom,mergesort,heapsort,numa,str,stream,wcs,zlib
+               --timeout 15
+               --metrics-brief
+               --times
+               --yaml /results/out.yml'"
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: stressng-mem
+  image: ivotron/stress-ng:v0.07.09
+  entrypoint: /bin/bash
+  command: "-c 'stress-ng
+               --sequential 1
+               --class memory
+               --exclude bsearch,heapsort,lockbus,membarrier,mergesort,mincore,numa,qsort,resources,stack,tsearch,wcs,zlib
+               --timeout 15
+               --metrics-brief
+               --times
+               --yaml /results/out.yml'"
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: stressng-cpucache
+  image: ivotron/stress-ng:v0.07.09
+  entrypoint: /bin/bash
+  command: "-c 'stress-ng
+               --sequential 1
+               --class cpu-cache
+               --exclude bsearch,heapsort,hsearch,lockbus,lsearch,malloc,matrix,membarrier,memcpy,mergesort,qsort,str,stream,tsearch,vecmath,wcs,zlib
+               --timeout 15
+               --metrics-brief
+               --times
+               --yaml /results/out.yml'"
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: stressng-stream
+  image: ivotron/stress-ng:v0.07.09
+  entrypoint: /bin/bash
+  command: "-c 'stress-ng --stream 1 --timeout 30 2> /results/stdoutout'"
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: redisbench
+  compose:
+    version: '2'
+    services:
+      redis:
+        image: redis:3.2
+        network_mode: host
+      redisbench:
+        image: redis:3.2
+        entrypoint: /bin/bash
+        command: -c "sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
+        network_mode: host
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
