@@ -1,0 +1,167 @@
+---
+system-info:
+      stress-ng-version: 0.07.09
+      run-by: unknown
+      date-yyyy-mm-dd: 2017:03:02
+      time-hh-mm-ss: 05:40:20
+      epoch-secs: 1488433220
+      hostname: a56b64d3891d
+      sysname: Linux
+      nodename: a56b64d3891d
+      release: 4.4.0-45-generic
+      version: #66-Ubuntu SMP Wed Oct 19 14:12:37 UTC 2016
+      machine: x86_64
+      uptime: 1660
+      totalram: 67306053632
+      freeram: 66066456576
+      sharedram: 12615680
+      bufferram: 55574528
+      totalswap: 3221221376
+      freeswap: 3221221376
+      pagesize: 4096
+      cpus: 32
+      cpus-online: 32
+      ticks-per-second: 100
+
+metrics:
+    - stressor: af-alg
+      bogo-ops: 110246
+      bogo-ops-per-second-usr-sys-time: 7731.136045
+      bogo-ops-per-second-real-time: 7343.483596
+      wall-clock-time: 15.012766
+      user-time: 0.510000
+      system-time: 13.750000
+
+    - stressor: atomic
+      bogo-ops: 10646243
+      bogo-ops-per-second-usr-sys-time: 709749.533333
+      bogo-ops-per-second-real-time: 709788.861654
+      wall-clock-time: 14.999169
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: bsearch
+      bogo-ops: 5777
+      bogo-ops-per-second-usr-sys-time: 385.133333
+      bogo-ops-per-second-real-time: 385.088817
+      wall-clock-time: 15.001734
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: cpu
+      bogo-ops: 4019
+      bogo-ops-per-second-usr-sys-time: 268.112075
+      bogo-ops-per-second-real-time: 267.934049
+      wall-clock-time: 14.999960
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: crypt
+      bogo-ops: 2403
+      bogo-ops-per-second-usr-sys-time: 160.200000
+      bogo-ops-per-second-real-time: 160.173166
+      wall-clock-time: 15.002513
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: fp-error
+      bogo-ops: 11585109
+      bogo-ops-per-second-usr-sys-time: 772340.600000
+      bogo-ops-per-second-real-time: 772376.177554
+      wall-clock-time: 14.999309
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: hsearch
+      bogo-ops: 60033
+      bogo-ops-per-second-usr-sys-time: 4002.200000
+      bogo-ops-per-second-real-time: 4002.297649
+      wall-clock-time: 14.999634
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: longjmp
+      bogo-ops: 1920936
+      bogo-ops-per-second-usr-sys-time: 128062.400000
+      bogo-ops-per-second-real-time: 128066.992246
+      wall-clock-time: 14.999462
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: lsearch
+      bogo-ops: 138
+      bogo-ops-per-second-usr-sys-time: 9.206137
+      bogo-ops-per-second-real-time: 9.200335
+      wall-clock-time: 14.999453
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: matrix
+      bogo-ops: 66858
+      bogo-ops-per-second-usr-sys-time: 4457.200000
+      bogo-ops-per-second-real-time: 4457.382717
+      wall-clock-time: 14.999385
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: opcode
+      bogo-ops: 14920
+      bogo-ops-per-second-usr-sys-time: 4956.810631
+      bogo-ops-per-second-real-time: 994.696248
+      wall-clock-time: 14.999554
+      user-time: 0.310000
+      system-time: 2.700000
+
+    - stressor: qsort
+      bogo-ops: 155
+      bogo-ops-per-second-usr-sys-time: 10.333333
+      bogo-ops-per-second-real-time: 10.333902
+      wall-clock-time: 14.999174
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: rdrand
+      bogo-ops: 5025772
+      bogo-ops-per-second-usr-sys-time: 335274.983322
+      bogo-ops-per-second-real-time: 335065.963304
+      wall-clock-time: 14.999351
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: tsc
+      bogo-ops: 15067547
+      bogo-ops-per-second-usr-sys-time: 1004503.133333
+      bogo-ops-per-second-real-time: 1004537.541559
+      wall-clock-time: 14.999486
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: tsearch
+      bogo-ops: 245
+      bogo-ops-per-second-usr-sys-time: 16.322452
+      bogo-ops-per-second-real-time: 16.313536
+      wall-clock-time: 15.018203
+      user-time: 15.010000
+      system-time: 0.000000
+
+    - stressor: vecmath
+      bogo-ops: 42221
+      bogo-ops-per-second-usr-sys-time: 2814.733333
+      bogo-ops-per-second-real-time: 2814.807468
+      wall-clock-time: 14.999605
+      user-time: 15.000000
+      system-time: 0.000000
+
+times:
+      run-time: 240.047118
+      available-cpu-time: 7681.507782
+      user-time: 210.830002
+      system-time: 16.469999
+      total-time: 227.300003
+      user-time-percent: 2.744643
+      system-time-percent: 0.214411
+      total-time-percent: 2.959055
+      load-average-1-minute: 0.810000
+      load-average-5-minute: 0.520000
+      load-average-15-minute: 0.240000
+...

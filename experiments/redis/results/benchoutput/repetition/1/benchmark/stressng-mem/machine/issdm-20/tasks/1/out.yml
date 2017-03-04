@@ -1,0 +1,207 @@
+---
+system-info:
+      stress-ng-version: 0.07.09
+      run-by: unknown
+      date-yyyy-mm-dd: 2017:03:02
+      time-hh-mm-ss: 07:16:55
+      epoch-secs: 1488439015
+      hostname: 0429a0e06645
+      sysname: Linux
+      nodename: 0429a0e06645
+      release: 3.13.0-106-generic
+      version: #153~precise1-Ubuntu SMP Tue Dec 6 16:12:15 UTC 2016
+      machine: x86_64
+      uptime: 4797790
+      totalram: 8371712000
+      freeram: 5791657984
+      sharedram: 0
+      bufferram: 381665280
+      totalswap: 8587833344
+      freeswap: 8586887168
+      pagesize: 4096
+      cpus: 4
+      cpus-online: 4
+      ticks-per-second: 100
+
+metrics:
+    - stressor: atomic
+      bogo-ops: 7985743
+      bogo-ops-per-second-usr-sys-time: 532738.025350
+      bogo-ops-per-second-real-time: 532457.765883
+      wall-clock-time: 14.997890
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: context
+      bogo-ops: 49952
+      bogo-ops-per-second-usr-sys-time: 3332.354903
+      bogo-ops-per-second-real-time: 3330.655103
+      wall-clock-time: 14.997650
+      user-time: 8.300000
+      system-time: 6.690000
+
+    - stressor: full
+      bogo-ops: 1118019
+      bogo-ops-per-second-usr-sys-time: 74783.879599
+      bogo-ops-per-second-real-time: 74546.035251
+      wall-clock-time: 14.997699
+      user-time: 7.410000
+      system-time: 7.540000
+
+    - stressor: hsearch
+      bogo-ops: 18370
+      bogo-ops-per-second-usr-sys-time: 1225.483656
+      bogo-ops-per-second-real-time: 1224.815849
+      wall-clock-time: 14.998173
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: lsearch
+      bogo-ops: 64
+      bogo-ops-per-second-usr-sys-time: 4.269513
+      bogo-ops-per-second-real-time: 4.267300
+      wall-clock-time: 14.997772
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: malloc
+      bogo-ops: 11385164
+      bogo-ops-per-second-usr-sys-time: 753984.370861
+      bogo-ops-per-second-real-time: 753442.283486
+      wall-clock-time: 15.110864
+      user-time: 13.980000
+      system-time: 1.120000
+
+    - stressor: matrix
+      bogo-ops: 27918
+      bogo-ops-per-second-usr-sys-time: 1862.441628
+      bogo-ops-per-second-real-time: 1861.468445
+      wall-clock-time: 14.997837
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: memcpy
+      bogo-ops: 2379
+      bogo-ops-per-second-usr-sys-time: 158.600000
+      bogo-ops-per-second-real-time: 158.614476
+      wall-clock-time: 14.998631
+      user-time: 15.000000
+      system-time: 0.000000
+
+    - stressor: memfd
+      bogo-ops: 1
+      bogo-ops-per-second-usr-sys-time: 0.000000
+      bogo-ops-per-second-real-time: 1113.433501
+      wall-clock-time: 0.000898
+      user-time: 0.000000
+      system-time: 0.000000
+
+    - stressor: null
+      bogo-ops: 38131678
+      bogo-ops-per-second-usr-sys-time: 2543807.738492
+      bogo-ops-per-second-real-time: 2542137.645816
+      wall-clock-time: 14.999848
+      user-time: 1.880000
+      system-time: 13.110000
+
+    - stressor: oom-pipe
+      bogo-ops: 2
+      bogo-ops-per-second-usr-sys-time: 0.122399
+      bogo-ops-per-second-real-time: 0.122253
+      wall-clock-time: 16.359570
+      user-time: 1.660000
+      system-time: 14.680000
+
+    - stressor: pipe
+      bogo-ops: 8258190
+      bogo-ops-per-second-usr-sys-time: 275824.649299
+      bogo-ops-per-second-real-time: 550617.064799
+      wall-clock-time: 14.998064
+      user-time: 5.260000
+      system-time: 24.680000
+
+    - stressor: remap
+      bogo-ops: 5450
+      bogo-ops-per-second-usr-sys-time: 363.575717
+      bogo-ops-per-second-real-time: 363.346339
+      wall-clock-time: 14.999463
+      user-time: 1.040000
+      system-time: 13.950000
+
+    - stressor: rmap
+      bogo-ops: 4192
+      bogo-ops-per-second-usr-sys-time: 361.379310
+      bogo-ops-per-second-real-time: 264.384083
+      wall-clock-time: 15.855720
+      user-time: 10.240000
+      system-time: 1.360000
+
+    - stressor: stackmmap
+      bogo-ops: 2
+      bogo-ops-per-second-usr-sys-time: 100.000000
+      bogo-ops-per-second-real-time: 0.133193
+      wall-clock-time: 15.015814
+      user-time: 0.000000
+      system-time: 0.020000
+
+    - stressor: str
+      bogo-ops: 113474
+      bogo-ops-per-second-usr-sys-time: 7569.979987
+      bogo-ops-per-second-real-time: 7565.962258
+      wall-clock-time: 14.997960
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: stream
+      bogo-ops: 934
+      bogo-ops-per-second-usr-sys-time: 62.266667
+      bogo-ops-per-second-real-time: 62.221365
+      wall-clock-time: 15.010921
+      user-time: 14.980000
+      system-time: 0.020000
+
+    - stressor: tlb-shootdown
+      bogo-ops: 3009
+      bogo-ops-per-second-usr-sys-time: 144.524496
+      bogo-ops-per-second-real-time: 200.581250
+      wall-clock-time: 15.001402
+      user-time: 3.130000
+      system-time: 17.690000
+
+    - stressor: vm
+      bogo-ops: 296468
+      bogo-ops-per-second-usr-sys-time: 19725.083167
+      bogo-ops-per-second-real-time: 19694.853166
+      wall-clock-time: 15.053070
+      user-time: 11.480000
+      system-time: 3.550000
+
+    - stressor: vm-rw
+      bogo-ops: 431
+      bogo-ops-per-second-usr-sys-time: 28.733333
+      bogo-ops-per-second-real-time: 28.727787
+      wall-clock-time: 15.002896
+      user-time: 0.000000
+      system-time: 15.000000
+
+    - stressor: zero
+      bogo-ops: 1186730
+      bogo-ops-per-second-usr-sys-time: 79433.065596
+      bogo-ops-per-second-real-time: 79128.743117
+      wall-clock-time: 14.997458
+      user-time: 0.910000
+      system-time: 14.030000
+
+times:
+      run-time: 302.461701
+      available-cpu-time: 1209.846806
+      user-time: 170.339996
+      system-time: 133.539993
+      total-time: 303.880005
+      user-time-percent: 14.079468
+      system-time-percent: 11.037761
+      total-time-percent: 25.117230
+      load-average-1-minute: 1.550000
+      load-average-5-minute: 1.810000
+      load-average-15-minute: 1.150000
+...

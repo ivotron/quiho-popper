@@ -1,0 +1,55 @@
+---
+system-info:
+      stress-ng-version: 0.07.09
+      run-by: unknown
+      date-yyyy-mm-dd: 2017:03:02
+      time-hh-mm-ss: 07:24:47
+      epoch-secs: 1488439487
+      hostname: e065830c20c8
+      sysname: Linux
+      nodename: e065830c20c8
+      release: 4.2.0-35-generic
+      version: #40~14.04.1-Ubuntu SMP Fri Mar 18 16:37:35 UTC 2016
+      machine: x86_64
+      uptime: 1341326
+      totalram: 67540008960
+      freeram: 65560850432
+      sharedram: 3510272
+      bufferram: 181608448
+      totalswap: 2047864832
+      freeswap: 2047864832
+      pagesize: 4096
+      cpus: 16
+      cpus-online: 16
+      ticks-per-second: 100
+
+metrics:
+    - stressor: cache
+      bogo-ops: 129
+      bogo-ops-per-second-usr-sys-time: 8.605737
+      bogo-ops-per-second-real-time: 8.600749
+      wall-clock-time: 14.998694
+      user-time: 14.990000
+      system-time: 0.000000
+
+    - stressor: icache
+      bogo-ops: 8406
+      bogo-ops-per-second-usr-sys-time: 560.400000
+      bogo-ops-per-second-real-time: 560.415125
+      wall-clock-time: 14.999595
+      user-time: 3.020000
+      system-time: 11.980000
+
+times:
+      run-time: 30.003427
+      available-cpu-time: 480.054832
+      user-time: 18.020000
+      system-time: 11.980000
+      total-time: 30.000000
+      user-time-percent: 3.753738
+      system-time-percent: 2.495548
+      total-time-percent: 6.249286
+      load-average-1-minute: 3.410000
+      load-average-5-minute: 4.490000
+      load-average-15-minute: 2.590000
+...

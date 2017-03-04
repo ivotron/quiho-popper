@@ -1,0 +1,6 @@
+stress-ng: info:  [7] cache allocate: default cache size: 1024K
+stress-ng: info:  [8] stress-ng-stream: no L3 cache, using L2 size instead
+stress-ng: info:  [8] stress-ng-stream: stressor loosely based on a variant of the STREAM benchmark code
+stress-ng: info:  [8] stress-ng-stream: do NOT submit any of these results to the STREAM benchmark results
+stress-ng: info:  [8] stress-ng-stream: Using CPU cache size of 1024K
+stress-ng: info:  [8] stress-ng-stream: memory rate: 2500.75 MB/sec, 1000.30 Mflop/sec (instance 0)

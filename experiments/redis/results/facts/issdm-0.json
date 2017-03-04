@@ -1,0 +1,709 @@
+{
+    "ansible_all_ipv4_addresses": [
+        "172.17.0.1", 
+        "192.168.140.176", 
+        "172.18.0.1"
+    ], 
+    "ansible_all_ipv6_addresses": [
+        "fe80::42:dff:fe68:73bc", 
+        "fe80::230:48ff:fe78:df94", 
+        "fe80::42:dcff:fe60:435e"
+    ], 
+    "ansible_architecture": "x86_64", 
+    "ansible_bios_date": "09/24/2009", 
+    "ansible_bios_version": "080014", 
+    "ansible_br_37aa6b014314": {
+        "active": false, 
+        "device": "br-37aa6b014314", 
+        "features": {
+            "generic_receive_offload": "on", 
+            "generic_segmentation_offload": "on", 
+            "large_receive_offload": "off", 
+            "ntuple_filters": "off", 
+            "receive_hashing": "off", 
+            "rx_checksumming": "off", 
+            "rx_vlan_offload": "off", 
+            "scatter_gather": "on", 
+            "tcp_segmentation_offload": "on", 
+            "tx_checksumming": "on", 
+            "tx_vlan_offload": "on", 
+            "udp_fragmentation_offload": "on"
+        }, 
+        "id": "8000.0242dc60435e", 
+        "interfaces": [], 
+        "ipv4": {
+            "address": "172.18.0.1", 
+            "broadcast": "global", 
+            "netmask": "255.255.0.0", 
+            "network": "172.18.0.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "fe80::42:dcff:fe60:435e", 
+                "prefix": "64", 
+                "scope": "link"
+            }
+        ], 
+        "macaddress": "02:42:dc:60:43:5e", 
+        "mtu": 1500, 
+        "promisc": false, 
+        "stp": false, 
+        "type": "bridge"
+    }, 
+    "ansible_check_mode": false, 
+    "ansible_cmdline": {
+        "BOOT_IMAGE": "/boot/vmlinuz-3.13.0-107-generic", 
+        "nomodeset": true, 
+        "ro": true, 
+        "root": "UUID=b301496d-d510-4d06-976e-7cf2ca9c3207"
+    }, 
+    "ansible_date_time": {
+        "date": "2017-03-01", 
+        "day": "01", 
+        "epoch": "1488441093", 
+        "hour": "23", 
+        "iso8601": "2017-03-02T07:51:33Z", 
+        "iso8601_basic": "20170301T235133285293", 
+        "iso8601_basic_short": "20170301T235133", 
+        "iso8601_micro": "2017-03-02T07:51:33.285464Z", 
+        "minute": "51", 
+        "month": "03", 
+        "second": "33", 
+        "time": "23:51:33", 
+        "tz": "PST", 
+        "tz_offset": "-0800", 
+        "weekday": "Wednesday", 
+        "weekday_number": "3", 
+        "weeknumber": "09", 
+        "year": "2017"
+    }, 
+    "ansible_default_ipv4": {
+        "address": "192.168.140.176", 
+        "alias": "eth1", 
+        "broadcast": "192.168.140.255", 
+        "gateway": "192.168.140.2", 
+        "interface": "eth1", 
+        "macaddress": "00:30:48:78:df:94", 
+        "mtu": 1500, 
+        "netmask": "255.255.255.0", 
+        "network": "192.168.140.0", 
+        "type": "ether"
+    }, 
+    "ansible_default_ipv6": {}, 
+    "ansible_devices": {
+        "sda": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {
+                "sda1": {
+                    "holders": [], 
+                    "sectors": "471619584", 
+                    "sectorsize": 512, 
+                    "size": "224.89 GB", 
+                    "start": "2048", 
+                    "uuid": "b301496d-d510-4d06-976e-7cf2ca9c3207"
+                }, 
+                "sda2": {
+                    "holders": [], 
+                    "sectors": "2", 
+                    "sectorsize": 512, 
+                    "size": "1.00 KB", 
+                    "start": "471623678", 
+                    "uuid": null
+                }, 
+                "sda5": {
+                    "holders": [], 
+                    "sectors": "16773120", 
+                    "sectorsize": 512, 
+                    "size": "8.00 GB", 
+                    "start": "471623680", 
+                    "uuid": "8476f825-22f8-437a-a1da-88ab46c99635"
+                }
+            }, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sdb": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sdc": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sdd": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sde": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "INTEL SSDSC2MH25", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "0", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "512", 
+            "vendor": "ATA"
+        }, 
+        "sr0": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 IDE (rev a1)", 
+            "model": "DVD-ROM SR-8178", 
+            "partitions": {}, 
+            "removable": "1", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "2097151", 
+            "sectorsize": "512", 
+            "size": "1024.00 MB", 
+            "support_discard": "0", 
+            "vendor": "MATSHITA"
+        }
+    }, 
+    "ansible_distribution": "Ubuntu", 
+    "ansible_distribution_major_version": "12", 
+    "ansible_distribution_release": "precise", 
+    "ansible_distribution_version": "12.04", 
+    "ansible_dns": {
+        "nameservers": [
+            "192.168.140.2"
+        ]
+    }, 
+    "ansible_docker0": {
+        "active": false, 
+        "device": "docker0", 
+        "features": {
+            "generic_receive_offload": "on", 
+            "generic_segmentation_offload": "on", 
+            "large_receive_offload": "off", 
+            "ntuple_filters": "off", 
+            "receive_hashing": "off", 
+            "rx_checksumming": "off", 
+            "rx_vlan_offload": "off", 
+            "scatter_gather": "on", 
+            "tcp_segmentation_offload": "on", 
+            "tx_checksumming": "on", 
+            "tx_vlan_offload": "on", 
+            "udp_fragmentation_offload": "on"
+        }, 
+        "id": "8000.02420d6873bc", 
+        "interfaces": [], 
+        "ipv4": {
+            "address": "172.17.0.1", 
+            "broadcast": "global", 
+            "netmask": "255.255.0.0", 
+            "network": "172.17.0.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "fe80::42:dff:fe68:73bc", 
+                "prefix": "64", 
+                "scope": "link"
+            }
+        ], 
+        "macaddress": "02:42:0d:68:73:bc", 
+        "mtu": 1500, 
+        "promisc": false, 
+        "stp": false, 
+        "type": "bridge"
+    }, 
+    "ansible_domain": "", 
+    "ansible_env": {
+        "HOME": "/home/issdm", 
+        "LANG": "en_US.UTF-8", 
+        "LOGNAME": "issdm", 
+        "MAIL": "/var/mail/issdm", 
+        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games", 
+        "PWD": "/home/issdm", 
+        "SHELL": "/bin/bash", 
+        "SHLVL": "1", 
+        "SSH_CLIENT": "192.168.140.2 33598 22", 
+        "SSH_CONNECTION": "192.168.140.2 33598 192.168.140.176 22", 
+        "SSH_TTY": "/dev/pts/0", 
+        "TERM": "xterm", 
+        "USER": "issdm", 
+        "XDG_SESSION_COOKIE": "62866eb263c18da4631414710000023a-1488441089.741467-1518916373", 
+        "_": "/bin/sh"
+    }, 
+    "ansible_eth0": {
+        "active": false, 
+        "device": "eth0", 
+        "features": {
+            "generic_receive_offload": "on", 
+            "generic_segmentation_offload": "on", 
+            "large_receive_offload": "off", 
+            "ntuple_filters": "off", 
+            "receive_hashing": "off", 
+            "rx_checksumming": "off", 
+            "rx_vlan_offload": "on", 
+            "scatter_gather": "on", 
+            "tcp_segmentation_offload": "on", 
+            "tx_checksumming": "on", 
+            "tx_vlan_offload": "on", 
+            "udp_fragmentation_offload": "off"
+        }, 
+        "macaddress": "00:30:48:43:c1:f0", 
+        "module": "e1000", 
+        "mtu": 1500, 
+        "pciid": "0000:01:07.0", 
+        "promisc": false, 
+        "type": "ether"
+    }, 
+    "ansible_eth1": {
+        "active": true, 
+        "device": "eth1", 
+        "features": {
+            "generic_receive_offload": "on", 
+            "generic_segmentation_offload": "on", 
+            "large_receive_offload": "off", 
+            "ntuple_filters": "off", 
+            "receive_hashing": "off", 
+            "rx_checksumming": "on", 
+            "rx_vlan_offload": "on", 
+            "scatter_gather": "on", 
+            "tcp_segmentation_offload": "on", 
+            "tx_checksumming": "on", 
+            "tx_vlan_offload": "on", 
+            "udp_fragmentation_offload": "off"
+        }, 
+        "ipv4": {
+            "address": "192.168.140.176", 
+            "broadcast": "192.168.140.255", 
+            "netmask": "255.255.255.0", 
+            "network": "192.168.140.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "fe80::230:48ff:fe78:df94", 
+                "prefix": "64", 
+                "scope": "link"
+            }
+        ], 
+        "macaddress": "00:30:48:78:df:94", 
+        "module": "forcedeth", 
+        "mtu": 1500, 
+        "pciid": "0000:00:08.0", 
+        "promisc": false, 
+        "speed": 1000, 
+        "type": "ether"
+    }, 
+    "ansible_eth2": {
+        "active": false, 
+        "device": "eth2", 
+        "features": {
+            "generic_receive_offload": "on", 
+            "generic_segmentation_offload": "on", 
+            "large_receive_offload": "off", 
+            "ntuple_filters": "off", 
+            "receive_hashing": "off", 
+            "rx_checksumming": "on", 
+            "rx_vlan_offload": "on", 
+            "scatter_gather": "on", 
+            "tcp_segmentation_offload": "on", 
+            "tx_checksumming": "on", 
+            "tx_vlan_offload": "on", 
+            "udp_fragmentation_offload": "off"
+        }, 
+        "macaddress": "00:30:48:78:df:95", 
+        "module": "forcedeth", 
+        "mtu": 1500, 
+        "pciid": "0000:00:09.0", 
+        "promisc": false, 
+        "speed": 4294967295, 
+        "type": "ether"
+    }, 
+    "ansible_fips": false, 
+    "ansible_form_factor": "Desktop", 
+    "ansible_fqdn": "issdm-0", 
+    "ansible_gather_subset": [
+        "hardware", 
+        "network", 
+        "virtual"
+    ], 
+    "ansible_hostname": "issdm-0", 
+    "ansible_interfaces": [
+        "docker0", 
+        "lo", 
+        "br-37aa6b014314", 
+        "eth2", 
+        "eth1", 
+        "eth0"
+    ], 
+    "ansible_kernel": "3.13.0-107-generic", 
+    "ansible_lo": {
+        "active": true, 
+        "device": "lo", 
+        "features": {
+            "generic_receive_offload": "on", 
+            "generic_segmentation_offload": "on", 
+            "large_receive_offload": "off", 
+            "ntuple_filters": "off", 
+            "receive_hashing": "off", 
+            "rx_checksumming": "on", 
+            "rx_vlan_offload": "off", 
+            "scatter_gather": "on", 
+            "tcp_segmentation_offload": "on", 
+            "tx_checksumming": "on", 
+            "tx_vlan_offload": "off", 
+            "udp_fragmentation_offload": "on"
+        }, 
+        "ipv4": {
+            "address": "127.0.0.1", 
+            "broadcast": "host", 
+            "netmask": "255.0.0.0", 
+            "network": "127.0.0.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "::1", 
+                "prefix": "128", 
+                "scope": "host"
+            }
+        ], 
+        "mtu": 65536, 
+        "promisc": false, 
+        "type": "loopback"
+    }, 
+    "ansible_lsb": {
+        "codename": "precise", 
+        "description": "Ubuntu 12.04.4 LTS", 
+        "id": "Ubuntu", 
+        "major_release": "12", 
+        "release": "12.04"
+    }, 
+    "ansible_machine": "x86_64", 
+    "ansible_machine_id": "62866eb263c18da4631414710000023a", 
+    "ansible_memfree_mb": 2985, 
+    "ansible_memory_mb": {
+        "nocache": {
+            "free": 7202, 
+            "used": 781
+        }, 
+        "real": {
+            "free": 2985, 
+            "total": 7983, 
+            "used": 4998
+        }, 
+        "swap": {
+            "cached": 0, 
+            "free": 8189, 
+            "total": 8189, 
+            "used": 0
+        }
+    }, 
+    "ansible_memtotal_mb": 7983, 
+    "ansible_mounts": [
+        {
+            "device": "/dev/sda1", 
+            "fstype": "ext4", 
+            "mount": "/", 
+            "options": "rw,errors=remount-ro", 
+            "size_available": 121177083904, 
+            "size_total": 237544407040, 
+            "uuid": "N/A"
+        }
+    ], 
+    "ansible_nodename": "issdm-0", 
+    "ansible_os_family": "Debian", 
+    "ansible_pkg_mgr": "apt", 
+    "ansible_processor": [
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212", 
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212", 
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212", 
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212"
+    ], 
+    "ansible_processor_cores": 2, 
+    "ansible_processor_count": 2, 
+    "ansible_processor_threads_per_core": 1, 
+    "ansible_processor_vcpus": 4, 
+    "ansible_product_name": "H8DMR-82", 
+    "ansible_product_serial": "NA", 
+    "ansible_product_uuid": "NA", 
+    "ansible_product_version": "1234567890", 
+    "ansible_python": {
+        "executable": "/usr/bin/python", 
+        "has_sslcontext": false, 
+        "type": "CPython", 
+        "version": {
+            "major": 2, 
+            "micro": 3, 
+            "minor": 7, 
+            "releaselevel": "final", 
+            "serial": 0
+        }, 
+        "version_info": [
+            2, 
+            7, 
+            3, 
+            "final", 
+            0
+        ]
+    }, 
+    "ansible_python_version": "2.7.3", 
+    "ansible_selinux": false, 
+    "ansible_service_mgr": "upstart", 
+    "ansible_ssh_host_key_dsa_public": "AAAAB3NzaC1kc3MAAACBALRiGuEgtiSlVcUxoykP7Sa6Pje1VYJoDF9WOlRZg45/H2qjwMxoyTjTch/0ZqajTKa+xdSOPTmaLdhaCzH15RUHyV4MnEVb/S4vLSxAEupFuW54J4FvL2PCSnrtkpxlnT1vpAJSWlnEEBzK6hF9Qx6GN0jMbMePGQgfVIWxKTnhAAAAFQCcox5P52bfAb+Hsl0PL3XFle/ORwAAAIBXnkxhL/de6wXFNUCYnGe2enPWLD/8YJ8XdzxIYG+0vxzj3d31NEp1LDifq5rrAyc/ppIIY5oxbgWQ42sD7Q/YiajrZpbMcV1Fks21YXssprAnPJg1ERCjKH0pagygRuu2eZkk0XhR7AFne8kVtlFmj5JxODlNs25uAbVCcEdywQAAAIEAgJMf2DhNEEhqr/86mNLrhLvFGUy0wNZm+l2cM6Tmq8vTO094LZTxoCOV4QjyXaxXxqWzDaAqmFA5qYppK8mMMPre692WAWoUR7csDE1Pe4Fso1VdSzyI7VxKLDPv2wz0YAdgW2G70FMs6IaztUzUpxzNHV1Se/5g3sgolPOLQlM=", 
+    "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBGZDPXezRyQkVUmNEBOi0Cs8xUjnrTjdT4vdVKkOFi541poM/LMUBE0WR8m5309V4SjMITs5oZlFTB9pq8G5WbA=", 
+    "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABAQCgX9rQwpwOIx+0rQTIKBZ6YSHhe3XNKduMnlzfOkXoWsaaVTaV7bqWd8/4bV3PQmbe8rqVN8rOzA5SO38G1IMY4l8KS8oKa/iCP7cxTtnrjTCE3kj/KDQnefGPsv4/JiFvgH67VQgNSRKTJJo/8AnN4vo0g/7YkjpH8EZxaD2iH5GqtfgcBy+mieZA/DGJDWh4acm6XGr+07GtY2n7aSpbHTihElYWfhp5DsXTLFV59KxThqpbR/xrtP35i5aPE8lOViwZx++j2L6MFJvJDW3Z6oPLOIFew+THgAaKIg+hEWRwU7NhOskm0BC2xCYRN8negf/Ek7X0tf77gyfbIq0B", 
+    "ansible_swapfree_mb": 8189, 
+    "ansible_swaptotal_mb": 8189, 
+    "ansible_system": "Linux", 
+    "ansible_system_vendor": "Supermicro", 
+    "ansible_uptime_seconds": 1343644, 
+    "ansible_user": "issdm", 
+    "ansible_user_dir": "/home/issdm", 
+    "ansible_user_gecos": "issdm,,,", 
+    "ansible_user_gid": 1000, 
+    "ansible_user_id": "issdm", 
+    "ansible_user_shell": "/bin/bash", 
+    "ansible_user_uid": 1000, 
+    "ansible_userspace_architecture": "x86_64", 
+    "ansible_userspace_bits": "64", 
+    "ansible_version": {
+        "full": "2.2.0.0", 
+        "major": 2, 
+        "minor": 2, 
+        "revision": 0, 
+        "string": "2.2.0.0"
+    }, 
+    "ansible_virtualization_role": "NA", 
+    "ansible_virtualization_type": "NA", 
+    "bench": {
+        "compose": {
+            "services": {
+                "redis": {
+                    "image": "redis:3.2", 
+                    "network_mode": "host"
+                }, 
+                "redisbench": {
+                    "command": "-c \"sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv\"", 
+                    "entrypoint": "/bin/bash", 
+                    "image": "redis:3.2", 
+                    "network_mode": "host", 
+                    "volumes": [
+                        "/tmp/results:/results"
+                    ]
+                }
+            }, 
+            "version": "2"
+        }, 
+        "fetch": [
+            "/tmp/results"
+        ], 
+        "name": "redisbench"
+    }, 
+    "benchmarks": [
+        {
+            "command": "-c 'stress-ng --sequential $tasks --class cpu --exclude context,cpu-online,getrandom,mergesort,heapsort,numa,str,stream,wcs,zlib --timeout 15 --metrics-brief --times --yaml /results/out.yml'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-cpu", 
+            "parameters": {
+                "tasks": [
+                    1, 
+                    4
+                ]
+            }, 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "command": "-c 'stress-ng --sequential $tasks --class memory --exclude bsearch,heapsort,lockbus,membarrier,mergesort,mincore,numa,qsort,resources,stack,tsearch,wcs,zlib --timeout 15 --metrics-brief --times --yaml /results/out.yml'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-mem", 
+            "parameters": {
+                "tasks": [
+                    1, 
+                    4
+                ]
+            }, 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "command": "-c 'stress-ng --sequential $tasks --class cpu-cache --exclude bsearch,heapsort,hsearch,lockbus,lsearch,malloc,matrix,membarrier,memcpy,mergesort,qsort,str,stream,tsearch,vecmath,wcs,zlib --timeout 15 --metrics-brief --times --yaml /results/out.yml'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-cpucache", 
+            "parameters": {
+                "tasks": [
+                    1, 
+                    4
+                ]
+            }, 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "command": "-c 'stress-ng --stream 1 --timeout 30 2> /results/stdoutout'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-stream", 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "compose": {
+                "services": {
+                    "redis": {
+                        "image": "redis:3.2", 
+                        "network_mode": "host"
+                    }, 
+                    "redisbench": {
+                        "command": "-c \"sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv\"", 
+                        "entrypoint": "/bin/bash", 
+                        "image": "redis:3.2", 
+                        "network_mode": "host", 
+                        "volumes": [
+                            "/tmp/results:/results"
+                        ]
+                    }
+                }, 
+                "version": "2"
+            }, 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "name": "redisbench"
+        }
+    ], 
+    "docker_flags": " -e hey_ho_lets_go=1 -v /tmp/results:/results --entrypoint=/bin/bash", 
+    "docker_ldd": {
+        "changed": false, 
+        "skip_reason": "Conditional check failed", 
+        "skipped": true
+    }, 
+    "env_host_map": {}, 
+    "group_names": [
+        "ungrouped"
+    ], 
+    "groups": {
+        "all": [
+            "dwill.soe.ucsc.edu", 
+            "rackform2", 
+            "pl2", 
+            "scruffy.soe.ucsc.edu", 
+            "issdm-0", 
+            "issdm-6", 
+            "issdm-20", 
+            "issdm-34", 
+            "issdm-31"
+        ], 
+        "ungrouped": [
+            "dwill.soe.ucsc.edu", 
+            "rackform2", 
+            "pl2", 
+            "scruffy.soe.ucsc.edu", 
+            "issdm-0", 
+            "issdm-6", 
+            "issdm-20", 
+            "issdm-34", 
+            "issdm-31"
+        ]
+    }, 
+    "inventory_dir": "/experiment", 
+    "inventory_file": "./machines", 
+    "inventory_hostname": "issdm-0", 
+    "inventory_hostname_short": "issdm-0", 
+    "local_results_path": "/results", 
+    "measure_runtime": false, 
+    "module_setup": true, 
+    "omit": "__omit_place_holder__686830cb02752f929a6b5269119f6098079ab942", 
+    "output_folder": "/results/benchmark/redisbench/machine/issdm-0", 
+    "parameter_list": [
+        1
+    ], 
+    "parameter_names": [
+        "hey_ho_lets_go"
+    ], 
+    "params": {
+        "hey_ho_lets_go": 1
+    }, 
+    "playbook_dir": "/experiment", 
+    "remote_results_path": "/tmp/results", 
+    "repetitions": 3, 
+    "time_after": {
+        "changed": false, 
+        "skip_reason": "Conditional check failed", 
+        "skipped": true
+    }, 
+    "time_before": {
+        "changed": false, 
+        "skip_reason": "Conditional check failed", 
+        "skipped": true
+    }
+}

@@ -1,0 +1,738 @@
+{
+    "ansible_all_ipv4_addresses": [
+        "192.168.140.186", 
+        "172.17.0.1"
+    ], 
+    "ansible_all_ipv6_addresses": [
+        "fe80::230:48ff:fe78:b802", 
+        "fe80::42:ebff:fed2:3b1f"
+    ], 
+    "ansible_architecture": "x86_64", 
+    "ansible_bios_date": "09/24/2009", 
+    "ansible_bios_version": "080014", 
+    "ansible_check_mode": false, 
+    "ansible_cmdline": {
+        "BOOT_IMAGE": "/boot/vmlinuz-3.13.0-108-generic", 
+        "nomodeset": true, 
+        "ro": true, 
+        "root": "UUID=419d52ee-dd34-4bdc-9811-a30aa119ae2c"
+    }, 
+    "ansible_date_time": {
+        "date": "2017-03-01", 
+        "day": "01", 
+        "epoch": "1488441093", 
+        "hour": "23", 
+        "iso8601": "2017-03-02T07:51:33Z", 
+        "iso8601_basic": "20170301T235133727365", 
+        "iso8601_basic_short": "20170301T235133", 
+        "iso8601_micro": "2017-03-02T07:51:33.727550Z", 
+        "minute": "51", 
+        "month": "03", 
+        "second": "33", 
+        "time": "23:51:33", 
+        "tz": "PST", 
+        "tz_offset": "-0800", 
+        "weekday": "Wednesday", 
+        "weekday_number": "3", 
+        "weeknumber": "09", 
+        "year": "2017"
+    }, 
+    "ansible_default_ipv4": {
+        "address": "192.168.140.186", 
+        "alias": "eth1", 
+        "broadcast": "192.168.140.255", 
+        "gateway": "192.168.140.2", 
+        "interface": "eth1", 
+        "macaddress": "00:30:48:78:b8:02", 
+        "mtu": 1500, 
+        "netmask": "255.255.255.0", 
+        "network": "192.168.140.0", 
+        "type": "ether"
+    }, 
+    "ansible_default_ipv6": {}, 
+    "ansible_devices": {
+        "fd0": {
+            "holders": [], 
+            "host": "", 
+            "model": null, 
+            "partitions": {}, 
+            "removable": "1", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "0", 
+            "sectorsize": "512", 
+            "size": "0.00 Bytes", 
+            "support_discard": "0", 
+            "vendor": null
+        }, 
+        "sda": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {
+                "sda1": {
+                    "holders": [], 
+                    "sectors": "471619584", 
+                    "sectorsize": 512, 
+                    "size": "224.89 GB", 
+                    "start": "2048", 
+                    "uuid": "419d52ee-dd34-4bdc-9811-a30aa119ae2c"
+                }, 
+                "sda2": {
+                    "holders": [], 
+                    "sectors": "2", 
+                    "sectorsize": 512, 
+                    "size": "1.00 KB", 
+                    "start": "471623678", 
+                    "uuid": null
+                }, 
+                "sda5": {
+                    "holders": [], 
+                    "sectors": "16773120", 
+                    "sectorsize": 512, 
+                    "size": "8.00 GB", 
+                    "start": "471623680", 
+                    "uuid": "eb8f4ec6-938c-44ed-bed3-ccb1ce28378d"
+                }
+            }, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sdb": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sdc": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sdd": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "ST3250620NS", 
+            "partitions": {}, 
+            "removable": "0", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "0", 
+            "vendor": "ATA"
+        }, 
+        "sde": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 SATA Controller (rev a3)", 
+            "model": "INTEL SSDSC2MH25", 
+            "partitions": {
+                "sde1": {
+                    "holders": [], 
+                    "sectors": "467915087", 
+                    "sectorsize": 512, 
+                    "size": "223.12 GB", 
+                    "start": "20482048", 
+                    "uuid": "93471e2d-7e44-4304-9f26-6808f764bde3"
+                }, 
+                "sde2": {
+                    "holders": [], 
+                    "sectors": "20480000", 
+                    "sectorsize": 512, 
+                    "size": "9.77 GB", 
+                    "start": "2048", 
+                    "uuid": null
+                }
+            }, 
+            "removable": "0", 
+            "rotational": "0", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "488397168", 
+            "sectorsize": "512", 
+            "size": "232.89 GB", 
+            "support_discard": "512", 
+            "vendor": "ATA"
+        }, 
+        "sr0": {
+            "holders": [], 
+            "host": "IDE interface: NVIDIA Corporation MCP55 IDE (rev a1)", 
+            "model": "DVD-ROM SR-8178", 
+            "partitions": {}, 
+            "removable": "1", 
+            "rotational": "1", 
+            "sas_address": null, 
+            "sas_device_handle": null, 
+            "scheduler_mode": "deadline", 
+            "sectors": "2097151", 
+            "sectorsize": "512", 
+            "size": "1024.00 MB", 
+            "support_discard": "0", 
+            "vendor": "MATSHITA"
+        }
+    }, 
+    "ansible_distribution": "Ubuntu", 
+    "ansible_distribution_major_version": "14", 
+    "ansible_distribution_release": "trusty", 
+    "ansible_distribution_version": "14.04", 
+    "ansible_dns": {
+        "nameservers": [
+            "192.168.140.2"
+        ]
+    }, 
+    "ansible_docker0": {
+        "active": false, 
+        "device": "docker0", 
+        "features": {}, 
+        "id": "8000.0242ebd23b1f", 
+        "interfaces": [], 
+        "ipv4": {
+            "address": "172.17.0.1", 
+            "broadcast": "global", 
+            "netmask": "255.255.0.0", 
+            "network": "172.17.0.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "fe80::42:ebff:fed2:3b1f", 
+                "prefix": "64", 
+                "scope": "link"
+            }
+        ], 
+        "macaddress": "02:42:eb:d2:3b:1f", 
+        "mtu": 1500, 
+        "promisc": false, 
+        "stp": false, 
+        "type": "bridge"
+    }, 
+    "ansible_domain": "", 
+    "ansible_env": {
+        "HOME": "/home/issdm", 
+        "LANG": "en_US.UTF-8", 
+        "LOGNAME": "issdm", 
+        "MAIL": "/var/mail/issdm", 
+        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games", 
+        "PWD": "/home/issdm", 
+        "SHELL": "/bin/bash", 
+        "SHLVL": "1", 
+        "SSH_CLIENT": "192.168.140.2 47434 22", 
+        "SSH_CONNECTION": "192.168.140.2 47434 192.168.140.186 22", 
+        "SSH_TTY": "/dev/pts/1", 
+        "TERM": "xterm", 
+        "USER": "issdm", 
+        "XDG_RUNTIME_DIR": "/run/user/1000", 
+        "XDG_SESSION_ID": "76", 
+        "_": "/bin/sh"
+    }, 
+    "ansible_eth0": {
+        "active": false, 
+        "device": "eth0", 
+        "features": {}, 
+        "macaddress": "00:30:48:42:bc:40", 
+        "module": "e1000", 
+        "mtu": 1500, 
+        "pciid": "0000:01:07.0", 
+        "promisc": false, 
+        "type": "ether"
+    }, 
+    "ansible_eth1": {
+        "active": true, 
+        "device": "eth1", 
+        "features": {}, 
+        "ipv4": {
+            "address": "192.168.140.186", 
+            "broadcast": "192.168.140.255", 
+            "netmask": "255.255.255.0", 
+            "network": "192.168.140.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "fe80::230:48ff:fe78:b802", 
+                "prefix": "64", 
+                "scope": "link"
+            }
+        ], 
+        "macaddress": "00:30:48:78:b8:02", 
+        "module": "forcedeth", 
+        "mtu": 1500, 
+        "pciid": "0000:00:08.0", 
+        "promisc": false, 
+        "speed": 1000, 
+        "type": "ether"
+    }, 
+    "ansible_eth2": {
+        "active": false, 
+        "device": "eth2", 
+        "features": {}, 
+        "macaddress": "00:30:48:78:b8:03", 
+        "module": "forcedeth", 
+        "mtu": 1500, 
+        "pciid": "0000:00:09.0", 
+        "promisc": false, 
+        "speed": 4294967295, 
+        "type": "ether"
+    }, 
+    "ansible_fips": false, 
+    "ansible_form_factor": "Desktop", 
+    "ansible_fqdn": "issdm-6", 
+    "ansible_gather_subset": [
+        "hardware", 
+        "network", 
+        "virtual"
+    ], 
+    "ansible_hostname": "issdm-6", 
+    "ansible_interfaces": [
+        "lo", 
+        "docker0", 
+        "eth2", 
+        "eth1", 
+        "eth0"
+    ], 
+    "ansible_kernel": "3.13.0-108-generic", 
+    "ansible_lo": {
+        "active": true, 
+        "device": "lo", 
+        "features": {}, 
+        "ipv4": {
+            "address": "127.0.0.1", 
+            "broadcast": "host", 
+            "netmask": "255.0.0.0", 
+            "network": "127.0.0.0"
+        }, 
+        "ipv6": [
+            {
+                "address": "::1", 
+                "prefix": "128", 
+                "scope": "host"
+            }
+        ], 
+        "mtu": 65536, 
+        "promisc": false, 
+        "type": "loopback"
+    }, 
+    "ansible_lsb": {
+        "codename": "trusty", 
+        "description": "Ubuntu 14.04.5 LTS", 
+        "id": "Ubuntu", 
+        "major_release": "14", 
+        "release": "14.04"
+    }, 
+    "ansible_machine": "x86_64", 
+    "ansible_machine_id": "c0b47687ac4e94be42155374000003aa", 
+    "ansible_memfree_mb": 5658, 
+    "ansible_memory_mb": {
+        "nocache": {
+            "free": 7537, 
+            "used": 447
+        }, 
+        "real": {
+            "free": 5658, 
+            "total": 7984, 
+            "used": 2326
+        }, 
+        "swap": {
+            "cached": 0, 
+            "free": 8189, 
+            "total": 8189, 
+            "used": 0
+        }
+    }, 
+    "ansible_memtotal_mb": 7984, 
+    "ansible_mounts": [
+        {
+            "device": "/dev/sda1", 
+            "fstype": "ext4", 
+            "mount": "/", 
+            "options": "rw,errors=remount-ro", 
+            "size_available": 205648633856, 
+            "size_total": 237544407040, 
+            "uuid": "N/A"
+        }
+    ], 
+    "ansible_nodename": "issdm-6", 
+    "ansible_os_family": "Debian", 
+    "ansible_pkg_mgr": "apt", 
+    "ansible_processor": [
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212", 
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212", 
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212", 
+        "AuthenticAMD", 
+        "Dual-Core AMD Opteron(tm) Processor 2212"
+    ], 
+    "ansible_processor_cores": 2, 
+    "ansible_processor_count": 2, 
+    "ansible_processor_threads_per_core": 1, 
+    "ansible_processor_vcpus": 4, 
+    "ansible_product_name": "H8DMR-82", 
+    "ansible_product_serial": "NA", 
+    "ansible_product_uuid": "NA", 
+    "ansible_product_version": "1234567890", 
+    "ansible_python": {
+        "executable": "/usr/bin/python", 
+        "has_sslcontext": false, 
+        "type": "CPython", 
+        "version": {
+            "major": 2, 
+            "micro": 6, 
+            "minor": 7, 
+            "releaselevel": "final", 
+            "serial": 0
+        }, 
+        "version_info": [
+            2, 
+            7, 
+            6, 
+            "final", 
+            0
+        ]
+    }, 
+    "ansible_python_version": "2.7.6", 
+    "ansible_selinux": false, 
+    "ansible_service_mgr": "upstart", 
+    "ansible_ssh_host_key_dsa_public": "AAAAB3NzaC1kc3MAAACBAIOog+YMOTRw+pRmxTX67VgBcYOpjGa57LZQI680po8E7vYiXkmCMCQYzoi/9zy53JkmhYCEzOR6mqxBDr2s5tQdISdM7kjaiSOIRSpVYwEF7yLJAbpWKEPDRocOU8ENiTLhtkZ9Mh1NY57hBAbFLZW4o3ZGG+Zpb6RmtoGdpqAhAAAAFQDpGRTZ35C9wW9x+E1WnH0hKQDzaQAAAIA4OqkB+oDXwR9FzxHb60ZMRO5+KM965yTn0ZzdnjLQPbmukzC2UxL4nga+cGUNuj0tdHhte91TWpbdaodKuoJGym8QYs7zSQRwSgMRy79YDwULGO2HF0hlkj2JiYb3/6SXf29MWNDeDPMoyyBK0ZTarVVH5g7M4Z1tbhjRnoMdqAAAAIA97OF0TLVbZJP10b6wo4WrhcKpbQCMsbUoh9SKPV56gK+sQCujKwpO+1gGT1ARFJ84b+nRYCCcrSr/aUi4hGEv/6mdy4fWK7sWdoablPacdq721fA3aJAalswJZR6bUExKhbFd/ylebAAdPsWf2maUNzgPSZmdWTuEsfjGbZWDiA==", 
+    "ansible_ssh_host_key_ecdsa_public": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBN7QgGglM1wU7mLPv3QtDQVeICJxUOonLDi9ikIvvqf42CAvOolpIISfJELuBrQWoQIw5fMN7Fe91tq/4LIxtEM=", 
+    "ansible_ssh_host_key_rsa_public": "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1yA60tNULVIcW6d6SdyNz4aCpaGEk4Vy3/TsYXzFPz6MywZ77QDfDufkZGOWLe4Qfbd4V2OW9ghTG8wnK9wJh5IDQ7DbwIEST/5RtaWkpQFRBbhgFfKI7PRSVKpJtIoDJ8IASOorOj6wVoIqk5o5o2LjhPg9Lu0iuYLaU7L/sVhoytbWcE5fdgGzmgxI+VAm5m6yRxsH3Qtc+3RwsYvyJT1Ga4TLUGH41hdtpy5vJhgY6I9FYpuKYhvSnIApoSJJU7p9lhOGOkkDt22o4+zLNJuUQ6qIVYkZ710Am3at1TLJjAiK6gPKPIKvEvXXy8cOkHIoanIMXS+oahC3nQvQn", 
+    "ansible_swapfree_mb": 8189, 
+    "ansible_swaptotal_mb": 8189, 
+    "ansible_system": "Linux", 
+    "ansible_system_capabilities": [
+        ""
+    ], 
+    "ansible_system_capabilities_enforced": "True", 
+    "ansible_system_vendor": "Supermicro", 
+    "ansible_uptime_seconds": 1343612, 
+    "ansible_user": "issdm", 
+    "ansible_user_dir": "/home/issdm", 
+    "ansible_user_gecos": "issdm,,,", 
+    "ansible_user_gid": 1000, 
+    "ansible_user_id": "issdm", 
+    "ansible_user_shell": "/bin/bash", 
+    "ansible_user_uid": 1000, 
+    "ansible_userspace_architecture": "x86_64", 
+    "ansible_userspace_bits": "64", 
+    "ansible_version": {
+        "full": "2.2.0.0", 
+        "major": 2, 
+        "minor": 2, 
+        "revision": 0, 
+        "string": "2.2.0.0"
+    }, 
+    "ansible_virtualization_role": "host", 
+    "ansible_virtualization_type": "kvm", 
+    "bench": {
+        "compose": {
+            "services": {
+                "redis": {
+                    "image": "redis:3.2", 
+                    "network_mode": "host"
+                }, 
+                "redisbench": {
+                    "command": "-c \"sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv\"", 
+                    "entrypoint": "/bin/bash", 
+                    "image": "redis:3.2", 
+                    "network_mode": "host", 
+                    "volumes": [
+                        "/tmp/results:/results"
+                    ]
+                }
+            }, 
+            "version": "2"
+        }, 
+        "fetch": [
+            "/tmp/results"
+        ], 
+        "name": "redisbench"
+    }, 
+    "benchmarks": [
+        {
+            "command": "-c 'stress-ng --sequential $tasks --class cpu --exclude context,cpu-online,getrandom,mergesort,heapsort,numa,str,stream,wcs,zlib --timeout 15 --metrics-brief --times --yaml /results/out.yml'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-cpu", 
+            "parameters": {
+                "tasks": [
+                    1, 
+                    4
+                ]
+            }, 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "command": "-c 'stress-ng --sequential $tasks --class memory --exclude bsearch,heapsort,lockbus,membarrier,mergesort,mincore,numa,qsort,resources,stack,tsearch,wcs,zlib --timeout 15 --metrics-brief --times --yaml /results/out.yml'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-mem", 
+            "parameters": {
+                "tasks": [
+                    1, 
+                    4
+                ]
+            }, 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "command": "-c 'stress-ng --sequential $tasks --class cpu-cache --exclude bsearch,heapsort,hsearch,lockbus,lsearch,malloc,matrix,membarrier,memcpy,mergesort,qsort,str,stream,tsearch,vecmath,wcs,zlib --timeout 15 --metrics-brief --times --yaml /results/out.yml'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-cpucache", 
+            "parameters": {
+                "tasks": [
+                    1, 
+                    4
+                ]
+            }, 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "command": "-c 'stress-ng --stream 1 --timeout 30 2> /results/stdoutout'", 
+            "entrypoint": "/bin/bash", 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "image": "ivotron/stress-ng:v0.07.09", 
+            "name": "stressng-stream", 
+            "volumes": [
+                "/tmp/results:/results"
+            ]
+        }, 
+        {
+            "compose": {
+                "services": {
+                    "redis": {
+                        "image": "redis:3.2", 
+                        "network_mode": "host"
+                    }, 
+                    "redisbench": {
+                        "command": "-c \"sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv\"", 
+                        "entrypoint": "/bin/bash", 
+                        "image": "redis:3.2", 
+                        "network_mode": "host", 
+                        "volumes": [
+                            "/tmp/results:/results"
+                        ]
+                    }
+                }, 
+                "version": "2"
+            }, 
+            "fetch": [
+                "/tmp/results"
+            ], 
+            "name": "redisbench"
+        }
+    ], 
+    "docker_flags": " -e hey_ho_lets_go=1 -v /tmp/results:/results --entrypoint=/bin/bash", 
+    "docker_ldd": {
+        "changed": false, 
+        "skip_reason": "Conditional check failed", 
+        "skipped": true
+    }, 
+    "env_host_map": {}, 
+    "facter_architecture": "amd64", 
+    "facter_augeasversion": "1.2.0", 
+    "facter_blockdevice_fd0_size": 0, 
+    "facter_blockdevice_sda_model": "ST3250620NS", 
+    "facter_blockdevice_sda_size": 250059350016, 
+    "facter_blockdevice_sda_vendor": "ATA", 
+    "facter_blockdevice_sdb_model": "ST3250620NS", 
+    "facter_blockdevice_sdb_size": 250059350016, 
+    "facter_blockdevice_sdb_vendor": "ATA", 
+    "facter_blockdevice_sdc_model": "ST3250620NS", 
+    "facter_blockdevice_sdc_size": 250059350016, 
+    "facter_blockdevice_sdc_vendor": "ATA", 
+    "facter_blockdevice_sdd_model": "ST3250620NS", 
+    "facter_blockdevice_sdd_size": 250059350016, 
+    "facter_blockdevice_sdd_vendor": "ATA", 
+    "facter_blockdevice_sde_model": "INTEL SSDSC2MH25", 
+    "facter_blockdevice_sde_size": 250059350016, 
+    "facter_blockdevice_sde_vendor": "ATA", 
+    "facter_blockdevice_sr0_model": "DVD-ROM SR-8178", 
+    "facter_blockdevice_sr0_size": 1073741312, 
+    "facter_blockdevice_sr0_vendor": "MATSHITA", 
+    "facter_blockdevices": "fd0,sda,sdb,sdc,sdd,sde,sr0", 
+    "facter_facterversion": "1.7.5", 
+    "facter_filesystems": "btrfs,ext2,ext3,ext4,hfs,hfsplus,jfs,minix,msdos,ntfs,qnx4,ufs,vfat,xfs", 
+    "facter_hardwareisa": "x86_64", 
+    "facter_hardwaremodel": "x86_64", 
+    "facter_hostname": "issdm-6", 
+    "facter_id": "issdm", 
+    "facter_interfaces": "docker0,eth0,eth1,eth2,lo", 
+    "facter_ipaddress": "172.17.0.1", 
+    "facter_ipaddress_docker0": "172.17.0.1", 
+    "facter_ipaddress_eth1": "192.168.140.186", 
+    "facter_ipaddress_lo": "127.0.0.1", 
+    "facter_is_virtual": "false", 
+    "facter_kernel": "Linux", 
+    "facter_kernelmajversion": "3.13", 
+    "facter_kernelrelease": "3.13.0-108-generic", 
+    "facter_kernelversion": "3.13.0", 
+    "facter_lsbdistcodename": "trusty", 
+    "facter_lsbdistdescription": "Ubuntu 14.04.5 LTS", 
+    "facter_lsbdistid": "Ubuntu", 
+    "facter_lsbdistrelease": "14.04", 
+    "facter_lsbmajdistrelease": "14", 
+    "facter_macaddress": "02:42:eb:d2:3b:1f", 
+    "facter_macaddress_docker0": "02:42:eb:d2:3b:1f", 
+    "facter_macaddress_eth0": "00:30:48:42:bc:40", 
+    "facter_macaddress_eth1": "00:30:48:78:b8:02", 
+    "facter_macaddress_eth2": "00:30:48:78:b8:03", 
+    "facter_memoryfree": "7.33 GB", 
+    "facter_memoryfree_mb": "7508.39", 
+    "facter_memorysize": "7.80 GB", 
+    "facter_memorysize_mb": "7984.21", 
+    "facter_memorytotal": "7.80 GB", 
+    "facter_mtu_docker0": "1500", 
+    "facter_mtu_eth0": "1500", 
+    "facter_mtu_eth1": "1500", 
+    "facter_mtu_eth2": "1500", 
+    "facter_mtu_lo": "65536", 
+    "facter_netmask": "255.255.0.0", 
+    "facter_netmask_docker0": "255.255.0.0", 
+    "facter_netmask_eth1": "255.255.255.0", 
+    "facter_netmask_lo": "255.0.0.0", 
+    "facter_network_docker0": "172.17.0.0", 
+    "facter_network_eth1": "192.168.140.0", 
+    "facter_network_lo": "127.0.0.0", 
+    "facter_operatingsystem": "Ubuntu", 
+    "facter_operatingsystemrelease": "14.04", 
+    "facter_osfamily": "Debian", 
+    "facter_path": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games", 
+    "facter_physicalprocessorcount": 2, 
+    "facter_processor0": "Dual-Core AMD Opteron(tm) Processor 2212", 
+    "facter_processor1": "Dual-Core AMD Opteron(tm) Processor 2212", 
+    "facter_processor2": "Dual-Core AMD Opteron(tm) Processor 2212", 
+    "facter_processor3": "Dual-Core AMD Opteron(tm) Processor 2212", 
+    "facter_processorcount": "4", 
+    "facter_ps": "ps -ef", 
+    "facter_puppetversion": "3.4.3", 
+    "facter_rubysitedir": "/usr/local/lib/site_ruby/1.9.1", 
+    "facter_rubyversion": "1.9.3", 
+    "facter_selinux": "false", 
+    "facter_sshdsakey": "AAAAB3NzaC1kc3MAAACBAIOog+YMOTRw+pRmxTX67VgBcYOpjGa57LZQI680po8E7vYiXkmCMCQYzoi/9zy53JkmhYCEzOR6mqxBDr2s5tQdISdM7kjaiSOIRSpVYwEF7yLJAbpWKEPDRocOU8ENiTLhtkZ9Mh1NY57hBAbFLZW4o3ZGG+Zpb6RmtoGdpqAhAAAAFQDpGRTZ35C9wW9x+E1WnH0hKQDzaQAAAIA4OqkB+oDXwR9FzxHb60ZMRO5+KM965yTn0ZzdnjLQPbmukzC2UxL4nga+cGUNuj0tdHhte91TWpbdaodKuoJGym8QYs7zSQRwSgMRy79YDwULGO2HF0hlkj2JiYb3/6SXf29MWNDeDPMoyyBK0ZTarVVH5g7M4Z1tbhjRnoMdqAAAAIA97OF0TLVbZJP10b6wo4WrhcKpbQCMsbUoh9SKPV56gK+sQCujKwpO+1gGT1ARFJ84b+nRYCCcrSr/aUi4hGEv/6mdy4fWK7sWdoablPacdq721fA3aJAalswJZR6bUExKhbFd/ylebAAdPsWf2maUNzgPSZmdWTuEsfjGbZWDiA==", 
+    "facter_sshecdsakey": "AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBN7QgGglM1wU7mLPv3QtDQVeICJxUOonLDi9ikIvvqf42CAvOolpIISfJELuBrQWoQIw5fMN7Fe91tq/4LIxtEM=", 
+    "facter_sshfp_dsa": "SSHFP 2 1 0d227717fe888bb2d1f61f9e1905e9076821a12d\nSSHFP 2 2 84c9ef439b113002683715d0325dca2696e96cf2e6b37cf9e0a9eac60aacd127", 
+    "facter_sshfp_ecdsa": "SSHFP 3 1 14b2b199da3274d28743b3d0bce88eacdda75b39\nSSHFP 3 2 6b0a74d12372c08175cc5677223124cc781dcba72590dedce02bb03d9c46d450", 
+    "facter_sshfp_rsa": "SSHFP 1 1 a3eea022593c36cac4a690c5b1122dee6489433e\nSSHFP 1 2 0567bc0e7cef86a5ac5fb35a2634f88be5d01dea494fd409510e3a5fb63a3e30", 
+    "facter_sshrsakey": "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1yA60tNULVIcW6d6SdyNz4aCpaGEk4Vy3/TsYXzFPz6MywZ77QDfDufkZGOWLe4Qfbd4V2OW9ghTG8wnK9wJh5IDQ7DbwIEST/5RtaWkpQFRBbhgFfKI7PRSVKpJtIoDJ8IASOorOj6wVoIqk5o5o2LjhPg9Lu0iuYLaU7L/sVhoytbWcE5fdgGzmgxI+VAm5m6yRxsH3Qtc+3RwsYvyJT1Ga4TLUGH41hdtpy5vJhgY6I9FYpuKYhvSnIApoSJJU7p9lhOGOkkDt22o4+zLNJuUQ6qIVYkZ710Am3at1TLJjAiK6gPKPIKvEvXXy8cOkHIoanIMXS+oahC3nQvQn", 
+    "facter_swapfree": "8.00 GB", 
+    "facter_swapfree_mb": "8190.00", 
+    "facter_swapsize": "8.00 GB", 
+    "facter_swapsize_mb": "8190.00", 
+    "facter_timezone": "PST", 
+    "facter_uniqueid": "a8c0ba8c", 
+    "facter_uptime": "15 days", 
+    "facter_uptime_days": 15, 
+    "facter_uptime_hours": 373, 
+    "facter_uptime_seconds": 1343612, 
+    "facter_virtual": "physical", 
+    "group_names": [
+        "ungrouped"
+    ], 
+    "groups": {
+        "all": [
+            "dwill.soe.ucsc.edu", 
+            "rackform2", 
+            "pl2", 
+            "scruffy.soe.ucsc.edu", 
+            "issdm-0", 
+            "issdm-6", 
+            "issdm-20", 
+            "issdm-34", 
+            "issdm-31"
+        ], 
+        "ungrouped": [
+            "dwill.soe.ucsc.edu", 
+            "rackform2", 
+            "pl2", 
+            "scruffy.soe.ucsc.edu", 
+            "issdm-0", 
+            "issdm-6", 
+            "issdm-20", 
+            "issdm-34", 
+            "issdm-31"
+        ]
+    }, 
+    "inventory_dir": "/experiment", 
+    "inventory_file": "./machines", 
+    "inventory_hostname": "issdm-6", 
+    "inventory_hostname_short": "issdm-6", 
+    "local_results_path": "/results", 
+    "measure_runtime": false, 
+    "module_setup": true, 
+    "omit": "__omit_place_holder__686830cb02752f929a6b5269119f6098079ab942", 
+    "output_folder": "/results/benchmark/redisbench/machine/issdm-6", 
+    "parameter_list": [
+        1
+    ], 
+    "parameter_names": [
+        "hey_ho_lets_go"
+    ], 
+    "params": {
+        "hey_ho_lets_go": 1
+    }, 
+    "playbook_dir": "/experiment", 
+    "remote_results_path": "/tmp/results", 
+    "repetitions": 3, 
+    "time_after": {
+        "changed": false, 
+        "skip_reason": "Conditional check failed", 
+        "skipped": true
+    }, 
+    "time_before": {
+        "changed": false, 
+        "skip_reason": "Conditional check failed", 
+        "skipped": true
+    }
+}
