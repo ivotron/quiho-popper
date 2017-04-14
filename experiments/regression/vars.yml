@@ -1,0 +1,53 @@
+---
+repetitions: 5
+remote_results_path: "/tmp/results"
+
+benchmarks:
+- name: stressng
+  image: ivotron/stress-ng:v0.07.29
+  command: "--sequential 1 --timeout 20 --metrics-brief --times --yaml /results/out.yml'"
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: lulesh
+  image: ivotron/lulesh:v2.0.3
+  command: '-i 1 -s 100 &> {{ remote_results_path }}/lulesh.out'
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: '-np 8'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: comd
+  image: ivotron/comd:v1.1
+  command: ' &> {{ remote_results_path }}/comd.out'
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: '-np 4'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: scikit-learn
+  image: ivotron/scikit-learn-bench:0.18.1
+  command: ' &> {{ remote_results_path }}/scikitlearn.json'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: redisbench
+  compose:
+    version: '2'
+    services:
+      redis:
+        image: redis:3.2
+        network_mode: host
+      redisbench:
+        image: redis:3.2
+        entrypoint: /bin/bash
+        command: -c "sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
+        network_mode: host
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'

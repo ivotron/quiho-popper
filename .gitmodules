@@ -1,3 +1,3 @@
 [submodule "experiments/redis/ansible/roles/baseliner"]
-	path = experiments/redis/ansible/roles/baseliner
+	path = experiments/regression/ansible/roles/baseliner
 	url = https://github.com/ivotron/baseliner

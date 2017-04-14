@@ -4,16 +4,16 @@ set -e -x
 outdir="results/benchoutput"
 
 # delete previous results
-sudo rm -fr $outdir/*
+rm -fr $outdir/*
 
-# get reps
+# get repetitions
 reps=`cat vars.yml | grep 'repetitions:' | awk '{print $2}'`
 if [ -z "$reps" ]; then
   echo "Expecting 'repetitions' variable"
   exit 1
 fi
 
-for i in `seq 1 "$reps"` ; do
+for i in `seq 1 $reps` ; do
   mkdir -p $outdir/repetition/$i
   docker run --rm -ti \
     -v `pwd`/ansible:/experiment \
@@ -29,6 +29,5 @@ for i in `seq 1 "$reps"` ; do
         -e @vars.yml \
         -e local_results_path=/results \
         playbook.yml"
-  sudo rm -fr results/facts/
-  sudo mv $outdir/repetition/$i/facts results/
+    mv $outdir/repetition/$reps/facts results/
 done
