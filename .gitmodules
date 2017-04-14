@@ -1,3 +1,6 @@
 [submodule "experiments/redis/ansible/roles/baseliner"]
 	path = experiments/regression/ansible/roles/baseliner
 	url = https://github.com/ivotron/baseliner
+[submodule "experiments/regression/docker/bench"]
+	path = experiments/regression/docker/bench
+	url = https://github.com/ivotron/docker-bench
