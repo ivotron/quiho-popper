@@ -5,7 +5,21 @@ remote_results_path: "/tmp/results"
 benchmarks:
 - name: stressng
   image: ivotron/stress-ng:v0.07.29
-  command: "--sequential 1 --timeout 20 --metrics-brief --times --yaml /results/out.yml'"
+  command: '--sequential 1 --timeout 15 --metrics-brief --times --yaml /results/stressng.yml --exclude apparmor,affinity,aio,aiol,cap,chdir,chmod,chown,chroot,clock,clone,copy-file,daemon,dccp,dentry,dir,dirdeep,dnotify,dup,epoll,eventfd,exec,fallocate,fanotify,fault,fcntl,fiemap,fifo,filename,flock,fork,fstat,futex,get,getdent,getrandom,handle,hdd,icmp-flood,inotify,io,iomix,ioprio,itimer,kcmp,key,kill,klog,lease,link,locka,lockf,lockofd,membarrier,memfd,mergesort,mknod,mq,msg,netlink-proc,nice,open,personality,poll,procfs,pthread,ptrace,pty,quota,rdrand,readahead,rename,rlimit,rtc,schedpolicy,sctp,seal,seccomp,seek,sem,sem-sysv,sendfile,sigfd,sigfpe,sigpending,sigq,sigsegv,sigsuspend,sleep,sock,sockfd,sockpair,spawn,splice,switch,symlink,sync-file,sysfs,sysinfo,tee,timer,timerfd,tmpfs,tsc,udp,udp-flood,unshare,urandom,utime,userfaultfd,vfork,vforkmany,wait,xattr,yield,zombie,zlib'
+  privileged: true
+  cap_add:
+  - ALL
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: stressng-methods
+  image: ivotron/stress-ng:v0.07.29
+  command: "--timeout 20 --metrics-brief --times"
+  environment:
+    METHODS: 1
+    RESULTS_PATH: '/results'
   volumes:
   - '{{ remote_results_path }}:/results'
   fetch:
@@ -13,25 +27,30 @@ benchmarks:
 
 - name: lulesh
   image: ivotron/lulesh:v2.0.3
-  command: '-i 1 -s 100 &> {{ remote_results_path }}/lulesh.out'
+  command: '-i 1 -s 100'
   environment:
     SINGLE_NODE: 1
     MPIRUN_FLAGS: '-np 8'
+  volumes:
+  - '{{ remote_results_path }}:/results'
   fetch:
   - '{{ remote_results_path }}'
 
 - name: comd
   image: ivotron/comd:v1.1
-  command: ' &> {{ remote_results_path }}/comd.out'
+  command: --xproc 2 --yproc 2 --zproc 1 --nx 64 --ny 64 --nz 64 --printRate 50 --nSteps 40
   environment:
     SINGLE_NODE: 1
     MPIRUN_FLAGS: '-np 4'
+  volumes:
+  - '{{ remote_results_path }}:/results'
   fetch:
   - '{{ remote_results_path }}'
 
 - name: scikit-learn
   image: ivotron/scikit-learn-bench:0.18.1
-  command: ' &> {{ remote_results_path }}/scikitlearn.json'
+  volumes:
+  - '{{ remote_results_path }}:/results'
   fetch:
   - '{{ remote_results_path }}'
 
@@ -51,3 +70,19 @@ benchmarks:
         - '{{ remote_results_path }}:/results'
   fetch:
   - '{{ remote_results_path }}'
+
+machines:
+ cloudlab:
+   sites:
+   - clemson
+   - wisconsin
+   - utah
+   - utahddc
+   - apt
+   nodes: 1
+ local:
+ - dwill.soe.ucsc.edu ansible_user=ivo
+ - rackform1 ansible_user=issdm
+ - pl2 ansible_user=issdm
+ - scruffy.soe.ucsc.edu ansible_user=issdm
+ - issdm-0 ansible_user=issdm
