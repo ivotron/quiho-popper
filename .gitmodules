@@ -4,3 +4,6 @@
 [submodule "experiments/regression/docker/bench"]
 	path = experiments/regression/docker/bench
 	url = https://github.com/ivotron/docker-bench
+[submodule "experiments/spark/ansible/roles/baseliner"]
+	path = experiments/spark/ansible/roles/baseliner
+	url = https://github.com/ivotron/baseliner
