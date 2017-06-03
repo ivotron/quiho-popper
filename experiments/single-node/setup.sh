@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
 
-echo '' > ansible/machines
-
-docker pull ivotron/geni-lib:v0.9.4.6
+docker pull ivotron/geni-lib:v0.9.4.7 &> /dev/null
 
 if [ -z $CLOUDLAB_USER ]; then
   echo "Expecting CLOUDLAB_USER variable"
@@ -35,8 +33,8 @@ docker run --rm \
   -v $CLOUDLAB_PUBKEY_PATH:$CLOUDLAB_PUBKEY_PATH \
   -v $CLOUDLAB_CERT_PATH:$CLOUDLAB_CERT_PATH \
   -v `pwd`/geni/:/output \
-  -v `pwd`/vars.yml:/vars.yml \
   --entrypoint=/output/request.py \
-  ivotron/geni-lib:v0.9.4.6 --request
+  ivotron/geni-lib:v0.9.4.7
 
-cp geni/machines ansible/
+cp ansible/localmachines ansible/machines || touch ansible/machines
+cat geni/machines >> ansible/machines

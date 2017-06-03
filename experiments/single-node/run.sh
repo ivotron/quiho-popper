@@ -13,31 +13,29 @@ factsdir="results/facts"
 rm -fr $outdir/*
 rm -fr $factsdir/*
 
-# get repetitions
-reps=`cat vars.yml | grep 'repetitions:' | awk '{print $2}'`
-if [ -z "$reps" ]; then
-  echo "Expecting 'repetitions' variable"
-  exit 1
+# get docker path
+docker_path=$(which docker)
+libltdl_path=$(ldd $docker_path | grep libltdl | awk '{print $3}')
+if [ -n "$libltdl_path" ] ; then
+  libltdl_path="--volume $libltdl_path:/usr/lib/$(basename $libltdl_path)"
 fi
-
-docker pull ivotron/ansible:2.2.0.0
 
 echo '' > ansible/ansible.log
 
-for i in `seq 1 $reps` ; do
-  mkdir -p $outdir/repetition/$i
-  docker run --rm \
-    -v `pwd`:/experiment \
-    -v $MYSSHKEY:/root/.ssh/id_rsa \
-    --workdir=/experiment/ansible \
-    --net=host \
-    --entrypoint=/bin/bash \
-    ivotron/ansible:2.2.0.0 -c \
-      "ansible-playbook \
-        -e @/experiment/vars.yml \
-        -e local_results_path=/experiment/$outdir/repetition/$i \
-        playbook.yml"
-done
+mkdir -p $outdir
+docker run --rm \
+  --volume `pwd`:/experiment \
+  --volume $MYSSHKEY:/root/.ssh/id_rsa \
+  --workdir=/experiment/ansible \
+  --net=host \
+  --entrypoint=/bin/bash \
+  $libltdl_path \
+  --volume $docker_path:/usr/bin/docker \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  ivotron/ansible:2.2.0.0 -c \
+    "ansible-playbook \
+      -e @/experiment/vars.yml \
+      -e local_results_path=/experiment/$outdir \
+      playbook.yml"
 
-mv $outdir/repetition/$reps/facts/* $factsdir
-rm -fr $outdir/repetition/*/facts
+mv $outdir/facts results/

@@ -2,3 +2,4 @@
 - hosts: all
   roles:
   - baseliner
+#  any_errors_fatal: true
