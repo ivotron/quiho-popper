@@ -1,7 +1,5 @@
-FROM jupyter/scipy-notebook
+FROM jupyter/scipy-notebook:bb222f49222e
 
 # install python dependencies
-RUN conda install graphviz && \
-    pip install graphviz && \
-    conda install -n python2 graphviz && \
-    bash -c 'source activate python2 && pip install graphviz'
+RUN conda install xgboost && \
+    conda install -n python2 xgboost
