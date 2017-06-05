@@ -23,10 +23,12 @@ fi
 echo '' > ansible/ansible.log
 
 mkdir -p $outdir
+
+experiment_path=`pwd`
 docker run --rm \
-  --volume `pwd`:/experiment \
+  --volume $experiment_path:$experiment_path \
   --volume $MYSSHKEY:/root/.ssh/id_rsa \
-  --workdir=/experiment/ansible \
+  --workdir=$experiment_path/ansible \
   --net=host \
   --entrypoint=/bin/bash \
   $libltdl_path \
@@ -34,8 +36,8 @@ docker run --rm \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   ivotron/ansible:2.2.0.0 -c \
     "ansible-playbook \
-      -e @/experiment/vars.yml \
-      -e local_results_path=/experiment/$outdir \
+      -e @$experiment_path/vars.yml \
+      -e local_results_path=$experiment_path/$outdir \
       playbook.yml"
 
 mv $outdir/facts results/
