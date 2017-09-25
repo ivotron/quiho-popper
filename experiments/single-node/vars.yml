@@ -1,9 +1,9 @@
 ---
-repetitions: 3
+repetitions: 1
 remote_results_path: "/tmp/results"
-enable_monitoring: true
-leave_monitor_running: false
-test_timeout: 2400
+#enable_monitoring: true
+#leave_monitor_running: false
+#test_timeout: 2400
 
 benchmarks:
 - name: stressng
@@ -19,27 +19,13 @@ benchmarks:
   fetch:
   - '{{ remote_results_path }}'
 
-- name: zlog
-  image: ivotron/zlog-kv:79782a3
-  command: 100000
-  cgroup_parent: /
-
-- name: redisbench
-  compose:
-    version: '2'
-    services:
-      redis:
-        image: redis:3.2
-        network_mode: host
-        cgroup_parent: /
-      redisbench:
-        image: redis:3.2
-        entrypoint: /bin/bash
-        command: -c "sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
-        cgroup_parent: /
-        network_mode: host
-        volumes:
-        - '{{ remote_results_path }}:/results'
+- name: stream
+  image: ivotron/stream-ncycles:5.10
+  command: stream.100M.${CYCLES}C
+  parameters:
+    CYCLES: [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+  volumes:
+  - '{{ remote_results_path }}:/results'
   fetch:
   - '{{ remote_results_path }}'
 
@@ -66,34 +52,58 @@ benchmarks:
   fetch:
   - '{{ remote_results_path }}'
 
-- name: scikit-learn
-  image: ivotron/scikit-learn-bench:0.18.1
-  cgroup_parent: /
-  volumes:
-  - '{{ remote_results_path }}:/results'
-  fetch:
-  - '{{ remote_results_path }}'
+#- name: zlog
+#  image: ivotron/zlog-kv:79782a3
+#  command: 100000
+#  cgroup_parent: /
+#
+#- name: redisbench
+#  compose:
+#    version: '2'
+#    services:
+#      redis:
+#        image: redis:3.2
+#        network_mode: host
+#        cgroup_parent: /
+#      redisbench:
+#        image: redis:3.2
+#        entrypoint: /bin/bash
+#        command: -c "sleep 10 ; redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
+#        cgroup_parent: /
+#        network_mode: host
+#        volumes:
+#        - '{{ remote_results_path }}:/results'
+#  fetch:
+#  - '{{ remote_results_path }}'
 
-- name: ssca
-  image: ivotron/ssca2:v1.0
-  command: 4 20
-  cgroup_parent: /
-  volumes:
-  - '{{ remote_results_path }}:/results'
-  fetch:
-  - '{{ remote_results_path }}'
-
-- name: hpccg
-  image: ivotron/hpccg:v1.0
-  command: 128 128 128
-  environment:
-    SINGLE_NODE: 1
-    MPIRUN_FLAGS: -np 4
-  cgroup_parent: /
-  volumes:
-  - '{{ remote_results_path }}:/results'
-  fetch:
-  - '{{ remote_results_path }}'
+#- name: scikit-learn
+#  image: ivotron/scikit-learn-bench:0.18.1
+#  cgroup_parent: /
+#  volumes:
+#  - '{{ remote_results_path }}:/results'
+#  fetch:
+#  - '{{ remote_results_path }}'
+#
+#- name: ssca
+#  image: ivotron/ssca2:v1.0
+#  command: 4 20
+#  cgroup_parent: /
+#  volumes:
+#  - '{{ remote_results_path }}:/results'
+#  fetch:
+#  - '{{ remote_results_path }}'
+#
+#- name: hpccg
+#  image: ivotron/hpccg:v1.0
+#  command: 128 128 128
+#  environment:
+#    SINGLE_NODE: 1
+#    MPIRUN_FLAGS: -np 4
+#  cgroup_parent: /
+#  volumes:
+#  - '{{ remote_results_path }}:/results'
+#  fetch:
+#  - '{{ remote_results_path }}'
 
 #- name: comd
 #  image: ivotron/comd:v1.1
@@ -165,18 +175,3 @@ benchmarks:
 #  - '{{ remote_results_path }}:/results'
 #  fetch:
 #  - '{{ remote_results_path }}'
-
-
-machines:
- cloudlab:
-   sites:
-   - clemson
-   - wisconsin
-   - apt
-   - utah
-   - utahddc
-   nodes: 1
- local:
- - dwill.soe.ucsc.edu ansible_user=ivo
- - scruffy.soe.ucsc.edu ansible_user=issdm
- - issdm-0 ansible_user=issdm

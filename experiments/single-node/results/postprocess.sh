@@ -1,44 +1,35 @@
 #!/bin/bash
 set -e -x
 
-echo "benchmark,machine,repetition,test,result" > all.csv
+OUTDIR="$1"
+CSVOUT="$2"
+
+echo "benchmark,machine,repetition,test,result" > $CSVOUT
 
 # stressng
 docker run --rm \
-  -v `pwd`/benchoutput:/data \
-  ivotron/json-to-tabular:v0.0.4 \
+  --mount type=bind,source=$OUTDIR,destination=/data \
+  ivotron/json-to-tabular:v0.0.5 \
     --jqexp '. | .metrics | .[] | [.stressor, ."bogo-ops-per-second-real-time"]' \
-    --filefilter '.*stressng\/.*.yml' \
-    ./ >> all.csv
+    --filefilter '.*stressng.*yml' \
+    ./ >> $CSVOUT
 
-# ssca
+# mysql
 docker run --rm \
-  -v `pwd`/benchoutput:/data \
+  --mount type=bind,source=$OUTDIR,destination=/data \
   ivotron/json-to-tabular:v0.0.5 \
-    --filefilter '.*ssca.*runtime' \
-    --shex "sed 's/\(.*\):\(.*\):\(.*\)/\1 \2 \3/' | awk '{ print \"ssca,\"((\$1 * 3600) + (\$2 * 60) + \$3) }'" \
-    ./ >> all.csv
+    --jqexp 'to_entries | map([.key, .value]) | .[] ' \
+    --filefilter '.*mysqlslap.*json' \
+    ./ >> $CSVOUT
 
-# hpccg
+# stream
 docker run --rm \
-  -v `pwd`/benchoutput:/data \
+  --mount type=bind,source=$OUTDIR,destination=/data \
   ivotron/json-to-tabular:v0.0.5 \
-    --filefilter '.*hpccg.*runtime' \
-    --shex "sed 's/\(.*\):\(.*\):\(.*\)/\1 \2 \3/' | awk '{ print \"hpccg,\"((\$1 * 3600) + (\$2 * 60) + \$3) }'" \
-    ./ >> all.csv
+    --filefilter '.*stream.*std.out' \
+    --shex " grep 'Copy:\\|Scale:\\|Add:\\|Triad' | sed 's/://' | awk '{ print tolower(\$1)\",\"\$2 }'" \
+    ./ >> temp
 
-# sklearn
-docker run --rm \
-  -v `pwd`/benchoutput:/data \
-  ivotron/json-to-tabular:v0.0.5 \
-    --filefilter '.*scikit-learn.*runtime' \
-    --shex "sed 's/\(.*\):\(.*\):\(.*\)/\1 \2 \3/' | awk '{ print \"sklearn,\"((\$1 * 3600) + (\$2 * 60) + \$3) }'" \
-    ./ >> all.csv
-
-# redis
-docker run --rm \
-  -v `pwd`/benchoutput:/data \
-  ivotron/json-to-tabular:v0.0.4 \
-    --filefilter '.*redisbench.*.csv' \
-    ./ >> all.csv
-
+sed -i -s 's/\(.*\),\(.*\),\(.*\),\(.*\),\(.*\),\(.*\)/\1,\2,\3,\5-\4,\6/' temp
+cat temp >> $CSVOUT
+rm temp
