@@ -8,7 +8,7 @@ COMMIT_SHORT=`git rev-parse HEAD | head -c7`
 git ls-files \
   --others \
   --exclude-standard \
-  --exclude='previous/'
+  --exclude='previous/' \
   -z | cpio -pmd0 previous/$COMMIT_SHORT
 
 # TODO: commit all changed files (e.g. notebooks)
