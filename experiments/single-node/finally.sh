@@ -11,4 +11,7 @@ git ls-files \
   --exclude='previous/' \
   -z | cpio -pmd0 previous/$COMMIT_SHORT
 
+tar cvfz previous/$COMMIT_SHORT.tgz previous/$COMMIT_SHORT
+rm -r previous/$COMMIT_SHORT
+
 # TODO: commit all changed files (e.g. notebooks)
