@@ -1,0 +1,78 @@
+---
+repetitions: 1
+remote_results_path: /tmp/results
+master_node: '{{ lookup("file", "./master_node") }}'
+net_interface: eth1
+enable_monitoring: true
+leave_monitor_running: true
+
+benchmarks:
+#- name: stressng
+#  image: ivotron/stress-ng:v0.07.29
+#  command: '--sequential 1 --timeout 15 --metrics-brief --times --yaml /results/stressng.yml --exclude apparmor,affinity,aio,aiol,cap,chdir,chmod,chown,chroot,clock,clone,copy-file,daemon,dccp,dentry,dir,dirdeep,dnotify,dup,epoll,eventfd,exec,fallocate,fanotify,fault,fcntl,fiemap,fifo,filename,flock,fork,fstat,futex,get,getdent,getrandom,handle,hdd,icmp-flood,inotify,io,iomix,ioprio,itimer,kcmp,key,kill,klog,lease,link,locka,lockf,lockofd,membarrier,memfd,mergesort,mknod,mq,msg,netlink-proc,nice,open,personality,poll,procfs,pthread,ptrace,pty,quota,rdrand,readahead,rename,rlimit,rtc,schedpolicy,sctp,seal,seccomp,seek,sem,sem-sysv,sendfile,sigfd,sigfpe,sigpending,sigq,sigsegv,sigsuspend,sleep,sock,sockfd,sockpair,spawn,splice,switch,symlink,sync-file,sysfs,sysinfo,tee,timer,timerfd,tmpfs,tsc,udp,udp-flood,unshare,urandom,utime,userfaultfd,vfork,vforkmany,wait,xattr,yield,zombie,zlib'
+#  privileged: true
+#  cap_add:
+#  - ALL
+#  volumes:
+#  - '{{ remote_results_path }}:/results'
+#  fetch:
+#  - '{{ remote_results_path }}'
+#
+- name: 'conceptual'
+  image: ivotron/conceptual:v1.5.1
+  command: "$TEST"
+  parameters:
+    TEST: [beff, burst, 'bisect --trials 500', latency, latency-all, ping-all, ringtest, sweep1d, throughput, hotpotato, contention, multicast]
+  environment:
+    SSHD_PORT: 2222
+    ADD_INSECURE_KEY: true
+    WAIT_SSHD_SECS: 10
+    MPIRUN_FLAGS: '--npernode 1
+                   --mca btl_tcp_if_include {{ net_interface }}
+                   --mca oob_tcp_if_include {{ net_interface }}
+                   --mca btl self,tcp
+                   --mca btl_base_warn_component_unused 0'
+  network_mode: host
+  ipc: host
+  environment_host: "{
+'{{ master_node }}': {
+  'RANK0': '1'
+}}"
+  put:
+  - src: ./mpihosts
+    dest: /tmp/mpihosts
+  volumes:
+  - /tmp/mpihosts:/tmp/mpihosts
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: spark-perf-ml
+  image: ivotron/spark-perf:1.6.3
+  environment:
+    SSHD_PORT: 2222
+    ADD_INSECURE_KEY: true
+    WAIT_SSHD_SECS: 10
+    WORKER_MEMORY: 5g
+    WORKER_CORES: 4
+    WORKER_INSTANCES: 5
+    ML_IGNORED_TRIALS: 1
+    ML_NUM_TRIALS: 2
+  environment_host: "{
+'{{ master_node }}': {
+  'MASTER': '1'
+}}"
+  parameters:
+    ML_SCALE_FACTOR: [0.001, 0.005, 0.01, 0.05]
+  network_mode: host
+  cgroup_parent: /
+  put:
+  - src: ./spark_slaves
+    dest: /tmp/slaves
+  volumes:
+  - /tmp/slaves:/spark/conf/slaves
+  - '{{ remote_results_path }}:/results'
+  - '{{ remote_results_path }}/sparklogs:/spark/logs'
+  - '{{ remote_results_path }}/sparklogs/eventlogs:/spark/logs/eventlogs'
+  fetch:
+  - '{{ remote_results_path }}'
