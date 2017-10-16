@@ -6,38 +6,20 @@ if [ -z "$MYSSHKEY" ]; then
   exit 1
 fi
 
-outdir="results/benchoutput"
-factsdir="results/facts"
+outdir="results/"
 
 # delete previous results
 rm -fr $outdir/*
-rm -fr $factsdir/*
 
-# get docker path
-docker_path=$(which docker)
-libltdl_path=$(ldd $docker_path | grep libltdl | awk '{print $3}')
-if [ -n "$libltdl_path" ] ; then
-  libltdl_path="--volume $libltdl_path:/usr/lib/$(basename $libltdl_path)"
-fi
-
-echo '' > ansible/ansible.log
+docker pull ivotron/baseliner:2.2.1.0
 
 mkdir -p $outdir
-
-experiment_path=`pwd`
 docker run --rm \
-  --volume $experiment_path:$experiment_path \
+  --volume `pwd`:/experiment \
   --volume $MYSSHKEY:/root/.ssh/id_rsa \
-  --workdir=$experiment_path/ansible \
+  --workdir=/experiment/ \
   --net=host \
-  --entrypoint=/bin/bash \
-  $libltdl_path \
-  --volume $docker_path:/usr/bin/docker \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  ivotron/ansible:2.2.0.0 -c \
-    "ansible-playbook \
-      -e @$experiment_path/vars.yml \
-      -e local_results_path=$experiment_path/$outdir \
-      playbook.yml"
-
-mv $outdir/facts results/
+  ivotron/baseliner:2.2.1.0 \
+    -i /experiment/geni/hosts \
+    -f /experiment/vars.yml
