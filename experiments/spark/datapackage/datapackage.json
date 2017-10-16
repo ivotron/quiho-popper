@@ -1,0 +1,17 @@
+{
+  "description": "Results for spark experiment.",
+  "keywords": [
+    "spark",
+    "bottleneck detection"
+  ],
+  "last_updated": "2017-09-21",
+  "license": "PDDL-1.0",
+  "name": "spark-bottleneck-detection",
+  "resources": [
+    {
+      "name": "spark",
+      "path": "data/spark.csv"
+    }
+  ],
+  "title": "results"
+}
