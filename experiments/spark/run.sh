@@ -21,5 +21,5 @@ docker run --rm \
   --net=host \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   ivotron/baseliner:2.2.1.0 \
-    -i /experiment/geni/hosts \
+    -i /experiment/geni/machines \
     -f /experiment/vars.yml
