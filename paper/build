@@ -12,17 +12,26 @@ docker run \
   -v `pwd`/figures:/root/figures:z \
   -v `pwd`/../experiments:/root/experiments:z \
   -v `pwd`/out:/root/out:z \
-  ivotron/pandoc:1.17 \
+  ivotron/pandoc:1.19.2.1 \
+    --metadata acmart=true \
+    --metadata documentclass=acmart \
+    --metadata classoption=sigconf \
+    --metadata natbib=false \
+    --metadata usedefaultspacing=true \
+    --metadata numbersections=true \
+    --metadata secPrefix=section \
     --standalone \
+    --smart \
     --highlight-style tango \
     --bibliography refs.bib \
     --csl ieee.csl \
-    --filter pandoc-crossref \
     --filter pandoc-tabularize.py \
+    --filter pandoc-crossref \
+    --filter pandoc-citeproc \
     --output=out/paper.pdf \
     paper.md 2> build.log
 
-if [ $? != "0" ] ; then
+if [ $? -ne 0 ] ; then
   echo "ERROR"
   cat build.log
   rm build.log

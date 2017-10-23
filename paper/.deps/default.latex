@@ -1,8 +1,6 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$lang$,$endif$$if(papersize)$$papersize$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
 $if(fontfamily)$
 \usepackage{$fontfamily$}
-$else$
-\usepackage{lmodern}
 $endif$
 $if(usenix)$
 \usepackage{usenix}
@@ -49,9 +47,13 @@ $endif$
 \usepackage{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
+\usepackage{caption}
 $if(geometry)$
 \usepackage[$for(geometry)$$geometry$$sep$,$endfor$]{geometry}
 $endif$
+$if(acmart)$
+% don't include hyperref since acmart does it on its own
+$else$
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -69,6 +71,7 @@ $endif$
             linkcolor=$if(linkcolor)$$linkcolor$$else$magenta$endif$,
             pdfborder={0 0 0}}
 \urlstyle{same}  % don't use monospace font for urls
+$endif$
 $if(lang)$
 \ifxetex
   \usepackage{polyglossia}
@@ -149,23 +152,6 @@ $if(graphics)$
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 $endif$
-\ifxetex
-  \usepackage[setpagesize=false, % page size defined by xetex
-              unicode=false, % unicode breaks when used with xetex
-              xetex]{hyperref}
-\else
-  \usepackage[unicode=true]{hyperref}
-\fi
-\hypersetup{breaklinks=true,
-            bookmarks=true,
-            pdfauthor={$author-meta$},
-            pdftitle={$title-meta$},
-            colorlinks=true,
-            citecolor=$if(citecolor)$$citecolor$$else$blue$endif$,
-            urlcolor=$if(urlcolor)$$urlcolor$$else$blue$endif$,
-            linkcolor=$if(linkcolor)$$linkcolor$$else$magenta$endif$,
-            pdfborder={0 0 0}}
-\urlstyle{same}  % don't use monospace font for urls
 $if(substitute-hyperref)$
 \renewcommand*{\hyperref}[2][\ar]{\def\ar{#2}#2\autoref{#1}}
 \renewcommand*{\chapterautorefname}{Chapter}
@@ -205,7 +191,7 @@ $else$
 $endif$
 % }
 
-% page size {
+% page size and figurenames {
 $if(acm-sig-alternate)$
 \pdfpagewidth=8.5in
 \pdfpageheight=11in
@@ -246,8 +232,23 @@ $endif$
 
 % authors {
 $if(sigplanconf)$
+
 $for(author)$ \authorinfo{$author.name$}{$author.affiliation$}{$author.email$} $endfor$
+
 $else$
+
+$if(acmart)$
+$for(author)$
+\author{$author.name$}
+$if(author.orcid)$
+\orcid{$author.orcid$}
+$endif$
+\affiliation{$author.affiliation$}
+\email{$author.email$}
+$endfor$
+\settopmatter{printacmref=false}
+$else$
+
 $if(letter)$
 \signature{
 $else$
@@ -275,6 +276,7 @@ $author$
   $sep$ \and
 $endfor$
 }
+$endif$
 $endif$
 % }
 
@@ -340,6 +342,19 @@ $if(thesis)$
 \begin{frontmatter}
 $endif$
 % }
+
+$if(acmart)$
+% for acmart, the abstract should appear before maketitle
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$if(abstract-break)$
+\newpage
+$endif$
+$endif$
+$else$
+$endif$
 
 $if(title)$
 \maketitle
@@ -409,12 +424,16 @@ $if(lof)$
 \listoffigures
 $endif$
 
+$if(acmart)$
+% for acmart, the abstract should appear before maketitle
+$else$
 $if(abstract)$
 \begin{abstract}
 $abstract$
 \end{abstract}
 $if(abstract-break)$
 \newpage
+$endif$
 $endif$
 $endif$
 
