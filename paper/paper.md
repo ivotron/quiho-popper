@@ -4,13 +4,13 @@ Granularity Resource Utilization Profiles"
 author:
 - name: Ivo Jimenez
   affiliation: UC Santa Cruz
-  email: ivo@cs.ucsc.edu
-- name: Carlos Maltzahn
-  affiliation: UC Santa Cruz
-  email: carlosm@ucsc.edu
+  email: ivo.jimenez@ucsc.edu
 - name: Jay Lofstead
   affiliation: Sandia National Laboratories
   email: gflofst@sandia.gov
+- name: Carlos Maltzahn
+  affiliation: UC Santa Cruz
+  email: carlosm@ucsc.edu
 abstract: |
   We introduce _quiho_, a framework used in automated performance 
   regression tests. _quiho_ discovers hardware and system software 
@@ -104,8 +104,8 @@ applications. The contributions of our work are:
     benchmarks take as input parameters that determine their 
     performance behavior, thus simulating different "versions" of an 
     application.
-  * A negative result: ineffectiveness of resource utilization for 
-    predicting performance.
+  * A negative result: ineffectiveness of resource utilization 
+    profiles for predicting performance.
 
 We give an overview SRA in @Sec:sra and its use in both, bottleneck 
 identification as well as in performance regression testing. We then 
