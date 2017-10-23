@@ -268,11 +268,11 @@ This section we demonstrate:
   * RUPs work for synthetic workloads.
   * RUPs work for "real" regressions.
 
-**Popper:** This paper adheres to The Popper Convention[^popper-url] 
+This paper adheres to The Popper Experimentation Protocol[^popper-url] 
 [@jimenez_popper_2017], so experiments presented here are available in 
 the repository for this article[^gh]. Experiments can be examined in 
-more detail, or even re-run, by visiting the `[source]` link next to 
-each figure. That link points to a Jupyter notebook that shows the 
+more detail, or even re-executed, by visiting the `[source]` link next 
+to each figure. That link points to a Jupyter notebook that shows the 
 analysis and source code for that graph, which points to an experiment 
 and its artifacts.
 
@@ -326,12 +326,13 @@ and NSF Awards #1450488.
 
 [^cross]: http://cross.ucsc.edu
 
-# References
+# References {.unnumbered}
 
 <!-- hanged biblio -->
 
 \noindent
-\vspace{-2em}
-\setlength{\parindent}{-0.26in}
+\vspace{-1em}
+\setlength{\parindent}{-0.175in}
 \setlength{\leftskip}{0.2in}
-\setlength{\parskip}{8pt}
+\setlength{\parskip}{0.5pt}
+\fontsize{7pt}{8pt}\selectfont
