@@ -34,5 +34,5 @@ docker run --rm \
   -v $CLOUDLAB_CERT_PATH:$CLOUDLAB_CERT_PATH \
   -v `pwd`/geni/release.py:/release.py \
   -v `pwd`/vars.yml:/vars.yml \
-  --entrypoint=/release.py \
-  ivotron/geni-lib:v0.9.4.7
+  --entrypoint=python \
+  ivotron/geni-lib:v0.9.6.0 -u /release.py

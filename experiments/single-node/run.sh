@@ -6,20 +6,18 @@ if [ -z "$MYSSHKEY" ]; then
   exit 1
 fi
 
-outdir="results/"
-
 # delete previous results
-rm -fr $outdir/*
+rm -fr results/baseliner_output
+mkdir -p results/baseliner_output
 
-docker pull ivotron/baseliner:2.2.1.0
+docker pull ivotron/baseliner:2.4.0.0
 
-mkdir -p $outdir
-docker run --rm \
+docker run --rm --name=baseliner \
   --volume `pwd`:/experiment \
   --volume $MYSSHKEY:/root/.ssh/id_rsa \
   --workdir=/experiment/ \
   --net=host \
-  --volume /var/run/docker.sock:/var/run/docker.sock \
-  ivotron/baseliner:2.2.1.0 \
-    -i /experiment/geni/hosts \
-    -f /experiment/vars.yml
+  ivotron/baseliner:2.4.0.0 \
+    -i /experiment/geni/machines \
+    -f /experiment/vars.yml \
+    -o /experiment/results/baseliner_output
