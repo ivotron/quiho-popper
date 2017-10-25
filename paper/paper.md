@@ -5,6 +5,12 @@ author:
 - name: Ivo Jimenez
   affiliation: UC Santa Cruz
   email: ivo.jimenez@ucsc.edu
+- name: Noah Watkins
+  affiliation: UC Santa Cruz
+  email: nmwatkin@ucsc.edu
+- name: Michael Sevilla
+  affiliation: UC Santa Cruz
+  email: msevilla@ucsc.edu
 - name: Jay Lofstead
   affiliation: Sandia National Laboratories
   email: gflofst@sandia.gov
@@ -175,25 +181,30 @@ on machine A. There are several challenges with this approach:
     have just faster memory sticks, but also better CPU, chipset, 
     etc.).
 
-The advent of cloud computing allows us to solve 1) using solutions 
+The advent of cloud computing allows us to solve 1 using solutions 
 like KVM [@kivity_kvm_2007] or software containers 
 [@merkel_docker_2014]. ChameleonCloud [@mambretti_next_2015], CloudLab 
 [@hibler_largescale_2008 ; @ricci_introducing_2014] and Grid5000 
 [@bolze_grid5000_2006] are examples of bare-metal-as-a-service 
-infrastructure available to researchers. DevOps 
-[@wiggins_twelvefactor_2011 ; httermann_devops_2012] addresses 2). 
-Thus, the main challenge with this approach lies in quantifying the 
-performance of the platform in a consistent way. One alternative is to 
-look at the hardware specification and infer performance 
-characteristics from this. As has been shown **`[needs-citation]`**, 
-this is not consistent. For example, the spec might specify that the 
-machine has DDR4 memory sticks, with a theoretical peak throughput of 
-10 GB/s, but the actual memory bandwidth could be less (usually is, by 
-a non-deterministic fraction of the advertised performance).
+infrastructure available to researchers that can be used to automate 
+regression testing pipelines for the purposes of investigating new 
+approaches. These solutions to infrastructure automation coupled with 
+DevOps practices [@wiggins_twelvefactor_2011 ; httermann_devops_2012] 
+allows us to address 2, i.e. to reduce the amount of work required to 
+run tests.
 
-_quiho_ solves this problem by characterizing machine performance 
-using microbenchmarks (@Fig:perf-vectors). These performance vectors 
-are the "fingerprint" that characterizes the behavior of a machine 
+Thus, the main challenge to inferring fine granularity resource 
+utilization patterns (3 and 4) lies in quantifying the performance of 
+the platform in a consistent way. One alternative is to look at the 
+hardware specification and infer performance characteristics from 
+this. As has been shown **`[needs-citation]`**, this is not 
+consistent. For example, the spec might specify that the machine has 
+DDR4 memory sticks, with a theoretical peak throughput of 10 GB/s, but 
+the actual memory bandwidth could be less (usually is, by a 
+non-deterministic fraction of the advertised performance). _quiho_ 
+solves this problem by characterizing machine performance using 
+microbenchmarks (@Fig:perf-vectors). These performance vectors are the 
+"fingerprint" that characterizes the behavior of a machine 
 [@jimenez_characterizing_2016a].
 
 ![Performance vectors are obtained by executing a battery of 
@@ -201,24 +212,24 @@ microbenchmarks that quantify the performance of multiple
 subcomponents of a machine.
 ](figures/perf-vectors.png){#fig:perf-vectors}
 
-This performance vectors, obtained over a sufficiently large set of 
-machines[^how-big], can serve as the foundation for building a prediction 
-model of the performance of an application when executed on new 
-("unseen") machines [@boyse_straightforward_1975], a natural next step 
-to take with a dataset like this. As we show in @Sec:negative, this is 
-not as good as we would expect.
+These performance vectors, obtained over a sufficiently large set of 
+machines[^how-big], can serve as the foundation for building a 
+prediction model of the performance of an application when executed on 
+new ("unseen") machines [@boyse_straightforward_1975], a natural next 
+step to take with a dataset like this. As we show in @Sec:negative, 
+this is not as good as we would expect.
 
 However, building a prediction model has a utility. If we use these 
 performance vectors to apply SRA and we focus on feature importance 
 [@kira_practical_1992] of the created models, we can see that they 
 give us fine granularity resource utilization patterns. In 
-@Fig:vectors-and-regression, we show the intuition behind why this is 
-so. The performance of an application is determined by the performance 
-of the subcomponents that get stressed the most by the application's 
-code. Thus, intuitively, if the performance of an application across 
-multiple machines resembles the performance of a microbenchmark, then 
-we can say that the application is heavily influenced by that 
-subcomponent.
+@Fig:featureimportance-implies-bottleneck, we show the intuition 
+behind why this is so. The performance of an application is determined 
+by the performance of the subcomponents that get stressed the most by 
+the application's code. Thus, intuitively, if the performance of an 
+application across multiple machines resembles the performance of a 
+microbenchmark, then we can say that the application is heavily 
+influenced by that subcomponent.
 
 [^how-big]: As mentioned in @Sec:conclusion, an open problem is to 
 identify the minimal set of machines needed to obtaining meaningful 
@@ -235,11 +246,11 @@ feature importances.
 
 If we rank features by their relative importance, we obtain what we 
 call a fine granularity resource utilization profile (FGRUP), as shown 
-in @Fig:fgrusp.
+in @Fig:fgrup.
 
 ![An example profile showing the relative importance of features for a 
 particular application.
-](figures/mariadb-memory.png){#fig:fgrup}
+](figures/hpccg.png){#fig:fgrup}
 
 In the next section we show how these FGRUPs can be used in automated 
 performance regression tests. @Sec:eval empirically validates this 
@@ -295,18 +306,19 @@ Using this battery of stressors, we can obtain a performance profile
 of a machine (a performance vector). When this vector is compared 
 against the one corresponding to another machine, we can quantify the 
 difference in performance between the two at a per-stressor level. 
-Every stressor (element in the vector) can be mapped to basic features of the 
-underlying platform. For example, `stream` to memory bandwidth, `zero` 
-to memory mapping, `qsort` to sorting data, and so on and so forth. 
-However, the performance of a stressor in this set is _not_ completely 
-orthogonal to the rest. @Fig:corrmatrix shows a heat-map of Pearson 
-correlation coefficients for performance vectors obtained by executing 
-`stress-ng` on all the distinct machine configurations available in 
-CloudLab [@ricci_introducing_2014] (@Fig:machines shows a summary of 
-their hardware specs). As the figure shows, some stressors are 
-slightly correlated (those near 0) while others show high correlation 
-between them (in @Sec:negative we apply principal component analysis 
-to this dataset).
+Every stressor (element in the vector) can be mapped to basic features 
+of the underlying platform. For example, `bigheap` is directly 
+associated to memory bandwidth, `zero` to memory mapping, `qsort` to 
+CPU performance (in particular to sorting data), and so on and so 
+forth. However, the performance of a stressor in this set is _not_ 
+completely orthogonal to the rest. @Fig:corrmatrix shows a heat-map of 
+Pearson correlation coefficients for performance vectors obtained by 
+executing `stress-ng` on all the distinct machine configurations 
+available in CloudLab [@ricci_introducing_2014] (@Fig:machines shows a 
+summary of their hardware specs). As the figure shows, some stressors 
+are slightly correlated (those near 0) while others show high 
+correlation between them (in @Sec:negative we apply principal 
+component analysis to this dataset).
 
 ![heat-map of Pearson correlation coefficients for performance vectors 
 obtained by executing `stress-ng` on all the distinct machine 
@@ -332,9 +344,9 @@ properties such as consistency and asymptotic efficiency. Some of the
 more common estimation techniques for linear regression are 
 least-squares, maximum-likelihood estimation, among others.
 
-`sklearn` [@pedregosa_scikitlearn_2011] provides with many of the 
+`scikit-learn` [@pedregosa_scikitlearn_2011] provides with many of the 
 previously mentioned techniques for building regression models. 
-Another technique available is gradient boosting 
+Another technique available in `scikit-learn` is gradient boosting 
 [@prettenhofer_gradient_2014]. Gradient boosting is a machine learning 
 technique for regression and classification problems, which produces a 
 prediction model in the form of an ensemble of weak prediction models, 
@@ -351,106 +363,178 @@ next section we evaluate their effectiveness.
 ](figures/fgrup-generation.png){#fig:fgrup-generation}
 
 
+## Using FGRUPs in Automated Regression Tests {#sec:compare-fgrups}
+
+As shown in @Fig:pipeline (step 4), when trying to determine whether a 
+performance degradation occurred, FGRUPs can be used to compare 
+differences between current and past versions of an application. 
+
+**TODO: add algorithm**
+
+FGRUPs can also be used as a pointer to where to start with an 
+investigation that looks for the root cause of the regression 
+(@Fig:pipeline, step 5). For example, if _memorymap_ ends up being the 
+most important feature, then we can start by looking at any 
+code/libraries that make use of this subcomponent of the system. An 
+analyst could also trace an application using performance counters and 
+look at corresponding performance counters to see which code paths 
+make heavy use of the subcomponent in question.
+
 # Evaluation {#sec:eval}
 
-In this section we answer:
+In this section we answer three main questions:
 
-  * can FGRUPs accurately capture application performance behavior?
-  * can FGRUPs work for identifying simulated regressions?
-  * can FGRUPs work for identifying real-world regressions?
+ 1. Can FGRUPs accurately capture application performance behavior? 
+    (@Sec:effective-fgrups)
+ 2. Can FGRUPs work for identifying simulated regressions? 
+    (@Sec:fgrups-for-simulated)
+ 3. Can FGRUPs work for identifying regressions in real world software 
+    projects? (@Sec:fgrups-for-real)
+ 4. Can performance vectors be used to create performance prediction 
+    models? (@Sec:negative)
 
-This paper adheres to The Popper Experimentation Protocol[^popper-url] 
+**Note on Replicability of Results**: This paper adheres to The Popper 
+Experimentation Protocol and convention[^popper-url] 
 [@jimenez_popper_2017], so experiments presented here are available in 
-the repository for this article[^gh]. Experiments can be examined in 
-more detail, or even re-executed, by visiting the `[source]` link next 
-to each figure. That link points to a Jupyter notebook that shows the 
-analysis and source code for that graph, which points to an experiment 
-and its artifacts.
+the repository for this article[^gh]. We note that rather than 
+including all the results in the paper, we instead include 
+representative ones for each section and leave the rest on the paper 
+repository. Experiments can be examined in more detail, or even 
+re-executed, by visiting the `[source]` link next to each figure. That 
+link points to a Jupyter notebook that shows the analysis and source 
+code for that graph. The parent folder of the notebook (following the 
+Popper's file organization convention) contains all the artifacts and 
+automation scripts for the experiments. All results presented here can 
+be replicated[^acm-badges], as long as the reader has an account at 
+Cloudlab (see repo for more details).
 
-## Performance Profiles
+[^acm-badges]: **Note to reviewers**: based on the terminology 
+described in the ACM Badging Policy [@acm_result_2016] this complies 
+with the _Results Replicable_ category. We plan to submit this work to 
+the artifact review track too.
 
-We show they actually show the performance of known benchmarks.
+## Effectiveness of FGRUPs to capture performance {#sec:effective-fgrups}
 
-**Methodology** - For every workload:
+In this subsection we how FGRUPs can effectively describe the fine 
+granularity resource utilization of an application with respect to a 
+set of machines. Our methodology is:
 
-  1. Discover relevant features using quiho.
-  2. Analyze code to corroborate that discovered features are indeed 
-     the cause of performance differences.
+  1. Discover relevant performance features using the _quiho_ 
+     framework.
+  2. Analyze source code to corroborate that discovered features are 
+     indeed the cause of performance differences.
 
-![Variability.
+We execute multiple applications for which fine granularity resource 
+utilization characteristics we know in advance. These applications are 
+redis [@zawodny_redis_2009], scikit-learn 
+[@pedregosa_scikitlearn_2011], and ssca [@bader_design_2005] and 
+others. As a way to illustrate the variability originating from 
+executing these applications on an heterogeneous set of machines, 
+@Fig:variability shows boxplots of the four redis performance tests we 
+execute.
+
+![Variability. Y-axis is transactions per second.
 ](figures/variability.png){#fig:variability}
 
-> "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+In @Fig:redis we show four profiles side-by-side of four operations on 
+redis, a popular open-source in-memory key-value database. These four 
+tests are `PUT`, `GET`, `LPOP` and `LPUSH`. These benchmarks that test 
+operations that put and get key-value pairs into the DB, and push/pop 
+elements from a list stored in a key, respectively. The resource 
+utilization profiles suggest that `GET` and `PUT` are memory intensive 
+operations (first 3 stressors from each test, as shown in 
+@Tbl:stressng-categories). On the other hand, the profiles for `LPOP` 
+and `LPUSH` look different and they seem to have CPU intensive as the 
+most important feature for this. If we look at the source code of 
+redis, we can see why this is so. In the case of `GET` and `PUT`, 
+these are memory intensive tasks. In the case of `LPOP` and `LPUSH`, 
+these are routines that retrieve/replace the first element in the 
+list, which is cpu-intensive and correlate with cpu-intensive 
+stressors (such as `hsort` and `qsort`).
 
-![redis.
-](figures/redis_get.png){#fig:redis-get}
+![FGRUPs for four redis tests (`PUT`, `GET`, `LPOP` and `LPUSH`). These 
+benchmarks that test operations that put and get key-value pairs into 
+the DB, and push/pop elements from a list stored in a key, 
+respectively.
+](figures/redis.png){#fig:redis}
 
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+@Fig:sklearn-ssca shows the profile for one of the sklearn 
+classification algorithm performance test. `scikit-learn` uses NumPy 
+[@walt_numpy_2011] internally, which is known to be memory-bound. SSCA 
+on the other hand known to be CPU-bound.
 
-![redis lpop.
-](figures/redis_lpop.png){#fig:redis-lpop}
+![sklearn, ssca.
+](figures/sklearn-ssca.png){#fig:sklearn-ssca}
 
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+[^brevity]: For brevity, we omit other results that corroborate FGRUPs 
+can correctly identify patterns. All these are available in the github 
+repository associated to this article.
 
-![sklearn
-](figures/sklearn.png){#fig:sklearn}
+## Simulating Regressions {#sec:fgrups-for-simulated}
 
+In this section we test the effectiveness of _quiho_ to detect 
+performance simulations that are artificially induced. We induce 
+regression by having a set of performance tests that take, as input, 
+parameters that determine their performance behavior, thus simulating 
+different "versions" of the same application. In total, we have 10 
+benchmarks for which we can induce several performance regressions, 
+for a total of 30 performance regressions. For brevity, in this 
+section we present results for two applications, MariaDB 
+[@widenius_mariadb_2009] and the STREAM-cycles.
 
-## Simulating Regressions
+The MariaDB test is based on the `mysqlslap` utility for stressing the 
+database. In our case we run the load test, which populates a database 
+whose schema is specified by the user. In our case, we have a fixed 
+set of parameters that load a 10GB database. One of the exposed 
+parameters is the one that selects the backend (storage engine in 
+MySQL terminology). While the workload and test parameters are the 
+same, the code paths are distinct and thus present different 
+performance characteristics. The two engines we use in this case are 
+`innodb` and `memory`. @Fig:mariadb-innodb-vs-memory shows the 
+profiles of MariaDB performance for these two engines.
 
-We show that if we simulate regressions, then _quiho_ identifies them 
-correctly.
+![MariaDB with innodb and in-memory backends.
+](figures/mariadb-innodb-vs-memory.png){#fig:mariadb-innodb-vs-memory}
 
-![stream cycles
+The next test is a modified version of the STREAM benchmark, which we 
+refer to as STREAM-cycles. This version of STREAM introduces a 
+`cycles` parameter that controls the number of times a STREAM 
+operation is executed before reporting the time it took. In terms of 
+the code, this adds an outer loop to each of the four different STREAM 
+operations (`add`, `triad`, `copy`, `scale`), and loops as many times 
+as the `cycles` parameter specifies. All STREAM tests are memory 
+bound, so adding more cycles move the performance test from memory- to 
+being cpu-bound; the higher the value of the `cycles` parameter, the 
+more cpu-bound the test gets. @Fig:stream-cycles shows this behavior 
+of all four tests across many machines.
+
+![General behavior of the STREAM-cycles performance test. All STREAM 
+tests are memory bound, so adding more cycles move the performance 
+test from memory- to being cpu-bound; the higher the value of the 
+`cycles` parameter, the more cpu-bound the test gets.
 ](figures/stream-cycles.png){#fig:stream-cycles}
 
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+@Fig:stream-fgrups shows the FGRUPs for the four tests. On the left, 
+we see the "normal" resource utilization behavior of the "vanilla" 
+version of STREAM (which corresponds to a value of 1 for the `cycles` 
+parameter). As expected, the associated features (stressors) to these 
+are from the memory/VM category. To the right, we see FGRUPs capturing 
+the change in utilization behavior when `cycles` goes to its maximum 
+value (20). In general FGRUPs do a good job of catching the simulated 
+regression (which causes this application to be cpu-bound instead of 
+memory-bound).
 
-![stream copy-1
-](figures/stream_copy-1.png){#fig:stream-copy1}
+![The FGRUPs for the four tests. We see that they capture the 
+simulated regression (which causes this application to be cpu-bound 
+instead of memory-bound).
+](figures/stream-fgrups.png){#fig:stream-fgrups}
 
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-![stream copy-20
-](figures/stream_copy-20.png){#fig:stream-copy20}
-
-text in between
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-![mariadb innodb.
-](figures/mariadb_innodb.png){#fig:mariadb-innodb}
-
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-
-![mariadb memory.
-](figures/mariadb_memory.png){#fig:mariadb-memory}
-
-Due to lack of space we can not include the remaining benchmarks. In 
-total, we have 10 benchmarks for which we can induce several 
-performance regressions, for a total of 30 performance regressions.
-
-## Real-world Scenario
+## Real-world Scenario {#sec:fgrups-for-real}
 
 We show that _quiho_ works with a real software project.
 
-![mariadb-5.5.58.
-](figures/mariadb-5.5.58.png){#fig:mariadb-5.5.58}
-
-![mariadb-10.0.3
-](figures/mariadb-10.3.2.png){#fig:mariadb-10.0.32}
-
-**Use of FGRUPs**: FGRUPs aid in performance engineering. When 
-analyzing any performance degradation of an application, then the 
-feature importance can be used as a pointer to where to start with the 
-investigation. For example, if _memorymap_ ends up being the most 
-important feature, then we can start by looking at any code/libraries 
-related to this functionality, or looking at corresponding performance 
-counters (if available). In this case, we would look for the code.
-
-Due to lack of space, we cannot present results for 5 other 
-applications where we detect regressions successfully. These are ZLog, 
-Apache Commons Math, GCC, PostgresSQL, Redis, Apache Web Server and 
-MongoDB.
+![mariadb-10.0.3 vs. 5.5.
+](figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
 
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
@@ -465,12 +549,8 @@ We show how _quiho_ does not do a good job at predicting performance.
 ![Variability reduction per index.
 ](figures/contribution-by-feature.png){#fig:feature-contrib}
 
-text in between
-
 ![Mean Absolute Percentage Error of cross-validation.
 ](figures/prediction.png){#fig:prediction}
-
-text in between
 
 # Related Work {#sec:sra}
 
@@ -488,7 +568,8 @@ dataset of performance counters.
 # Conclusion and Future Work {#sec:conclusion}
 
   * Main draw-back of this technique is that we need to run on 
-    multiple machines.
+    multiple machines. Time can be saved by carefully avoiding to 
+    re-execute stress-ng every time we run a test.
 
   * We used `stress-ng` but this is not the only thing we can use. 
     Ideally, we would extend this battery of tests so that we have 
