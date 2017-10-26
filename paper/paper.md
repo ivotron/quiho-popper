@@ -388,9 +388,16 @@ of FGRUPs.
 
 As shown in @Fig:pipeline (step 4), when trying to determine whether a 
 performance degradation occurred, FGRUPs can be used to compare 
-differences between current and past versions of an application. 
-
-**TODO: add algorithm**
+differences between current and past versions of an application. In 
+order to do so, we apply a simple algorithm. Given two profiles $A$ 
+and $B$, and an arbitrary $\epsilon$ value, look at first feature in 
+the ranking (highest in the chart). Then, compare the relative 
+importance value for the feature and importance values for $A$ and 
+$B$. If relative importance is not within $+/-\epsilon$, the 
+importance is considered not equivalent and the algorithm stops. If 
+values are similar (within $+/-\epsilon$), we move to the next, less 
+important factor and the compare again. This is repeated for as many 
+features are present in the dataset.
 
 FGRUPs can also be used as a pointer to where to start with an 
 investigation that looks for the root cause of the regression 
