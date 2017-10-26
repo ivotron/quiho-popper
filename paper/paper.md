@@ -289,6 +289,11 @@ deterministically associate performance characteristics to each
 instruction based on specific hardware specs. While possible, this is 
 impractical (we are interested in characterizing "real" performance).
 
+\begin{table}\caption{\label{tbl:stressng-categories} List of stressors used in this paper and how they are categorized by `stress-ng`. Note that some stressors are part of multiple categories.}
+\footnotesize
+\input{figures/stressng-categories.tex}
+\end{table}
+
 `stress-ng`[^stress-ng] is a tool that is used to "stress test a 
 computer system in various selectable ways. It was designed to 
 exercise various physical subsystems of a computer as well as the 
@@ -296,11 +301,13 @@ various operating system kernel interfaces". There are multiple
 stressors for CPU, CPU cache, memory, OS, network and filesystem. 
 Since we focus on system performance bandwidth, we execute the (as of 
 version 0.07.29) 42 stressors for CPU, memory and virtual virtual 
-memory stressors. A _stressor_ is a function that loops a for a fixed 
-amount of time (i.e. a microbenchmark), exercising a particular 
+memory stressors (@Tbl:stressng-categories shows the list of stressors 
+used in this paper). A _stressor_ is a function that loops a for a 
+fixed amount of time (i.e. a microbenchmark), exercising a particular 
 subcomponent of the system. At the end of its execution, `stress-ng` 
 reports the rate of iterations executed for the specified period of 
 time (referred to as `bogo-ops-per-second`).
+
 
 [^stress-ng]: http://kernel.ubuntu.com/~cking/stress-ng
 
@@ -312,20 +319,21 @@ time (referred to as `bogo-ops-per-second`).
 Using this battery of stressors, we can obtain a performance profile 
 of a machine (a performance vector). When this vector is compared 
 against the one corresponding to another machine, we can quantify the 
-difference in performance between the two at a per-stressor level. 
+difference in performance between the two at a per-stressor level.
 Every stressor (element in the vector) can be mapped to basic features 
 of the underlying platform. For example, `bigheap` is directly 
 associated to memory bandwidth, `zero` to memory mapping, `qsort` to 
 CPU performance (in particular to sorting data), and so on and so 
 forth. However, the performance of a stressor in this set is _not_ 
-completely orthogonal to the rest. @Fig:corrmatrix shows a heat-map of 
-Pearson correlation coefficients for performance vectors obtained by 
-executing `stress-ng` on all the distinct machine configurations 
-available in CloudLab [@ricci_introducing_2014] (@Tbl:machines shows a 
-summary of their hardware specs). As the figure shows, some stressors 
-are slightly correlated (those near 0) while others show high 
-correlation between them (in @Sec:negative we apply principal 
-component analysis to this dataset).
+completely orthogonal to the rest, as implied by the overlapping 
+categories in @Tbl:stressng-categories. @Fig:corrmatrix shows a 
+heat-map of Pearson correlation coefficients for performance vectors 
+obtained by executing `stress-ng` on all the distinct machine 
+configurations available in CloudLab [@ricci_introducing_2014] 
+(@Tbl:machines shows a summary of their hardware specs). As the figure 
+shows, some stressors are slightly correlated (those near 0) while 
+others show high correlation between them (in @Sec:negative we apply 
+principal component analysis to this dataset).
 
 ![heat-map of Pearson correlation coefficients for performance vectors 
 obtained by executing `stress-ng` on all the distinct machine 
