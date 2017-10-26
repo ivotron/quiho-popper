@@ -680,38 +680,46 @@ in this scenario.
 
 # Limitations and Future Work {#sec:conclusion}
 
-## Limitations
+The main limitation in _quiho_ is the requirement of having to execute 
+a test on more than one machine in order to obtain FGRUPs. As 
+mentioned, an open problem is to precisely quantify the minimum amount 
+of required machines. Time can be saved by carefully avoiding to 
+re-execute `stress-ng` every time a test is executed, for example by 
+keeping track of workload placement in a cluster of machines.
 
-  * scale
-  * compute resources
-  * multitenancy
-  * long-running (multi-stage) applications.
+We used `stress-ng` but the approach is not limited to this 
+benchmarking toolkit. Ideally, we would like to extend the amount and 
+type of stressors so that we have more coverage over the distinct 
+subcomponents of a system. An open question is to systematically test 
+whether the current set of stressors is sufficient to cover all 
+subcomponents of a processor.
 
-  * Main draw-back of this technique is that we need to run on 
-    multiple machines. Time can be saved by carefully avoiding to 
-    re-execute stress-ng every time we run a test.
+We are currently working in adapting this approach to profile 
+distributed and multi-tiered applications. We also plan to analyze the 
+viability of using _quiho_ in multi-tenant configurations. Lastly, 
+long-running (multi-stage) applications. e.g., a web-service or 
+big-data application with multiple stages. In this case, we would 
+define windows of time and we would apply quiho to each. The 
+challenge: how do we automatically get the windows rightly placed.
 
-  * We used `stress-ng` but this is not the only thing we can use. 
-    Ideally, we would extend this battery of tests so that we have 
-    more "coverage" of the distinct subcomponents of a system.
-
-  * multi-node
-  * minimum number of machines?
-  * single machine?
-  * long-running (multi-stage) applications. e.g., a web-service or 
-    big-data application with multiple stages. In this case, we would 
-    define windows of time and we would apply quiho to each. The 
-    challenge: how do we automatically get the windows rightly placed.
-
-## New opportunities
-
-Black-box testing is.
+In the era of cloud computing, even the most basic computer systems 
+are complex multi-layered pieces of software, whose performance 
+properties are difficult to comprehend. Having complete understanding 
+of the performance behavior of an application, considering the 
+parameter space (workloads, multitenancy, etc.) is very challenging. 
+One application of _quiho_ we have in mind is to couple it with 
+automated black-box (or even gray-box) testing frameworks to improve 
+our understanding of complex systems.
 
 **Acknowledgments**: This work was partially funded by the Center for 
 Research in Open Source Software[^cross], Sandia National Laboratories 
 and NSF Award #1450488.
 
 [^cross]: http://cross.ucsc.edu
+
+\ 
+
+\ 
 
 # References {.unnumbered}
 
