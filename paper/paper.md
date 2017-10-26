@@ -102,22 +102,19 @@ applications. The contributions of our work are:
     performance vectors) gives us a resource utilization profile of an 
     application without having to look at the code.
 
-  * We identify a set of synthetic benchmarks that accurately represent
-   different resources. This mapping is used in our root cause analysis.
+  * An automated end-to-end framework (based on the above finding), 
+    that aids analysts in identifying significant changes in resource 
+    utilization behavior of applications which can also aid in 
+    identifying root cause of regressions.
 
-  * An automated end-to-end framework that brings administrators from the point
-    that a regression is identified to the bottleneck that caused the
-    regression.
-
-This last point is especially relevant in today's world, where software grows
-rapidly and hardware changes constantly. Instead of understanding the stack
-from end-to-end, it is often more efficient to run workloads, measure their
-effects on the stack, and optimize resource usage. For example, Google' Vizier
-[@golovin_vizier_2017] is a general auto-tuning service, implemented because
-``any sufficiently complex system acts as a black box when it becomes easier to
-experiment with than to understand''. Our automated framework acknowledges this
-trend and can identify the root cause of performance regressions when software
-versions change or hardware gets upgraded.
+  * Methodology for evaluating automated performance regression. We 
+    introduce a set of synthetic benchmarks aimed at evaluating 
+    automated regression testing without the need of real bug 
+    repositories. These benchmarks take as input parameters that 
+    determine their performance behavior, thus simulating different 
+    "versions" of an application.
+  * A negative result: ineffectiveness of resource utilization 
+    profiles for predicting performance using ensemble learning.
 
 Next section (@Sec:intuition) shows the intuition behind _quiho_ and 
 how can be used to automate regression tests (@Sec:intuition). We then 
@@ -212,14 +209,9 @@ DDR4 memory sticks, with a theoretical peak throughput of 10 GB/s, but
 the actual memory bandwidth could be less (usually is, by a 
 non-deterministic fraction of the advertised performance). _quiho_ 
 solves this problem by characterizing machine performance using 
-microbenchmarks (@Fig:perf-vectors). These performance vectors are the 
-"fingerprint" that characterizes the behavior of a machine 
+microbenchmarks. These performance vectors are the "fingerprint" that 
+characterizes the behavior of a machine 
 [@jimenez_characterizing_2016a].
-
-![Performance vectors are obtained by executing a battery of 
-microbenchmarks that quantify the performance of multiple 
-subcomponents of a machine.
-](figures/perf-vectors.png){#fig:perf-vectors}
 
 These performance vectors, obtained over a sufficiently large set of 
 machines[^how-big], can serve as the foundation for building a 
@@ -362,15 +354,21 @@ prediction model in the form of an ensemble of weak prediction models,
 typically decision trees [@friedman_greedy_2001]. It builds the model 
 in a stage-wise fashion like other boosting methods do, and it 
 generalizes them by allowing optimization of an arbitrary 
-differentiable loss function. This function is then optimized over 
+differentiable loss function. This function is then optimized over a 
 function space by iteratively choosing a function (weak hypothesis) 
 that points in the negative gradient direction. @Fig:fgrup-generation 
-shows the process applied to obtain FGRUPs for an application. In the 
-next section we evaluate their effectiveness.
+shows the process applied to obtaining FGRUPs for an application. We 
+note that before creating the regression model, we normalize the data 
+using the `StandardScaler` method from `scikit-learn`, which removes 
+the mean from the dataset and scales the data to unit variance. Given 
+that the `bogo-ops-per-second` metric does not quantify work 
+consistently across stressors, we normalize the data in order to 
+prevent some features from dominating in the process of creating the 
+prediction models. In section @Sec:eval we evaluate the effectiveness 
+of FGRUPs.
 
 ![The workflow applied in order to obtain FGRUPs.
 ](figures/fgrup-generation.png){#fig:fgrup-generation}
-
 
 ## Using FGRUPs in Automated Regression Tests {#sec:compare-fgrups}
 
@@ -540,7 +538,16 @@ instead of memory-bound).
 
 ## Real-world Scenario {#sec:fgrups-for-real}
 
-We show that _quiho_ works with a real software project.
+In this section we show that _quiho_ works with regressions that can 
+be found in real software projects. It is documented that the changes 
+made to the `innodb` storage engine in version 10.3.2 improves the 
+performance in MariaDB, with respect to previous version 5.5.58. If we 
+take the development timeline and invert it, we can treat 5.5.58 as if 
+it was a "new" revision that introduces a performance regression. To 
+show that this can be captured with FGRUPs, we use `mysqlslap` again 
+and run the `load` test. @Fig:mariadb-innodb-regression shows the 
+corresponding FGRUPs. We can observe that the FGRUP generated by 
+_quiho_ can identify the difference in performance.
 
 ![mariadb-10.0.3 vs. 5.5.
 ](figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
@@ -548,18 +555,33 @@ We show that _quiho_ works with a real software project.
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
 
-## _quiho_ cannot predict performance {#sec:negative}
+## Using Performance Vectors to Predict Performance {#sec:negative}
 
-![Variability reduction per subcomponent in PCA.
-](figures/pca-var-reduction.png){#fig:pca-var}
-
-We show how _quiho_ does not do a good job at predicting performance.
-
-![Variability reduction per index.
-](figures/contribution-by-feature.png){#fig:feature-contrib}
+As mentioned earlier, the set of performance vectors obtained as part 
+of the generation of FGRUPs could be used to create prediction models 
+that try to estimate the performance of an application using. 
+@Fig:prediction shows a plot with mean absolute percentage errors 
+(MAPE) corresponding to the outcome of doing 1-cross-validation 
+[@kohavi_study_1995] across the distinct type of hardware 
+architectures found in CloudLab. The 1-cross-validation is done by 
+creating a training dataset composed of performance vectors from all 
+but one machine. We then generate the model using this training subset 
+as the independent variables and the performance metric associated to 
+an application performance as the dependant variable. We then test 
+obtain the accuracy of the model on the data corresponding to the 
+machine that we left out. Before
 
 ![Mean Absolute Percentage Error of cross-validation.
 ](figures/prediction.png){#fig:prediction}
+
+We create two prediction models. The first one is using random forest 
+[@liaw_classification_2002] to create a linear regression performance 
+model (blue line). We select random forest (as opposed to selecting other 
+alternatives), since it is the one with the highest estimation 
+accuracy from all the ones we tried. As mentioned previously, data is 
+first normalized to prevent dimensionality issues. The second model is 
+obtained by creating a pipeline, where principal component analysis 
+(PCA) is applied first and then random forest is applied next (green line).
 
 # Related Work {#sec:sra}
 
