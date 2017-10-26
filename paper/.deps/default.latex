@@ -254,7 +254,6 @@ $endif$
 \affiliation{$author.affiliation$}
 \email{$author.email$}
 $endfor$
-\settopmatter{printacmref=false}
 $else$
 
 $if(letter)$
