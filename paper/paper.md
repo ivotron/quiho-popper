@@ -101,14 +101,23 @@ applications. The contributions of our work are:
   * Insight: feature importance in SRA models (trained using these 
     performance vectors) gives us a resource utilization profile of an 
     application without having to look at the code.
-  * Methodology for evaluating automated performance regression. We 
-    introduce a set of synthetic benchmarks aimed at evaluating 
-    automated regression testing without the need of real bug 
-    repositories. These benchmarks take as input parameters that 
-    determine their performance behavior, thus simulating different 
-    "versions" of an application.
-  * A negative result: ineffectiveness of resource utilization 
-    profiles for predicting performance using ensemble learning.
+
+  * We identify a set of synthetic benchmarks that accurately represent
+   different resources. This mapping is used in our root cause analysis.
+
+  * An automated end-to-end framework that brings administrators from the point
+    that a regression is identified to the bottleneck that caused the
+    regression.
+
+This last point is especially relevant in today's world, where software grows
+rapidly and hardware changes constantly. Instead of understanding the stack
+from end-to-end, it is often more efficient to run workloads, measure their
+effects on the stack, and optimize resource usage. For example, Google' Vizier
+[@golovin_vizier_2017] is a general auto-tuning service, implemented because
+``any sufficiently complex system acts as a black box when it becomes easier to
+experiment with than to understand''. Our automated framework acknowledges this
+trend and can identify the root cause of performance regressions when software
+versions change or hardware gets upgraded.
 
 Next section (@Sec:intuition) shows the intuition behind _quiho_ and 
 how can be used to automate regression tests (@Sec:intuition). We then 
