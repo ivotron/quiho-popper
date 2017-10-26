@@ -4,3 +4,4 @@ popper_logs
 experiments/regression/results/.ipynb_checkpoints/
 .ropeproject/
 experiments/regression/ansible/machines
+.DS_Store
