@@ -209,15 +209,14 @@ Thus, the main challenge to inferring fine granularity resource
 utilization patterns (3 and 4) lies in quantifying the performance of 
 the platform in a consistent way. One alternative is to look at the 
 hardware specification and infer performance characteristics from 
-this. As has been shown **`[needs-citation]`**, this is not 
-consistent. For example, the spec might specify that the machine has 
-DDR4 memory sticks, with a theoretical peak throughput of 10 GB/s, but 
-the actual memory bandwidth could be less (usually is, by a 
-non-deterministic fraction of the advertised performance). _quiho_ 
-solves this problem by characterizing machine performance using 
-microbenchmarks. These performance vectors are the "fingerprint" that 
-characterizes the behavior of a machine 
-[@jimenez_characterizing_2016a].
+this, an almost impossible task. For example, the 
+spec might specify that the machine has DDR4 memory sticks, with a 
+theoretical peak throughput of 10 GB/s, but the actual memory 
+bandwidth could be less (usually is, by a non-deterministic fraction 
+of the advertised performance). _quiho_ solves this problem by 
+characterizing machine performance using microbenchmarks. These 
+performance vectors are the "fingerprint" that characterizes the 
+behavior of a machine [@jimenez_characterizing_2016a].
 
 These performance vectors, obtained over a sufficiently large set of 
 machines[^how-big], can serve as the foundation for building a 
@@ -242,13 +241,13 @@ influenced by that subcomponent.
 identify the minimal set of machines needed to obtaining meaningful 
 results from SRA.
 
-![Intuition behind why feature importance implies resource utilization 
-behavior. The variability patterns for a feature (across multiple 
-machines), resembles the same variability pattern of application 
-performance across the same machines. While this can be inferred by 
-obtaining correlation coefficients, proper SRA is needed in order to 
-create prediction models, as well as to obtain a relative rank of 
-feature importances.
+![\[[source](https://github.com/ivotron/quiho-popper/blob/icpe18-submission/experiments/single-node/results/all-hpccg-redis-sklearn-ssca.csv)\]Intuition behind why feature importance implies resource 
+utilization behavior. The variability patterns for a feature (across 
+multiple machines), resembles the same variability pattern of 
+application performance across the same machines. While this can be 
+inferred by obtaining correlation coefficients, proper SRA is needed 
+in order to create prediction models, as well as to obtain a relative 
+rank of feature importances.
 ](figures/featureimportance-implies-bottleneck.png){#fig:featureimportance-implies-bottleneck}
 
 If we rank features by their relative importance, we obtain what we 
@@ -277,13 +276,13 @@ represents a fine granularity resource utilization profile (FGRUP).
 While the hardware and software specification can serve to describe 
 the performance characteristics of a machine, the real performance 
 characteristics can only feasibly[^feasible] be obtained by executing 
-programs and capturing metrics. **`[can we show data for this? or add 
-citation]`** The question then boils down to which programs should we 
-use to characterize performance? Ideally, we would like to have many 
-programs that execute every possible opcode mix so that we measure 
-their performance. Since this is an impractical solution, an 
-alternative is to create synthetic microbenchmarks that get as close 
-as possible to exercising all the available features of a system.
+programs and capturing metrics. The question then boils down to which 
+programs should we use to characterize performance? Ideally, we would 
+like to have many programs that execute every possible opcode mix so 
+that we measure their performance. Since this is an impractical 
+solution, an alternative is to create synthetic microbenchmarks that 
+get as close as possible to exercising all the available features of a 
+system.
 
 [^feasible]: One can get generate arbitrary performance 
 characteristics by interposing a hardware emulation layer and 
@@ -313,15 +312,23 @@ time (referred to as `bogo-ops-per-second`).
 
 [^stress-ng]: http://kernel.ubuntu.com/~cking/stress-ng
 
-\begin{table}\caption{\label{tbl:machines} Table of machines from CloudLab.}
+\begin{table}\caption{\label{tbl:machines} Table of machines from CloudLab. The last three entries correspond to computers from our lab.}
 \footnotesize
 \input{figures/machines.tex}
 \end{table}
 
+![Boxplots illustrating the variability of the performance vector 
+dataset. Each stressor was executed on each of the machines listed in 
+@Tab:machines 5 times.
+](figures/stressng-variability.png){#fig:stressng-variability}
+
 Using this battery of stressors, we can obtain a performance profile 
 of a machine (a performance vector). When this vector is compared 
 against the one corresponding to another machine, we can quantify the 
-difference in performance between the two at a per-stressor level.
+difference in performance between the two at a per-stressor level. 
+@Fig:stressng-variability shows the variability in these performance 
+vectors.
+
 Every stressor (element in the vector) can be mapped to basic features 
 of the underlying platform. For example, `bigheap` is directly 
 associated to memory bandwidth, `zero` to memory mapping, `qsort` to 
@@ -570,7 +577,7 @@ simulated regression (which causes this application to be cpu-bound
 instead of memory-bound).
 ](figures/stream-fgrups.png){#fig:stream-fgrups}
 
-## Real-world Scenario {#sec:fgrups-for-real}
+## Real world Scenario {#sec:fgrups-for-real}
 
 In this section we show that _quiho_ works with regressions that can 
 be found in real software projects. It is documented that the changes 
@@ -585,6 +592,9 @@ _quiho_ can identify the difference in performance.
 
 ![mariadb-10.0.3 vs. 5.5.
 ](figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
+
+For brevity, we omit regressions found in other 4 applications (zlog, 
+postgres, redis, apache web server and GCC).
 
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
@@ -717,9 +727,6 @@ and NSF Award #1450488.
 
 [^cross]: http://cross.ucsc.edu
 
-\ 
-
-\ 
 
 # References {.unnumbered}
 
