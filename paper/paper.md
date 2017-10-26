@@ -21,7 +21,7 @@ abstract: |
   We introduce _quiho_, a framework used in automated performance 
   regression tests. _quiho_ discovers hardware and system software 
   resource utilization patterns that influence the performance of an 
-  application. It achieves this by applying sensitivity analyisis, in 
+  application. It achieves this by applying sensitivity analysis, in 
   particular statistical regression analysis (SRA), using 
   application-independent performance feature vectors to characterize 
   the performance of machines. The result of the SRA, in particular 
@@ -55,9 +55,9 @@ regression.
 One of the main challenges in performance regression testing is 
 defining the criteria to decide whether a change in an application's 
 performance behavior is significant, that is, whether a regression has 
-occurred [@cherkasova_anomaly_2008]. Simply comparing values (e.g. 
+occurred [@cherkasova_anomaly_2008]. Simply comparing values (e.g.,
 runtime) is not enough, even if this is done in statistical terms 
-(e.g. mean runtime within a pre-defined variability range). 
+(e.g., mean runtime within a pre-defined variability range). 
 Traditionally, this investigation is done by an analyst in charge of 
 looking at changes, possibly investigating deeply into the issue and 
 finally determining whether a regression exists.
@@ -151,14 +151,14 @@ quest for finding the root cause of a regression.
 ](figures/pipeline.png){#fig:pipeline}
 
 A regression is usually the result of observing a significant change 
-in a performance metric of interest (e.g. runtime). At this point, an 
+in a performance metric of interest (e.g., runtime). At this point, an 
 analyst will investigate further in order to find the root cause of the 
 problem. One of these activities involves profiling an application to see 
-what's the patter in terms of resource utilization. Traditionally, 
+the resource utilization pattern. Traditionally, 
 coarse-grained profiling (i.e. CPU-, memory- or IO-bound) 
 can be obtained by monitoring an application's resource utilization 
-over time. Fine granularity behavior allows application developers and 
-performance engineers to quickly understand what they need to focus on 
+over time. Fine granularity behavior helps application developers and 
+performance engineers quickly understand what they need to focus on 
 while refactoring an application.
 
 Obtaining fine granularity performance utilization behavior, for 
@@ -187,7 +187,7 @@ on machine A. There are several challenges with this approach:
     still the issue of not being able to correlate baseline 
     performance with application behavior, since between two platforms 
     is rarely the case where the change of performance is observed in 
-    only one subcomponent of the system (e.g. a newer machine doesn’t 
+    only one subcomponent of the system (e.g., a newer machine doesn’t 
     have just faster memory sticks, but also better CPU, chipset, 
     etc.).
 
@@ -263,12 +263,12 @@ approach.
 
 # Our Approach {#sec:quiho}
 
-In this section we do an in-depth description of _quiho_'s approach. 
+In this section we do describe _quiho_'s approach and the resulting prototype.
 We first describe how we obtain the performance vectors that 
-characterize system performance. We then show how using these vectors 
-we can feed SRA to build performance models for an application. 
+characterize system performance. We then show that  
+we can feed these vectors into  SRA to build performance models for an application. 
 Lastly, we describe how we obtain feature importance and how this 
-represent a fine granularity resource utilization profile (FGRUP). 
+represents a fine granularity resource utilization profile (FGRUP). 
 
 ## Performance Feature Vectors As System Performance Characterization
 
@@ -629,7 +629,7 @@ In the not-so-distant future:
   * multi-node
   * minimum number of machines?
   * single machine?
-  * long-running (multi-stage) applications. e.g. a web-service or 
+  * long-running (multi-stage) applications. e.g., a web-service or 
     big-data application with multiple stages. In this case, we would 
     define windows of time and we would apply quiho to each. The 
     challenge: how do we automatically get the windows rightly placed.
