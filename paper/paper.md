@@ -70,14 +70,16 @@ of performance engineering [@jin_understanding_2012 ;
 @han_performance_2012 ; @jovic_catch_2011]. One common approach is to 
 monitor an application's performance in order to understand which 
 parts of the system an application is hammering on
-[@gregg_systems_2013]. Automated solutions have been proposed 
-[@cherkasova_anomaly_2008; @jiang_automated_2010 ; 
-@shang_automated_2015 ; @heger_automated_2013]. The general approach 
-of these is to analyze logs and/or metrics obtained as part of the 
-execution of an application in order to automatically determine 
-whether a regression has occurred. Most of them do this by creating 
-prediction models that are checked against runtime metrics. As with 
-any prediction model, there is the risk of false/positive negatives.
+[@gregg_systems_2013]. Automated solutions have been proposed in 
+recent years [@jiang_automated_2010 ; @shang_automated_2015 ; 
+@heger_automated_2013]. The general approach of these is to analyze 
+logs and/or metrics obtained as part of the execution of an 
+application in order to automatically determine whether a regression 
+has occurred. This relies on having accurate prediction models that 
+are checked against runtime metrics of executed tests. As with any 
+prediction model, there is the risk of false/positive negatives. 
+Rather than striving for high accuracy predictions, an alternative is 
+to use performance modeling as a profiling tool.
 
 In this work, we present _quiho_ an approach aimed at complementing 
 automated performance regression testing by using system resource 
@@ -370,16 +372,27 @@ in a stage-wise fashion like other boosting methods do, and it
 generalizes them by allowing optimization of an arbitrary 
 differentiable loss function. This function is then optimized over a 
 function space by iteratively choosing a function (weak hypothesis) 
-that points in the negative gradient direction. @Fig:fgrup-generation 
-shows the process applied to obtaining FGRUPs for an application. We 
-note that before creating the regression model, we normalize the data 
-using the `StandardScaler` method from `scikit-learn`, which removes 
-the mean from the dataset and scales the data to unit variance. Given 
-that the `bogo-ops-per-second` metric does not quantify work 
-consistently across stressors, we normalize the data in order to 
-prevent some features from dominating in the process of creating the 
-prediction models. In section @Sec:eval we evaluate the effectiveness 
-of FGRUPs.
+that points in the negative gradient direction.
+
+Once an ensemble of trees for an application is generated, feature 
+importances are obtained in order to use them as the FGRUP for an 
+application. @Fig:fgrup-generation shows the process applied to 
+obtaining FGRUPs for an application. `scikit-learn` implements the 
+feature importance calculation algorithm introduced in 
+[@breiman_classification_1984]. This is sometimes called _gini 
+importance_ or _mean decrease impurity_ and is defined as the total 
+decrease in node impurity, weighted by the probability of reaching 
+that node (which is approximated by the proportion of samples reaching 
+that node), averaged over all trees of the ensemble.
+
+We note that before generating a regression model, we normalize the 
+data using the `StandardScaler` method from `scikit-learn`, which 
+removes the mean from the dataset and scales the data to unit 
+variance. Given that the `bogo-ops-per-second` metric does not 
+quantify work consistently across stressors, we normalize the data in 
+order to prevent some features from dominating in the process of 
+creating the prediction models. In section @Sec:eval we evaluate the 
+effectiveness of FGRUPs.
 
 ![The workflow applied in order to obtain FGRUPs.
 ](figures/fgrup-generation.png){#fig:fgrup-generation}
@@ -410,7 +423,7 @@ make heavy use of the subcomponent in question.
 
 # Evaluation {#sec:eval}
 
-In this section we answer three main questions:
+In this section we answer four main questions:
 
  1. Can FGRUPs accurately capture application performance behavior? 
     (@Sec:effective-fgrups)
@@ -610,18 +623,69 @@ those with less than 2-3% MAPE.
 
 # Related Work {#sec:sra}
 
-
-## Anomaly Detection and Bottleneck Identification
-
-It's been used in bottleneck detection [@ibidunmoye_performance_2015]. 
-**TODO: mention briefly how it is used**.
-
 ## Automated Regression Testing
 
-In [@shang_automated_2015], they use it to detect regressions using a 
-dataset of performance counters.
+Automated regression testing can be broken down in the following three 
+steps:
 
-# Conclusion and Future Work {#sec:conclusion}
+  1. In the case of large software projects, decide which tests to 
+     execute [@kazmi_effective_2017]. This line of work is 
+     complementary to _quiho_.
+  2. Once a test executes, decide whether a regression has occurred 
+     [@syer_continuous_2014]. This can be broken down in mainly two 
+     categories, as explained in [@shang_automated_2015]: pair-wise 
+     comparisons and model assisted. _quiho_ fits in the latter 
+     category, the main difference being that, as opposed to existing 
+     solutions, _quiho_ does not rely on having accurate prediction 
+     models since its goal is to describe resource utilization (obtain 
+     FGRUPs).
+  3. If a regression is observed, automatically find the root cause or 
+     aid an analyst to find it [@ibidunmoye_performance_2015 ; 
+     @heger_automated_2013 ; @attariyan_xray_2012]. While _quiho_ does 
+     not find the root cause of regressions, it complements the 
+     information that an analyst has available to investigate further.
+
+## Decision Trees
+
+In [@jung_detecting_2006] the authors use decision trees to detect 
+anomalies and predict performance SLO violations. They validate their 
+approach using a TPC-W workload in a multi-tiered setting. In 
+[@shang_automated_2015], the authors use performance counters to build 
+a regression model aimed at filtering out irrelevant performance 
+counters. In [@nguyen_automated_2012a], the approach is similar but 
+statistical process control techniques are employed instead.
+
+In the case of _quiho_, the goal is to use decision trees as a way of 
+obtaining feature performance, thus, as opposed to what it's proposed 
+in [@shang_automated_2015], the leaves of the generated decision trees 
+contain actual performance predictions instead of the name of 
+performance counters
+
+## Correlation-based and Supervised Learning
+
+Correlation-based and supervised learning approaches have been 
+proposed in the context of software testing, mainly for detecting 
+anomalies [@ibidunmoye_performance_2015]. In the former, runtime 
+performance metrics are correlated to application performance using a 
+variety of distinct techniques. In supervised learning, the goal is 
+the same (build prediction models) but using a labeled dataset.
+
+Given that _quiho_ is not using classification techniques, it doesn't 
+rely on labeled datasets. Also, and as explained in @Sec:quiho, this 
+type of analysis does not serve our needs, since we need to obtain a 
+prediction model in order to look at feature importance (the basis of 
+FGRUPs). Lastly, _quiho_ is not intended to be used as a way of 
+detecting anomalies, although we have not analyzed its potential use 
+in this scenario.
+
+# Limitations and Future Work {#sec:conclusion}
+
+## Limitations
+
+  * scale
+  * compute resources
+  * multitenancy
+  * long-running (multi-stage) applications.
 
   * Main draw-back of this technique is that we need to run on 
     multiple machines. Time can be saved by carefully avoiding to 
@@ -631,8 +695,6 @@ dataset of performance counters.
     Ideally, we would extend this battery of tests so that we have 
     more "coverage" of the distinct subcomponents of a system.
 
-In the not-so-distant future:
-
   * multi-node
   * minimum number of machines?
   * single machine?
@@ -640,6 +702,10 @@ In the not-so-distant future:
     big-data application with multiple stages. In this case, we would 
     define windows of time and we would apply quiho to each. The 
     challenge: how do we automatically get the windows rightly placed.
+
+## New opportunities
+
+Black-box testing is.
 
 **Acknowledgments**: This work was partially funded by the Center for 
 Research in Open Source Software[^cross], Sandia National Laboratories 
