@@ -1,6 +1,5 @@
 ---
-title: "_quiho_: Automated Performance Regression Using Fine 
-Granularity Resource Utilization Profiles"
+title: "_quiho_: Automated Performance Regression Using Fine Granularity Resource Utilization Profiles"
 author:
 - name: Ivo Jimenez
   affiliation: UC Santa Cruz
@@ -33,6 +32,10 @@ abstract: |
   performance regressions by showing its effectiveness in profiling 
   application performance for synthetically induced regressions as 
   well as several found in real-world applications.
+keywords:
+- software testing
+- performance engineering
+- performance modeling
 ---
 
 # Introduction
@@ -300,8 +303,10 @@ time (referred to as `bogo-ops-per-second`).
 
 [^stress-ng]: http://kernel.ubuntu.com/~cking/stress-ng
 
-![List of different type of machines available on Cloudlab.
-](figures/machines.png){#fig:machines}
+\begin{table}\caption{\label{tbl:machines} Table of machines from CloudLab.}
+\footnotesize
+\input{figures/machines.tex}
+\end{table}
 
 Using this battery of stressors, we can obtain a performance profile 
 of a machine (a performance vector). When this vector is compared 
@@ -315,7 +320,7 @@ forth. However, the performance of a stressor in this set is _not_
 completely orthogonal to the rest. @Fig:corrmatrix shows a heat-map of 
 Pearson correlation coefficients for performance vectors obtained by 
 executing `stress-ng` on all the distinct machine configurations 
-available in CloudLab [@ricci_introducing_2014] (@Fig:machines shows a 
+available in CloudLab [@ricci_introducing_2014] (@Tbl:machines shows a 
 summary of their hardware specs). As the figure shows, some stressors 
 are slightly correlated (those near 0) while others show high 
 correlation between them (in @Sec:negative we apply principal 
@@ -581,7 +586,11 @@ alternatives), since it is the one with the highest estimation
 accuracy from all the ones we tried. As mentioned previously, data is 
 first normalized to prevent dimensionality issues. The second model is 
 obtained by creating a pipeline, where principal component analysis 
-(PCA) is applied first and then random forest is applied next (green line).
+(PCA) is applied first and then random forest is applied next (green 
+line). As we can see, the prediction errors range from 3% up to almost 
+50% in the worst-case scenario. Compared to the status-quo 
+[@crume_automatic_2014], where good performance prediction models are 
+those with less than 2-3% MAPE.
 
 # Related Work {#sec:sra}
 
