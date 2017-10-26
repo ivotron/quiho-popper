@@ -209,6 +209,13 @@ $endif$
 
 % title {
 $if(title)$
+$if(acmart)$
+$if(shorttitle)$
+\title[$subtitle$]{$title$}
+$else$
+\title{$title$}
+$endif$
+$else$
   $if(no-subtitle-command)$
 \title{$title$$if(subtitle)$\\\vspace{0.5em}{\large $subtitle$}$endif$}
   $else$
@@ -217,6 +224,7 @@ $if(title)$
 \subtitle{$subtitle$}
     $endif$
   $endif$
+$endif$
 $endif$
 % }
 

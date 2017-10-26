@@ -1,5 +1,6 @@
 ---
 title: "_quiho_: Automated Performance Regression Using Fine Granularity Resource Utilization Profiles"
+shorttitle: _quiho_
 author:
 - name: Ivo Jimenez
   affiliation: UC Santa Cruz
