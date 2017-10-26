@@ -177,21 +177,23 @@ know that machine A has higher memory bandwidth than machine B, and an
 application is memory-bound, then this application will perform better 
 on machine A. There are several challenges with this approach:
 
- 1. We need to ensure that the software stack is the same on all 
-    machines where the application runs.
- 2. The amount of effort required to run applications on a multitude 
-    of platforms is not negligible.
- 3. It is difficult to obtain the performance characteristics of a 
-    machine by just looking at the hardware spec, so other more 
-    practical alternative is required..
- 4. Even if we could solve 3 and infer performance characteristics by 
-    just looking at the hardware specification of a machine, there is 
-    still the issue of not being able to correlate baseline 
-    performance with application behavior, since between two platforms 
-    is rarely the case where the change of performance is observed in 
-    only one subcomponent of the system (e.g., a newer machine doesn’t 
-    have just faster memory sticks, but also better CPU, chipset, 
-    etc.).
+ 1. Consistent Software. We need to ensure that the software stack is 
+    the same on all machines where the application runs.
+ 2. Application Testing Overhead. The amount of effort required to run 
+    applications on a multitude of platforms is not negligible.
+ 3. Hardware Performance Characterization. It is difficult to obtain 
+    the performance characteristics of a machine by just looking at 
+    the hardware spec, so other more practical alternative is 
+    required.
+ 4. Correlating Performance. Even if we could solve the above issue 
+    (Hardware Performance Characterization) and infer performance 
+    characteristics by just looking at the hardware specification of a 
+    machine, there is still the problem of not being able to correlate 
+    baseline performance with application behavior, since between two 
+    platforms is rarely the case where the change of performance is 
+    observed in only one subcomponent of the system (e.g., a newer 
+    machine doesn’t have just faster memory sticks, but also better 
+    CPU, chipset, etc.).
 
 The advent of cloud computing allows us to solve 1 using solutions 
 like KVM [@kivity_kvm_2007] or software containers 
@@ -241,7 +243,7 @@ influenced by that subcomponent.
 identify the minimal set of machines needed to obtaining meaningful 
 results from SRA.
 
-![\[[source](https://github.com/ivotron/quiho-popper/blob/icpe18-submission/experiments/single-node/results/all-hpccg-redis-sklearn-ssca.csv)\]Intuition behind why feature importance implies resource 
+![Intuition behind why feature importance implies resource 
 utilization behavior. The variability patterns for a feature (across 
 multiple machines), resembles the same variability pattern of 
 application performance across the same machines. While this can be 
@@ -254,7 +256,8 @@ If we rank features by their relative importance, we obtain what we
 call a fine granularity resource utilization profile (FGRUP), as shown 
 in @Fig:fgrup.
 
-![An example profile showing the relative importance of features for a 
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
+An example profile showing the relative importance of features for a 
 particular application.
 ](figures/hpccg.png){#fig:fgrup}
 
@@ -275,28 +278,26 @@ represents a fine granularity resource utilization profile (FGRUP).
 
 While the hardware and software specification can serve to describe 
 the performance characteristics of a machine, the real performance 
-characteristics can only feasibly[^feasible] be obtained by executing 
-programs and capturing metrics. The question then boils down to which 
-programs should we use to characterize performance? Ideally, we would 
-like to have many programs that execute every possible opcode mix so 
-that we measure their performance. Since this is an impractical 
-solution, an alternative is to create synthetic microbenchmarks that 
-get as close as possible to exercising all the available features of a 
-system.
-
-[^feasible]: One can get generate arbitrary performance 
+characteristics can only feasibly be obtained by executing programs 
+and capturing metrics. One can get generate arbitrary performance 
 characteristics by interposing a hardware emulation layer and 
 deterministically associate performance characteristics to each 
 instruction based on specific hardware specs. While possible, this is 
-impractical (we are interested in characterizing "real" performance).
+impractical (we are interested in characterizing "real" performance). 
+The question then boils down to which programs should we use to 
+characterize performance? Ideally, we would like to have many programs 
+that execute every possible opcode mix so that we measure their 
+performance. Since this is an impractical solution, an alternative is 
+to create synthetic microbenchmarks that get as close as possible to 
+exercising all the available features of a system.
 
 \begin{table}\caption{\label{tbl:stressng-categories} List of stressors used in this paper and how they are categorized by `stress-ng`. Note that some stressors are part of multiple categories.}
 \footnotesize
 \input{figures/stressng-categories.tex}
 \end{table}
 
-`stress-ng`[^stress-ng] is a tool that is used to "stress test a 
-computer system in various selectable ways. It was designed to 
+`stress-ng`[@king_stressng_2017] is a tool that is used to "stress 
+test a computer system in various selectable ways. It was designed to 
 exercise various physical subsystems of a computer as well as the 
 various operating system kernel interfaces". There are multiple 
 stressors for CPU, CPU cache, memory, OS, network and filesystem. 
@@ -309,15 +310,15 @@ subcomponent of the system. At the end of its execution, `stress-ng`
 reports the rate of iterations executed for the specified period of 
 time (referred to as `bogo-ops-per-second`).
 
-
-[^stress-ng]: http://kernel.ubuntu.com/~cking/stress-ng
-
-\begin{table}\caption{\label{tbl:machines} Table of machines from CloudLab. The last three entries correspond to computers from our lab.}
+\begin{table}\caption{\label{tbl:machines} Table of machines from 
+CloudLab. The last three entries correspond to computers from our 
+lab.}
 \footnotesize
 \input{figures/machines.tex}
 \end{table}
 
-![Boxplots illustrating the variability of the performance vector 
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
+Boxplots illustrating the variability of the performance vector 
 dataset. Each stressor was executed on each of the machines listed in 
 @Tab:machines 5 times.
 ](figures/stressng-variability.png){#fig:stressng-variability}
@@ -344,7 +345,8 @@ shows, some stressors are slightly correlated (those near 0) while
 others show high correlation between them (in @Sec:negative we apply 
 principal component analysis to this dataset).
 
-![heat-map of Pearson correlation coefficients for performance vectors 
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
+heat-map of Pearson correlation coefficients for performance vectors 
 obtained by executing `stress-ng` on all the distinct machine 
 configurations available in CloudLab.
 ](figures/corrmatrix.png){#fig:corrmatrix}
@@ -463,9 +465,9 @@ the artifact review track too.
 
 ## Effectiveness of FGRUPs to capture performance {#sec:effective-fgrups}
 
-In this subsection we how FGRUPs can effectively describe the fine 
-granularity resource utilization of an application with respect to a 
-set of machines. Our methodology is:
+In this subsection we show how FGRUPs can effectively describe the 
+fine granularity resource utilization of an application with respect 
+to a set of machines. Our methodology is:
 
   1. Discover relevant performance features using the _quiho_ 
      framework.
@@ -481,7 +483,9 @@ executing these applications on an heterogeneous set of machines,
 @Fig:variability shows boxplots of the four redis performance tests we 
 execute.
 
-![Variability. Y-axis is transactions per second.
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
+Variability in the redis benchmarks. Y-axis is transactions per 
+second.
 ](figures/variability.png){#fig:variability}
 
 In @Fig:redis we show four profiles side-by-side of four operations on 
@@ -500,7 +504,8 @@ these are routines that retrieve/replace the first element in the
 list, which is cpu-intensive and correlate with cpu-intensive 
 stressors (such as `hsort` and `qsort`).
 
-![FGRUPs for four redis tests (`PUT`, `GET`, `LPOP` and `LPUSH`). These 
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
+FGRUPs for four redis tests (`PUT`, `GET`, `LPOP` and `LPUSH`). These 
 benchmarks that test operations that put and get key-value pairs into 
 the DB, and push/pop elements from a list stored in a key, 
 respectively.
@@ -511,7 +516,8 @@ classification algorithm performance test. `scikit-learn` uses NumPy
 [@walt_numpy_2011] internally, which is known to be memory-bound. SSCA 
 on the other hand known to be CPU-bound.
 
-![sklearn, ssca.
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
+Profiles for the applications scikitlearn and ssca.
 ](figures/sklearn-ssca.png){#fig:sklearn-ssca}
 
 [^brevity]: For brevity, we omit other results that corroborate FGRUPs 
@@ -541,7 +547,8 @@ performance characteristics. The two engines we use in this case are
 `innodb` and `memory`. @Fig:mariadb-innodb-vs-memory shows the 
 profiles of MariaDB performance for these two engines.
 
-![MariaDB with innodb and in-memory backends.
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
+MariaDB with innodb and in-memory backends.
 ](figures/mariadb-innodb-vs-memory.png){#fig:mariadb-innodb-vs-memory}
 
 The next test is a modified version of the STREAM benchmark, which we 
@@ -556,7 +563,8 @@ being cpu-bound; the higher the value of the `cycles` parameter, the
 more cpu-bound the test gets. @Fig:stream-cycles shows this behavior 
 of all four tests across many machines.
 
-![General behavior of the STREAM-cycles performance test. All STREAM 
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
+General behavior of the STREAM-cycles performance test. All STREAM 
 tests are memory bound, so adding more cycles move the performance 
 test from memory- to being cpu-bound; the higher the value of the 
 `cycles` parameter, the more cpu-bound the test gets.
@@ -572,9 +580,10 @@ value (20). In general FGRUPs do a good job of catching the simulated
 regression (which causes this application to be cpu-bound instead of 
 memory-bound).
 
-![The FGRUPs for the four tests. We see that they capture the 
-simulated regression (which causes this application to be cpu-bound 
-instead of memory-bound).
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
+The FGRUPs for the four tests. We see that they capture the simulated 
+regression (which causes this application to be cpu-bound instead of 
+memory-bound).
 ](figures/stream-fgrups.png){#fig:stream-fgrups}
 
 ## Real world Scenario {#sec:fgrups-for-real}
@@ -590,7 +599,9 @@ and run the `load` test. @Fig:mariadb-innodb-regression shows the
 corresponding FGRUPs. We can observe that the FGRUP generated by 
 _quiho_ can identify the difference in performance.
 
-![mariadb-10.0.3 vs. 5.5.
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-mysql-two-versions.ipynb)\] 
+A regression that appears from going in the reversed timeline (from 
+mariadb-10.0.3 to 5.5.38).
 ](figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
 
 For brevity, we omit regressions found in other 4 applications (zlog, 
@@ -615,7 +626,8 @@ an application performance as the dependant variable. We then test
 obtain the accuracy of the model on the data corresponding to the 
 machine that we left out. Before
 
-![Mean Absolute Percentage Error of cross-validation.
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-predict.ipynb)\] 
+Mean Absolute Percentage Error of cross-validation.
 ](figures/prediction.png){#fig:prediction}
 
 We create two prediction models. The first one is using random forest 
