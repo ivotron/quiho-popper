@@ -636,7 +636,7 @@ In the not-so-distant future:
 
 **Acknowledgments**: This work was partially funded by the Center for 
 Research in Open Source Software[^cross], Sandia National Laboratories 
-and NSF Awards #1450488.
+and NSF Award #1450488.
 
 [^cross]: http://cross.ucsc.edu
 
