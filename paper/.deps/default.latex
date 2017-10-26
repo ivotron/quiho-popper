@@ -343,6 +343,42 @@ $if(thesis)$
 $endif$
 % }
 
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10011007.10010940.10011003.10011002</concept_id>
+<concept_desc>Software and its engineering~Software performance</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10011074.10011099.10011102.10011103</concept_id>
+<concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10011074.10011099.10011105.10011109</concept_id>
+<concept_desc>Software and its engineering~Acceptance testing</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10011007.10011074.10011099.10011693</concept_id>
+<concept_desc>Software and its engineering~Empirical software validation</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10003456.10003457.10003567.10003569</concept_id>
+<concept_desc>Social and professional topics~Automation</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~Software performance}
+\ccsdesc[500]{Software and its engineering~Software testing and debugging}
+\ccsdesc[500]{Software and its engineering~Acceptance testing}
+\ccsdesc[300]{Software and its engineering~Empirical software validation}
+\ccsdesc[300]{Social and professional topics~Automation}
+
 $if(acmart)$
 % for acmart, the abstract should appear before maketitle
 $if(abstract)$
@@ -388,9 +424,7 @@ $endif$
 $endif$
 
 $if(keywords)$
-$if(sigplanconf)$
-\keywords $for(keywords)$ $keywords$$sep$,$endfor$
-$endif$
+\keywords{$for(keywords)$ $keywords$ $sep$, $endfor$}
 $endif$
 
 $for(include-before)$
