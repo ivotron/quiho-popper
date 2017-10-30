@@ -15,6 +15,7 @@ requests = {}
 def create_request(site, hw_type):
     node = rspec.RawPC(hw_type)
     node.disk_image = img
+    node.hardware_type = hw_type
 
     if site not in requests:
         requests[site] = rspec.Request()
@@ -22,18 +23,27 @@ def create_request(site, hw_type):
     requests[site].addResource(node)
 
 
-print("Creating cloudlab requests")
-
-# create_request('apt', 'c6220')
-create_request('apt', 'r720')
+create_request('apt', 'r320')
 create_request('cl-clemson', 'c6320')
+create_request('cl-clemson', 'c8220')
 create_request('cl-utah', 'm510')
+create_request('cl-wisconsin', 'c220g1')
 create_request('cl-wisconsin', 'c220g2')
 create_request('ig-utahddc', 'dl360')
 create_request('pg-kentucky', 'pc2400')
-create_request('pg-kentucky', 'pc3300')
-create_request('pg-utah', 'd2100')
+create_request('pg-kentucky', 'pc3400')
+create_request('pg-utah', 'd710')
+create_request('pg-utah', 'd430')
 create_request('pg-utah', 'pc3000')
+
+# create_request('apt', 'r720')
+# create_request('apt', 'c6220')
+# create_request('cl-utah', 'r720')
+# create_request('pg-kentucky', 'pc3300')
+# create_request('pg-kentucky', 'pc3500')
+# create_request('pg-utah', 'd530')
+# create_request('pg-utah', 'd820')
+# create_request('pg-utah', 'd2100')
 
 print("Executing cloudlab request")
 manifests = cl.request(experiment_name=('quiho-'+os.environ['CLOUDLAB_USER']),

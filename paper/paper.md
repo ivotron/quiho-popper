@@ -18,21 +18,22 @@ author:
   affiliation: UC Santa Cruz
   email: carlosm@ucsc.edu
 abstract: |
-  We introduce _quiho_, a framework used in automated performance 
-  regression tests. _quiho_ discovers hardware and system software 
-  resource utilization patterns that influence the performance of an 
-  application. It achieves this by applying sensitivity analysis, in 
-  particular statistical regression analysis (SRA), using 
-  application-independent performance feature vectors to characterize 
-  the performance of machines. The result of the SRA, in particular 
-  feature importance, is used as a proxy to identify hardware and 
-  low-level system software behavior. The relative importance of these 
-  features serve as a performance profile of an application, which is 
-  used to automatically validate its performance behavior across 
-  revisions. We demonstrate that _quiho_ can successfully identify 
-  performance regressions by showing its effectiveness in profiling 
-  application performance for synthetically induced regressions as 
-  well as several found in real-world applications.
+  We introduce _quiho_, a framework for profiling application 
+  performance that can be used in automated performance regression 
+  tests. _quiho_ profiles an application by applying sensitivity 
+  analysis, in particular statistical regression analysis (SRA), using 
+  application-independent performance feature vectors that 
+  characterize the performance of machines. The result of the SRA, in 
+  particular feature importance, is used as a proxy to identify 
+  hardware and low-level system software behavior. The relative 
+  importance of these features serve as a performance profile of an 
+  application (termed fine granularity resource utilization profile or 
+  FGRUP), which is used to automatically validate performance behavior 
+  across multiple revisions of an application's code base. We 
+  demonstrate that _quiho_ can successfully discover performance 
+  regressions by showing its effectiveness in profiling application 
+  performance for synthetically induced regressions as well as those 
+  found in real-world applications.
 keywords:
 - software testing
 - performance engineering
@@ -48,52 +49,68 @@ of performance regression tests, where the performance of the
 application is measured and contrasted against past versions 
 [@dean_tail_2013 ; @gregg_systems_2013 ; @vokolos_performance_1998]. 
 Examples of metrics used in regression testing are throughput, 
-latency, or resource utilization over time. These metrics are compared 
-and when significant differences are found, this constitutes a 
-regression.
+latency, or resource utilization over time. These metrics are captured 
+and compared for multiple versions of an application (usually current 
+and past versions) and, if significant differences are found, this 
+constitutes a regression.
 
-One of the main challenges in performance regression testing is 
-defining the criteria to decide whether a change in an application's 
-performance behavior is significant, that is, whether a regression has 
-occurred [@cherkasova_anomaly_2008]. Simply comparing values (e.g.,
-runtime) is not enough, even if this is done in statistical terms 
-(e.g., mean runtime within a pre-defined variability range). 
-Traditionally, this investigation is done by an analyst in charge of 
-looking at changes, possibly investigating deeply into the issue and 
-finally determining whether a regression exists.
+![_quiho_'s workflow for obtaining a fine granularity resource 
+utilization profile (FGRUP). A FGRUP can be used as an alternative for 
+profiling application performance and can be used in automated 
+regression testing. FGRUPs can also aid in root cause analysis.
+](figures/fgrup-generation.png){#fig:fgrup-generation}
 
-When investigating a candidate of a regression, one important task is 
-to find bottlenecks [@ibidunmoye_performance_2015]. Understanding the 
-effects in performance that distinct hardware and low-level system 
-software[^system] components have on applications is an essential part 
-of performance engineering [@jin_understanding_2012 ; 
-@han_performance_2012 ; @jovic_catch_2011]. One common approach is to 
-monitor an application's performance in order to understand which 
-parts of the system an application is hammering on
-[@gregg_systems_2013]. Automated solutions have been proposed in 
-recent years [@jiang_automated_2010 ; @shang_automated_2015 ; 
+One of the main challenges in automating performance regression tests 
+is defining the criteria to decide whether a change in an 
+application's performance behavior is significant 
+[@cherkasova_anomaly_2008]. Understanding the effects in performance 
+that distinct hardware and low-level system software[^system] 
+components have on applications demands highly-skilled performance 
+engineering [@jin_understanding_2012 ; @han_performance_2012 ; 
+@jovic_catch_2011]. Traditionally, this investigation is done by an 
+analyst in charge of looking at changes to the performance metrics 
+captured at runtime, possibly investigating deeply into by looking at 
+performance counters, performance profiles, static code analysis, and 
+static/dynamic tracing. One common approach is to find bottlenecks by 
+generating a profile (e.g., using the `perf` Linux kernel tool) in 
+order to understand which parts of the system an application is 
+hammering on [@gregg_systems_2013].
+
+Automated solutions have been proposed in recent years 
+[@jiang_automated_2010 ; @shang_automated_2015 ; 
 @heger_automated_2013]. The general approach of these is to analyze 
-logs and/or metrics obtained as part of the execution of an 
-application in order to automatically determine whether a regression 
-has occurred. This relies on having accurate prediction models that 
-are checked against runtime metrics of executed tests. As with any 
-prediction model, there is the risk of false/positive negatives. 
-Rather than striving for high accuracy predictions, an alternative is 
-to use performance modeling as a profiling tool.
+runtime logs and/or metrics 
+application in order to build a performance prediction model that can 
+be used to automatically determine whether a regression has occurred. 
+This relies on having accurate predictions and, as with any prediction 
+model, there is the risk of finding false/positive negatives. Rather 
+than striving for highly accurate predictions, one can use performance 
+modeling as a profiling tool.
 
 In this work, we present _quiho_ an approach aimed at complementing 
-automated performance regression testing by using system resource 
-utilization profiles associated to an application. A resource 
-utilization profile is obtained using Statistical Regression 
-Analysis[^sra] (SRA) where application-independent performance feature 
-vectors are used to characterize the performance of machines. The 
-performance of an application is then analyzed applying SRA to build a 
-model for predicting its performance, using the performance vectors as 
-the independent variables and the application performance metric as 
-the dependant variable. The results of the SRA for an application, in 
-particular feature importance, is used as a proxy to characterize 
-hardware and low-level system utilization behavior. The relative 
-importance of these features serve as a performance profile of an 
+automated performance regression testing by using fine granularity 
+resource utilization profiles (FGRUP) associated to an application 
+(@Fig:fgrup-generation). FGRUPs are an alternative way of profiling 
+the performance of an application that relies on applying Statistical 
+Regression Analysis[^sra] (SRA) on a dataset of 
+application-independent performance vectors. The main assumption 
+behind _quiho_ is the availability of multiple machines when 
+exercising performance regression testing, a reasonable requirement 
+that is well-aligned with current software engineering practices 
+(performance regression is carried out on multiple architectures and 
+OS).
+
+When an application is profiled using _quiho_, the underlying system is 
+baselined by executing a battery of microbenchmarks. This matrix (or 
+dataset) of performance vectors characterizes the available machines 
+independently from any application and can be used (and re-used) as 
+the foundation for applying statistical learning techniques such as 
+SRA. In order to obtain a FGRUP, the application under study is 
+executed on the same machines from where the performance vectors where 
+obtained, and SRA is applied. The results of the SRA for an 
+application, in particular feature importance, is used as a proxy to 
+characterize hardware and low-level system utilization behavior. The 
+relative importance of these features serve as a the FGRUP of an 
 application, which is used to automatically validate its performance 
 behavior across multiple revisions of its code base.
 
@@ -119,21 +136,23 @@ applications. The contributions of our work are:
     repositories. These benchmarks take as input parameters that 
     determine their performance behavior, thus simulating different 
     "versions" of an application.
+
   * A negative result: ineffectiveness of resource utilization 
     profiles for predicting performance using ensemble learning.
 
 Next section (@Sec:intuition) shows the intuition behind _quiho_ and 
-how can be used to automate regression tests (@Sec:intuition). We then 
-do a more in-depth description of _quiho_ (@Sec:quiho), followed by 
-our evaluation of this approach (@Sec:eval). We briefly show how 
-_quiho_'s resource utilization profiles can not be used to predict 
-performance using some common machine learning techniques 
-(@Sec:negative). @Sec:sra reviews related work and we subsequently 
-close with a brief discussion on challenges and opportunities enabled 
-by _quiho_ (@Sec:conclusion).
+how can be used to automate regression tests. We then do a more 
+in-depth description of _quiho_ (@Sec:quiho), followed by our 
+evaluation of this approach (@Sec:eval). We briefly show how _quiho_'s 
+resource utilization profiles can not be used to predict performance 
+using some common machine learning techniques (@Sec:negative). We then 
+discuss different aspects of our work (@Sec:discussion), review 
+(@Sec:sra) related work and we lastly close with a brief discussion on 
+challenges and opportunities enabled by _quiho_ (@Sec:conclusion).
 
-[^system]: Throughout this paper, we use "system" to refer to 
-hardware, firmware and the operating system (OS).
+[^system]: Throughout this paper, we use "system" to refer to the 
+low-level compute stack composed by hardware, firmware and the 
+operating system (OS).
 [^name]: The word _quiho_ means "to discover" or "to find" in Seri, 
 the dialect of a native tribe of the same name from Northwestern 
 Mexico.
@@ -143,32 +162,33 @@ regression analysis in statistics.
 
 # Motivation and Intuition Behind _quiho_ {#sec:intuition}
 
-@Fig:pipeline shows the workflow of an automated regression testing 
-pipeline and shows how _quiho_ fits in this picture.
-
 ![Automated regression testing pipeline integrating fine granularity 
 resource utilization profiles (FGRUP). FGRUPs are obtained by _quiho_ 
 and can be used both, for identifying regressions, and to aid in the 
 quest for finding the root cause of a regression.
 ](figures/pipeline.png){#fig:pipeline}
 
-A regression is usually the result of observing a significant change 
-in a performance metric of interest (e.g., runtime). At this point, an 
-analyst will investigate further in order to find the root cause of the 
-problem. One of these activities involves profiling an application to see 
-the resource utilization pattern. Traditionally, 
-coarse-grained profiling (i.e. CPU-, memory- or IO-bound) 
-can be obtained by monitoring an application's resource utilization 
-over time. Fine granularity behavior helps application developers and 
-performance engineers quickly understand what they need to focus on 
-while refactoring an application.
+@Fig:pipeline shows the workflow of an automated regression testing 
+pipeline and shows how _quiho_ fits in this picture. A regression is 
+usually the result of observing a significant change in a performance 
+metric of interest (e.g., runtime). At this point, an analyst will 
+investigate further in order to find the root cause of the problem. 
+One of these activities involves profiling an application to see the 
+resource utilization pattern. Traditionally, coarse-grained profiling 
+(i.e. CPU-, memory- or IO-bound) can be obtained by monitoring an 
+application's resource utilization over time. Fine granularity 
+behavior helps application developers and performance engineers 
+quickly understand what they need to focus on while refactoring an 
+application.
 
-Obtaining fine granularity performance utilization behavior, for 
-example, system subcomponents such as the OS memory mapping submodule 
-or the CPU's cryptographic unit is usually time-consuming or requires 
-implicates the use of more computing resources. This usually involves 
+Fine granularity performance utilization behavior can better inform 
+the regression testing pipeline. Examples of which resources are 
+included in this type of profiling are the OS memory mapping 
+subsystem, the CPU's cryptographic unit, or the CPU cache. This type 
+of profiling is time-consuming and requires use of more computing 
+resources. This is usually done offline by analysts and involves 
 eyeballing source code, static code analysis, or analyzing hardware/OS 
-performance counters.
+performance counters/profiles.
 
 An alternative is to infer fine granularity resource utilization 
 behavior by comparing the performance of an application on platforms 
@@ -176,6 +196,18 @@ with different system performance characteristics. For example, if we
 know that machine A has higher memory bandwidth than machine B, and an 
 application is memory-bound, then this application will perform better 
 on machine A. There are several challenges with this approach:
+
+![A matrix of performance feature vectors over a colection of CloudLab 
+servers (left), and an array of a performance metric for an 
+application on those same machines (right). Every column in the matrix 
+comes from executing a microbenchmark on that machine. This dataset of 
+microbenchmarks allows us to create a performance prediction model for 
+application. Variability patterns of an application (zlog in the 
+example), resemble the same variability pattern of one or more 
+performance microbenchmark(s). Thus, the system subcomponent exercised 
+by the microbenchmark is likely to be also the cause of why the 
+application exhibits such performance behavior.
+](figures/featureimportance-implies-bottleneck.png){#fig:featureimportance-implies-bottleneck}
 
  1. Consistent Software. We need to ensure that the software stack is 
     the same on all machines where the application runs.
@@ -195,7 +227,15 @@ on machine A. There are several challenges with this approach:
     machine doesn’t have just faster memory sticks, but also better 
     CPU, chipset, etc.).
 
-The advent of cloud computing allows us to solve 1 using solutions 
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
+An example profile showing the relative importance of features for an 
+execution of the `hpccg` miniapp [@heroux_hpccg_2007]. The y-axis 
+denotes the relative performance with respect to the most importante 
+feature, which corresponds to the first one on the x-axis (from top to 
+bottom).
+](figures/hpccg.png){#fig:fgrup}
+
+The advent of cloud computing allows us to solve (1) using solutions 
 like KVM [@kivity_kvm_2007] or software containers 
 [@merkel_docker_2014]. ChameleonCloud [@mambretti_next_2015], CloudLab 
 [@hibler_largescale_2008 ; @ricci_introducing_2014] and Grid5000 
@@ -203,29 +243,30 @@ like KVM [@kivity_kvm_2007] or software containers
 infrastructure available to researchers that can be used to automate 
 regression testing pipelines for the purposes of investigating new 
 approaches. These solutions to infrastructure automation coupled with 
-DevOps practices [@wiggins_twelvefactor_2011 ; httermann_devops_2012] 
-allows us to address 2, i.e. to reduce the amount of work required to 
+DevOps practices [@wiggins_twelvefactor_2011 ; @httermann_devops_2012] 
+allows us to address (2), i.e. to reduce the amount of work required to 
 run tests.
 
 Thus, the main challenge to inferring fine granularity resource 
-utilization patterns (3 and 4) lies in quantifying the performance of 
+utilization patterns (3,4) lies in quantifying the performance of 
 the platform in a consistent way. One alternative is to look at the 
 hardware specification and infer performance characteristics from 
 this, an almost impossible task. For example, the 
 spec might specify that the machine has DDR4 memory sticks, with a 
 theoretical peak throughput of 10 GB/s, but the actual memory 
 bandwidth could be less (usually is, by a non-deterministic fraction 
-of the advertised performance). _quiho_ solves this problem by 
-characterizing machine performance using microbenchmarks. These 
-performance vectors are the "fingerprint" that characterizes the 
-behavior of a machine [@jimenez_characterizing_2016a].
+of the advertised performance).
 
-These performance vectors, obtained over a sufficiently large set of 
-machines[^how-big], can serve as the foundation for building a 
-prediction model of the performance of an application when executed on 
-new ("unseen") machines [@boyse_straightforward_1975], a natural next 
-step to take with a dataset like this. As we show in @Sec:negative, 
-this is not as good as we would expect.
+_quiho_ solves this problem by characterizing machine performance 
+using microbenchmarks. These performance vectors are the "fingerprint" 
+that characterizes the behavior of a machine 
+[@jimenez_characterizing_2016a]. These performance vectors, obtained 
+over a sufficiently large set of machines[^how-big], can serve as the 
+foundation for building a prediction model of the performance of an 
+application when executed on new ("unseen") machines 
+[@boyse_straightforward_1975], a natural next step to take with a 
+dataset like this. As we show in @Sec:negative, this is not as good as 
+we would expect.
 
 However, building a prediction model has a utility. If we use these 
 performance vectors to apply SRA and we focus on feature importance 
@@ -237,42 +278,35 @@ by the performance of the subcomponents that get stressed the most by
 the application's code. Thus, intuitively, if the performance of an 
 application across multiple machines resembles the performance of a 
 microbenchmark, then we can say that the application is heavily 
-influenced by that subcomponent.
+influenced by that subcomponent. In other words, if the variability 
+pattern of a feature across multiple machines resembles the 
+variability pattern of application performance across those same 
+machines, it is likely due to the application stressing the same 
+subcomponent that the corresponding microbenchmark stresses. While 
+this can be inferred by obtaining correlation coefficients, proper SRA 
+is needed in order to create prediction models, as well as to obtain a 
+relative rank of feature importances.
 
 [^how-big]: As mentioned in @Sec:conclusion, an open problem is to 
 identify the minimal set of machines needed to obtaining meaningful 
 results from SRA.
 
-![Intuition behind why feature importance implies resource 
-utilization behavior. The variability patterns for a feature (across 
-multiple machines), resembles the same variability pattern of 
-application performance across the same machines. While this can be 
-inferred by obtaining correlation coefficients, proper SRA is needed 
-in order to create prediction models, as well as to obtain a relative 
-rank of feature importances.
-](figures/featureimportance-implies-bottleneck.png){#fig:featureimportance-implies-bottleneck}
-
 If we rank features by their relative importance, we obtain what we 
 call a fine granularity resource utilization profile (FGRUP), as shown 
-in @Fig:fgrup.
-
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-An example profile showing the relative importance of features for a 
-particular application.
-](figures/hpccg.png){#fig:fgrup}
-
-In the next section we show how these FGRUPs can be used in automated 
-performance regression tests. @Sec:eval empirically validates this 
-approach.
+in @Fig:fgrup. In the next section we show how these FGRUPs can be 
+used in automated performance regression tests. @Sec:eval empirically 
+validates this approach.
 
 # Our Approach {#sec:quiho}
 
-In this section we do describe _quiho_'s approach and the resulting prototype.
-We first describe how we obtain the performance vectors that 
-characterize system performance. We then show that  
-we can feed these vectors into  SRA to build performance models for an application. 
-Lastly, we describe how we obtain feature importance and how this 
-represents a fine granularity resource utilization profile (FGRUP). 
+In this section we describe _quiho_'s approach and the resulting 
+prototype. We first describe how we obtain the performance vectors 
+that characterize system performance. We then show that we can feed 
+these vectors to SRA in order to build a performance model for an 
+application. Lastly, we describe how we obtain feature importance, how 
+this represents a fine granularity resource utilization profile 
+(FGRUP) and the algorithm (and alternative heuristics) to comparing 
+FGRUPs.
 
 ## Performance Feature Vectors As System Performance Characterization
 
@@ -291,7 +325,12 @@ performance. Since this is an impractical solution, an alternative is
 to create synthetic microbenchmarks that get as close as possible to 
 exercising all the available features of a system.
 
-\begin{table}\caption{\label{tbl:stressng-categories} List of stressors used in this paper and how they are categorized by `stress-ng`. Note that some stressors are part of multiple categories.}
+\begin{table}\caption{
+List of stressors used in this paper, along with the categories 
+assigned to them by \texttt{stress-ng}. Note that some stressors are 
+part of multiple categories.
+\label{tbl:stressng-categories}
+}
 \footnotesize
 \input{figures/stressng-categories.tex}
 \end{table}
@@ -302,25 +341,26 @@ exercise various physical subsystems of a computer as well as the
 various operating system kernel interfaces". There are multiple 
 stressors for CPU, CPU cache, memory, OS, network and filesystem. 
 Since we focus on system performance bandwidth, we execute the (as of 
-version 0.07.29) 42 stressors for CPU, memory and virtual virtual 
+version 0.07.29) 42 stressors for CPU, CPU cache, memory and virtual 
 memory stressors (@Tbl:stressng-categories shows the list of stressors 
-used in this paper). A _stressor_ is a function that loops a for a 
-fixed amount of time (i.e. a microbenchmark), exercising a particular 
+used in this paper). A _stressor_ (or microbenchmark) is a function that loops for a 
+fixed amount of time, exercising a particular 
 subcomponent of the system. At the end of its execution, `stress-ng` 
 reports the rate of iterations executed for the specified period of 
 time (referred to as `bogo-ops-per-second`).
 
-\begin{table}\caption{\label{tbl:machines} Table of machines from 
-CloudLab. The last three entries correspond to computers from our 
-lab.}
+\begin{table}\caption{
+Table of machines from CloudLab. The last three entries correspond to 
+computers in our lab. \label{tbl:machines}
+}
 \footnotesize
 \input{figures/machines.tex}
 \end{table}
 
 ![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
 Boxplots illustrating the variability of the performance vector 
-dataset. Each stressor was executed on each of the machines listed in 
-@Tab:machines 5 times.
+dataset. Each stressor was executed five times on each of the machines listed in 
+@Tbl:machines.
 ](figures/stressng-variability.png){#fig:stressng-variability}
 
 Using this battery of stressors, we can obtain a performance profile 
@@ -350,6 +390,27 @@ heat-map of Pearson correlation coefficients for performance vectors
 obtained by executing `stress-ng` on all the distinct machine 
 configurations available in CloudLab.
 ](figures/corrmatrix.png){#fig:corrmatrix}
+
+In order to analyze this last point further, that is, to try to 
+discern whether there are a few orthogonal features that we could 
+focus on, rather than looking at the totality of the 42 stressors, we 
+applied principal component decomposition (PCA) 
+[@wold_principal_1987a]. @Fig:pca shows the result. The figure shows 
+the relative (blue) and cumulative (green) explained variance ratio. 
+As we can see, having 6-8 components would be enough to explain most 
+of the variability in the dataset. This confirms what we observe in 
+@Fig:corrmatrix, in terms of having many stressors that can be 
+explained in function of others. However, doing so would cause the 
+loss of information with respect to what stressors are explaining the 
+prediction. Instead of trying to reduce the number, we decide to leave 
+all the stressors in order to not lose this information. Part of our 
+future work is to address whether we can reduce the number of features 
+with the goal of improving the models, without having to lose 
+information about which stressors are involved in the prediction.
+
+![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
+Principal Component Analysis for the performance vector dataset. The y-axis (log-scale) corresponds to the explained variance ratio, while the x-axis denotes the number of components. The blue line denotes the amount of variance reduced by having a particular number of components. The green line corresponds to the cumulative sum of the explained variance.
+](figures/pca-var-reduction.png){#fig:pca}
 
 ## System Resource Utilization Via Feature Importance in SRA
 
@@ -396,15 +457,13 @@ that node), averaged over all trees of the ensemble.
 
 We note that before generating a regression model, we normalize the 
 data using the `StandardScaler` method from `scikit-learn`, which 
-removes the mean from the dataset and scales the data to unit 
+removes the mean (centers it on zero) and scales the data to unit 
 variance. Given that the `bogo-ops-per-second` metric does not 
 quantify work consistently across stressors, we normalize the data in 
 order to prevent some features from dominating in the process of 
-creating the prediction models. In section @Sec:eval we evaluate the 
-effectiveness of FGRUPs.
-
-![The workflow applied in order to obtain FGRUPs.
-](figures/fgrup-generation.png){#fig:fgrup-generation}
+creating the prediction models (the data for @Fig:variability has been 
+normalized prior to being plotted). In section @Sec:eval we evaluate 
+the effectiveness of FGRUPs.
 
 ## Using FGRUPs in Automated Regression Tests {#sec:compare-fgrups}
 
@@ -432,7 +491,7 @@ make heavy use of the subcomponent in question.
 
 # Evaluation {#sec:eval}
 
-In this section we answer four main questions:
+In this section we answer the following questions:
 
  1. Can FGRUPs accurately capture application performance behavior? 
     (@Sec:effective-fgrups)
@@ -460,69 +519,158 @@ Cloudlab (see repo for more details).
 
 [^acm-badges]: **Note to reviewers**: based on the terminology 
 described in the ACM Badging Policy [@acm_result_2016] this complies 
-with the _Results Replicable_ category. We plan to submit this work to 
-the artifact review track too.
+with the _Results Replicable_ category. In the event that our paper 
+gets accepted, we plan to submit this work to the artifact review 
+track too.
 
-## Effectiveness of FGRUPs to capture performance {#sec:effective-fgrups}
+## Effectiveness of FGRUPs to Capture Resource Utilization Behavior {#sec:effective-fgrups}
 
 In this subsection we show how FGRUPs can effectively describe the 
 fine granularity resource utilization of an application with respect 
 to a set of machines. Our methodology is:
 
-  1. Discover relevant performance features using the _quiho_ 
-     framework.
-  2. Analyze source code to corroborate that discovered features are 
-     indeed the cause of performance differences.
+  1. Given an application $A$, discover relevant performance features 
+     using the _quiho_ framework.
+  2. Do manual performance analysis of $A$ to corroborate that 
+     discovered features are indeed the cause of performance 
+     differences.
 
-We execute multiple applications for which fine granularity resource 
-utilization characteristics we know in advance. These applications are 
-redis [@zawodny_redis_2009], scikit-learn 
-[@pedregosa_scikitlearn_2011], and ssca [@bader_design_2005] and 
-others. As a way to illustrate the variability originating from 
-executing these applications on an heterogeneous set of machines, 
-@Fig:variability shows boxplots of the four redis performance tests we 
-execute.
+@Fig:fgrup shows the profile of an execution of the `hpccg` miniapp 
+[@heroux_hpccg_2007]. This proxy (or miniapp) application 
+[@heroux_impheroux_improving_2009] is a "conjugate gradient benchmark 
+code for a 3D chimney domain on an arbitrary number of processors 
+[that] generates a 27-point finite difference matrix with a 
+user-prescribed sub-block size on each processor." 
+[@heroux_hpccg_2007].
+
+Based on the profile, `stackmmap` and `cache` are the most important 
+features. In order to corroborate if this matches with what the 
+application does, we profiled this execution with `perf`. The stacked 
+profile view shows that ~85% of the time the application is running 
+the function `HPC_sparsemv()`. The code for this function is shown in 
+@Lst:hpccg-src. As the name implies, this snippet implements a sparse 
+vector multiplication function of the form $y=Ax$ where $A$ is a 
+sparse matrix and the $x$ and $y$ vectors are dense. By looking at 
+this code, we see that the innermost loop iterates an array, 
+accumulating the sum of a multiplication. This type of code is a 
+potential candidate for manifesting bottlenecks associated with CPU 
+cache locality [@akbudak_hypergraph_2013].
+
+```{#lst:hpccg-src .c caption="Source code for bottleneck function in HPCCG."}
+int HPC_sparsemv(HPC_Sparse_Matrix *A,
+                 const double * const x,
+                 double * const y)
+{
+
+  const int nrow = (const int) A->local_nrow;
+
+  for (int i=0; i< nrow; i++) {
+    double sum = 0.0;
+    const double * const cur_vals = 
+     (const double * const) A->ptr_to_vals_in_row[i];
+
+    const int    * const cur_inds = 
+     (const int    * const) A->ptr_to_inds_in_row[i];
+
+    const int cur_nnz = (const int) A->nnz_in_row[i];
+
+    for (int j=0; j< cur_nnz; j++)
+        sum += cur_vals[j]*x[cur_inds[j]];
+    y[i] = sum;
+  }
+
+  return(0);
+}
+```
+
+\begin{table}\caption{
+Table of performance counters for the HPCCG performance test.
+\label{tbl:perf-counters}
+}
+\footnotesize
+\input{figures/perf-counters.tex}
+\end{table}
+
+We analyze the performance of this benchmark further by obtaining 
+performance counters for the application and comparing the counters 
+with those from the top three features (@Tbl:perf-counters shows the 
+summary of hardware-level performance counters). Given that hardware 
+performance counters are architecture-dependent, we can not make 
+generalizations about given that we run an application on a multitude 
+of machines. However, we can see that in the case of the `stackmmap` 
+stressor, there are some similarities between the counters, specially 
+the ones denoting stalled cycles (which significantly determine 
+application performance [@cepeda_pipeline_2011 ; 
+@mcnairy_itanium_2003]).
+
+Next, we analyze FGRUPs of other four applications[^brevity]. These 
+applications are Redis [@zawodny_redis_2009], Scikit-learn 
+[@pedregosa_scikitlearn_2011], and SSCA [@bader_design_2005]. Due to 
+space constraints we omit a similar detailed analysis as the one 
+presented above for `hpccg`. However, resource utilization 
+characteristics of these code bases is well known and we verify FGRUPs 
+using this high-level intuition. As a way to illustrate the 
+variability originating from executing these applications on an 
+heterogeneous set of machines, @Fig:variability shows boxplots of the 
+these.
 
 ![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-Variability in the redis benchmarks. Y-axis is transactions per 
-second.
+Variability of the five applications presented in this subsection. 
+Y-axis has been normalized.
 ](figures/variability.png){#fig:variability}
 
-In @Fig:redis we show four profiles side-by-side of four operations on 
-redis, a popular open-source in-memory key-value database. These four 
-tests are `PUT`, `GET`, `LPOP` and `LPUSH`. These benchmarks that test 
-operations that put and get key-value pairs into the DB, and push/pop 
-elements from a list stored in a key, respectively. The resource 
-utilization profiles suggest that `GET` and `PUT` are memory intensive 
+In @Fig:others we show FGRUPs for these four applications. The first 
+two on the top correspond to two tests of Redis, a popular open-source 
+in-memory key-value database. These two tests are `SET`, `GET` from 
+the `redis-benchmark` command that test operations that store and 
+retrieve key-value pairs into/from the DB, respectively. The resource 
+utilization profiles suggest that `SET` and `GET` are memory intensive 
 operations (first 3 stressors from each test, as shown in 
-@Tbl:stressng-categories). On the other hand, the profiles for `LPOP` 
-and `LPUSH` look different and they seem to have CPU intensive as the 
-most important feature for this. If we look at the source code of 
-redis, we can see why this is so. In the case of `GET` and `PUT`, 
-these are memory intensive tasks. In the case of `LPOP` and `LPUSH`, 
-these are routines that retrieve/replace the first element in the 
-list, which is cpu-intensive and correlate with cpu-intensive 
-stressors (such as `hsort` and `qsort`).
+@Tbl:stressng-categories), which is an obvious conclusion. 
 
 ![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-FGRUPs for four redis tests (`PUT`, `GET`, `LPOP` and `LPUSH`). These 
-benchmarks that test operations that put and get key-value pairs into 
-the DB, and push/pop elements from a list stored in a key, 
-respectively.
-](figures/redis.png){#fig:redis}
+FGRUPs of the four tests used in this section.
+](figures/redis.png){#fig:others}
 
-@Fig:sklearn-ssca shows the profile for one of the sklearn 
-classification algorithm performance test. `scikit-learn` uses NumPy 
-[@walt_numpy_2011] internally, which is known to be memory-bound. SSCA 
-on the other hand known to be CPU-bound.
+The next two FGRUPs (below) correspond to performance tests for 
+Scikit-learn and SSCA. In the case of Scikit-learn, this test runs a 
+comparison of a several classifiers in on a synthetic dataset. 
+Scikit-learn uses NumPy [@walt_numpy_2011] internally, which is known 
+to be memory-bound. The profile is aligned to this known behavior 
+since the `zero` microbenchmark stresses access.
+
+The last application is SSCA, a graph analysis benchmark comprising of 
+a data generator and 4 kernels which operate on the graph. The 
+benchmark is designed to have very little locality, which causes the 
+application to generate a many cache misses. As shown in the profile, 
+the first feature corresponds to the `cache` stressor, which as it was 
+explained earlier, stresses the CPU cache by generating a non-locality 
+workload.
+
+The reader might have noticed that, regardless of how the performance 
+of an application looks like, SRA will always produce a model with 
+associated feature importances. Thus, one can pose the following 
+question: is there any scenario where a FGRUP is _not_ correctly 
+associated with what the application is doing? In other words, are 
+FGRUPs falsifiable? The answer is yes. A FGRUP can be incorrectly 
+representing an application's performance behavior if there is under- 
+or over-fitting when generating the model. @Fig:underfit shows the 
+correlation matrix (left), as well as a FGRUP obtained from selecting 
+two random machines from the set of available ones. The application in 
+question is Scikit-learn and, as the figures show, this FGRUP is of 
+little use since many features have 100% relevance. The correlation 
+matrix shows why this is so: almost all the features are highly 
+correlated. As mentioned before, an open problem is that one of 
+systematically reducing the number of required machines.
 
 ![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-Profiles for the applications scikitlearn and ssca.
-](figures/sklearn-ssca.png){#fig:sklearn-ssca}
+Correlation matrix and FGRUP obtained from only two randomly selected 
+machines from @Tbl:machines (`issdm-41` and `r320` in this case).
+](figures/underfit.png){#fig:underfit}
 
 [^brevity]: For brevity, we omit other results that corroborate FGRUPs 
-can correctly identify patterns. All these are available in the github 
-repository associated to this article.
+can correctly identify resource utilization patterns. All these are 
+available in the github repository associated to this article.
 
 ## Simulating Regressions {#sec:fgrups-for-simulated}
 
@@ -532,14 +680,15 @@ regression by having a set of performance tests that take, as input,
 parameters that determine their performance behavior, thus simulating 
 different "versions" of the same application. In total, we have 10 
 benchmarks for which we can induce several performance regressions, 
-for a total of 30 performance regressions. For brevity, in this 
+for a total of 20 performance regressions. For brevity, in this 
 section we present results for two applications, MariaDB 
-[@widenius_mariadb_2009] and the STREAM-cycles.
+[@widenius_mariadb_2009] and a modified version of the STREAM 
+benchmark.
 
 The MariaDB test is based on the `mysqlslap` utility for stressing the 
-database. In our case we run the load test, which populates a database 
-whose schema is specified by the user. In our case, we have a fixed 
-set of parameters that load a 10GB database. One of the exposed 
+database engine. In our case we run the data loading test, which populates a 
+database whose schema is specified by the user. We have a 
+fixed set of parameters that load a 10GB database. One of the exposed 
 parameters is the one that selects the backend (storage engine in 
 MySQL terminology). While the workload and test parameters are the 
 same, the code paths are distinct and thus present different 
@@ -551,40 +700,43 @@ profiles of MariaDB performance for these two engines.
 MariaDB with innodb and in-memory backends.
 ](figures/mariadb-innodb-vs-memory.png){#fig:mariadb-innodb-vs-memory}
 
-The next test is a modified version of the STREAM benchmark, which we 
-refer to as STREAM-cycles. This version of STREAM introduces a 
-`cycles` parameter that controls the number of times a STREAM 
-operation is executed before reporting the time it took. In terms of 
-the code, this adds an outer loop to each of the four different STREAM 
-operations (`add`, `triad`, `copy`, `scale`), and loops as many times 
-as the `cycles` parameter specifies. All STREAM tests are memory 
-bound, so adding more cycles move the performance test from memory- to 
-being cpu-bound; the higher the value of the `cycles` parameter, the 
-more cpu-bound the test gets. @Fig:stream-cycles shows this behavior 
-of all four tests across many machines.
+The next test is a modified version of the STREAM benchmark 
+[@mccalpin_memory_1995], which we refer to as STREAM-NADDS (introduced 
+in [@hutcheson_memory_2011]). This version of STREAM introduces a 
+`NADDS` pre-processor parameter that controls the number additions for 
+the `Add` test of the STREAM benchmark. In terms of the code, when 
+`NADDS` equals to 1 is equivalent to the "vanilla" STREAM benchmark. 
+For any value greater than 1, the code adds a new term to the sum 
+being executed. Intuitively, since the vanilla version of STREAM is 
+memory bound, so adding more terms to the sum causes the CPU to do 
+more work, eventually moving the bottleneck from memory to being 
+cpu-bound; the higher the value of the `NADDS` parameter, the more 
+cpu-bound the test gets. @Fig:stream-adds shows this behavior.
 
 ![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-General behavior of the STREAM-cycles performance test. All STREAM 
-tests are memory bound, so adding more cycles move the performance 
-test from memory- to being cpu-bound; the higher the value of the 
-`cycles` parameter, the more cpu-bound the test gets.
-](figures/stream-cycles.png){#fig:stream-cycles}
+General behavior of the STREAM-NADDS performance test. The y-axis is the throughput of the test in MB/s. The x-axis corresponds to the number of terms in the sum expression of the `Add` STREAM subtest. The regular ("vanilla") 
+STREAM add test is memory bound, so adding more terms to the `Add` 
+subtest moves the performance from memory- to cpu-bound; 
+the higher the value of the `NADDS` parameter, the more CPU-bound the 
+test gets. This test was executed across all available machines (5 times). The bars denote standard deviation.
+](figures/stream-nadds.png){#fig:stream-adds}
 
 @Fig:stream-fgrups shows the FGRUPs for the four tests. On the left, 
-we see the "normal" resource utilization behavior of the "vanilla" 
-version of STREAM (which corresponds to a value of 1 for the `cycles` 
-parameter). As expected, the associated features (stressors) to these 
-are from the memory/VM category. To the right, we see FGRUPs capturing 
-the change in utilization behavior when `cycles` goes to its maximum 
-value (20). In general FGRUPs do a good job of catching the simulated 
-regression (which causes this application to be cpu-bound instead of 
-memory-bound).
+we see the resource utilization behavior of the "vanilla" version of 
+STREAM (which corresponds to a value of 1 for the `NADDS` parameter). 
+As expected, the associated features (stressors) to these are from the 
+memory/VM category, in particular `vecmath`. As the number of terms 
+for the sum increases, the test moves all the way to being CPU-bound 
+(at `NADDS=30`), which can be seen by observing the `bsearch` and 
+`hsearch` features going up in importance as the number of additions 
+increases.
 
 ![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-The FGRUPs for the four tests. We see that they capture the simulated 
-regression (which causes this application to be cpu-bound instead of 
-memory-bound).
-](figures/stream-fgrups.png){#fig:stream-fgrups}
+The FGRUPs for modified version of STREAM. The parameter of `NADDS` 
+increases by taking values of 1, 2, 4, ..., 20 and 30. We see that 
+they capture the simulated regression which causes this application to 
+be moving from being memory-bound to being cpu-bound.
+](figures/stream-nadds-increase.png){#fig:stream-fgrups}
 
 ## Real world Scenario {#sec:fgrups-for-real}
 
@@ -605,7 +757,7 @@ mariadb-10.0.3 to 5.5.38).
 ](figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
 
 For brevity, we omit regressions found in other 4 applications (zlog, 
-postgres, redis, apache web server and GCC).
+postgres, redis, and apache web server).
 
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
@@ -643,6 +795,66 @@ line). As we can see, the prediction errors range from 3% up to almost
 [@crume_automatic_2014], where good performance prediction models are 
 those with less than 2-3% MAPE.
 
+# Discussion {#sec:discussion}
+
+We briefly discuss some aspects related to _quiho_.
+
+**Application-Independent Performance Characterization**. We used a 
+subset of `stress-ng` microbenchmarks to quantify machine performance 
+but the approach is not limited to this benchmarking toolkit. Ideally, 
+we would like to extend the amount and type of stressors so that we 
+have more coverage over the distinct subcomponents of a system. An 
+open question is to systematically test whether the current set of 
+stressors is sufficient to cover all subcomponents of a system, and at 
+the same time reduce the number of microbenchmarks.
+
+**Quiho vs. other tools**. The main advantage of _quiho_ over other 
+performance profiling tools is that it is automatic and 100% 
+hands-off. As mentioned before, the main assumption being that there 
+exist performance vectors (or they are obtained when the as part of 
+the test) for a sufficiently varied set of machines. We see _quiho_ as 
+a complement, not a replacement of `perf`, to existing performance 
+engineering practices: once a test has failed _quiho_'s checks, then 
+proceed to make use of existing tools.
+
+**FGRUP Comparison**. The algorithm specified in @Sec:compare-fgrups 
+is a straight-forward one. One could think of more sophisticated ways 
+of doing FGRUP comparison and finding equivalences. For example, using 
+the categories from @Tbl:stressng-categories, one could try to group 
+stressors and determine coarse-grained bottlenecks, instead of fine 
+grained ones. Another alternative is to do reduce the number of 
+features by applying PCA, exploratory factor analysis (EFA), or 
+singular value decomposition (SVD), and compare profiles in terms of 
+the mapped factors.
+
+**FGRUP as a visualization tool**. The reader might have noticed that 
+FGRUPs can be visually compared by the human eye (and are somewhat 
+similar in this regard to FlameGraphs [@gregg_flame_2016]). Adding a 
+coloring scheme to FGRUPs might make it easier to interpret the 
+differences. For example, the categories in @Tbl:stressng-categories 
+could be used to define a color palette (by assigning a color to each 
+subset of the powerset of categories).
+
+**Reproducibility**. Providing performance vectors alongside 
+experimental results allows to preserve information about the 
+performance characteristics of the underlying system that an 
+experiment observed at the time it ran. This is a quantifiable 
+snapshot that provides context and facilitates the interpretation of 
+results. Ideally, this information could be used as input for 
+emulators and virtual machines, in order to recreate original 
+performance characteristics.
+
+**Enforcement Learning**. Over the course of its life, an application 
+will be tested on many platforms. If we can have an ever-growing list 
+of machines where an application is tested, the more we run an 
+application in a scenario like this, the more rich the performance 
+vector dataset (and associated application performance history). This 
+can serve as the foundation to applycbecomes we learn about its 
+properties. For example, if we had performance vectors captured as 
+part of executions of the Phoronix benchmark suite (which has public 
+data on openbenchmarking.org), we could leverage such a dataset to 
+create rich performance models.
+
 # Related Work {#sec:sra}
 
 ## Automated Regression Testing
@@ -667,7 +879,7 @@ steps:
      not find the root cause of regressions, it complements the 
      information that an analyst has available to investigate further.
 
-## Decision Trees
+## Decision Trees In Performance Engineering
 
 In [@jung_detecting_2006] the authors use decision trees to detect 
 anomalies and predict performance SLO violations. They validate their 
@@ -683,55 +895,48 @@ in [@shang_automated_2015], the leaves of the generated decision trees
 contain actual performance predictions instead of the name of 
 performance counters
 
-## Correlation-based and Supervised Learning
+## Correlation-based Analysis and Supervised Learning
 
 Correlation-based and supervised learning approaches have been 
 proposed in the context of software testing, mainly for detecting 
-anomalies [@ibidunmoye_performance_2015]. In the former, runtime 
+anomalies in application performance [@ibidunmoye_performance_2015]. In the former, runtime 
 performance metrics are correlated to application performance using a 
-variety of distinct techniques. In supervised learning, the goal is 
-the same (build prediction models) but using a labeled dataset.
+variety of distinct metrics. In supervised learning, the goal is 
+the same (build prediction models) but using labeled datasets.
 
-Given that _quiho_ is not using classification techniques, it doesn't 
-rely on labeled datasets. Also, and as explained in @Sec:quiho, this 
-type of analysis does not serve our needs, since we need to obtain a 
-prediction model in order to look at feature importance (the basis of 
-FGRUPs). Lastly, _quiho_ is not intended to be used as a way of 
-detecting anomalies, although we have not analyzed its potential use 
-in this scenario.
+Decision trees are a form of supervised learning, however, given that 
+_quiho_ applies regression rather than classification techniques, it 
+does not rely on labeled datasets. Lastly, _quiho_ is not intended to 
+be used as a way of detecting anomalies, although we have not analyzed 
+its potential use in this scenario.
 
 # Limitations and Future Work {#sec:conclusion}
 
 The main limitation in _quiho_ is the requirement of having to execute 
 a test on more than one machine in order to obtain FGRUPs. As 
 mentioned, an open problem is to precisely quantify the minimum amount 
-of required machines. Time can be saved by carefully avoiding to 
-re-execute `stress-ng` every time a test is executed, for example by 
-keeping track of workload placement in a cluster of machines.
-
-We used `stress-ng` but the approach is not limited to this 
-benchmarking toolkit. Ideally, we would like to extend the amount and 
-type of stressors so that we have more coverage over the distinct 
-subcomponents of a system. An open question is to systematically test 
-whether the current set of stressors is sufficient to cover all 
-subcomponents of a processor.
+of required machines. On the other hand, we can avoid having to run 
+`stress-ng` every time the application gets tested by integrating this 
+into the infrastructure (e.g., system administrators can run 
+`stress-ng` once a day or once a week and make this information for 
+every machine available to users).
 
 We are currently working in adapting this approach to profile 
 distributed and multi-tiered applications. We also plan to analyze the 
 viability of using _quiho_ in multi-tenant configurations. Lastly, 
 long-running (multi-stage) applications. e.g., a web-service or 
 big-data application with multiple stages. In this case, we would 
-define windows of time and we would apply quiho to each. The 
+define windows of time and we would apply _quiho_ to each. The 
 challenge: how do we automatically get the windows rightly placed.
 
 In the era of cloud computing, even the most basic computer systems 
 are complex multi-layered pieces of software, whose performance 
 properties are difficult to comprehend. Having complete understanding 
 of the performance behavior of an application, considering the 
-parameter space (workloads, multitenancy, etc.) is very challenging. 
-One application of _quiho_ we have in mind is to couple it with 
-automated black-box (or even gray-box) testing frameworks to improve 
-our understanding of complex systems.
+parameter space (workloads, multi-tenancy, etc.) is challenging. One 
+application of _quiho_ we have in mind is to couple it with automated 
+black-box (or even gray-box) testing frameworks to improve our 
+understanding of complex systems.
 
 **Acknowledgments**: This work was partially funded by the Center for 
 Research in Open Source Software[^cross], Sandia National Laboratories 
