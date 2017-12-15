@@ -1,0 +1,28 @@
+{
+  "name": "quiho",
+  "title": "quiho paper single-node results",
+  "description": "An accumulation of results for the 'single-node' experiment of the quiho paper",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ivotron/quiho-popper.git"
+  },
+  "licenses": [
+    {
+      "id": "odc-odbl",
+      "path": "http://opendatacommons.org/licenses/odbl/1.0/",
+      "name": "open_database_license"
+    }
+  ],
+  "resources": [
+    {
+      "path": "results.csv",
+      "format": "csv",
+      "name": "single-node"
+    },
+    {
+      "path": "machines.csv",
+      "format": "csv",
+      "name": "machines"
+    }
+  ]
+}

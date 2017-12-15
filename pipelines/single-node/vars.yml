@@ -1,49 +1,49 @@
 ---
 repetitions: 5
 benchmarks:
-#- name: redisbench-4.0.2
-#  compose:
-#    version: '2'
-#    services:
-#      redis:
-#        image: redis:4.0.2
-#        network_mode: host
-#        cgroup_parent: /
-#      redisbench:
-#        image: redis:4.0.2
-#        entrypoint: /bin/bash
-#        command: -c "
-#          sleep 10 &&
-#          redis-benchmark -d 8 -r 1000000 -n 20000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
-#        cgroup_parent: /
-#        network_mode: host
-#        volumes:
-#        - '/:/host'
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: redisbench-3.2.11
-#  compose:
-#    version: '2'
-#    services:
-#      redis:
-#        image: redis:3.2.11
-#        network_mode: host
-#        cgroup_parent: /
-#      redisbench:
-#        image: redis:3.2.11
-#        entrypoint: /bin/bash
-#        command: -c "
-#          sleep 10 &&
-#          redis-benchmark -d 8 -r 1000000 -n 20000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
-#        cgroup_parent: /
-#        network_mode: host
-#        volumes:
-#        - '/:/host'
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
+- name: redisbench-4.0.2
+  compose:
+    version: '2'
+    services:
+      redis:
+        image: redis:4.0.2
+        network_mode: host
+        cgroup_parent: /
+      redisbench:
+        image: redis:4.0.2
+        entrypoint: /bin/bash
+        command: -c "
+          sleep 10 &&
+          redis-benchmark -d 8 -r 1000000 -n 20000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
+        cgroup_parent: /
+        network_mode: host
+        volumes:
+        - '/:/host'
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: redisbench-3.2.11
+  compose:
+    version: '2'
+    services:
+      redis:
+        image: redis:3.2.11
+        network_mode: host
+        cgroup_parent: /
+      redisbench:
+        image: redis:3.2.11
+        entrypoint: /bin/bash
+        command: -c "
+          sleep 10 &&
+          redis-benchmark -d 8 -r 1000000 -n 20000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv"
+        cgroup_parent: /
+        network_mode: host
+        volumes:
+        - '/:/host'
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
 
 - name: stressng
   image: ivotron/stress-ng:v0.07.29
@@ -68,263 +68,263 @@ benchmarks:
   fetch:
   - '{{ remote_results_path }}'
 
-#- name: zlog-2bb324f
-#  image: ivotron/zlog-kv:2bb324f
-#  command: /zlog/db 20000 2
-#  cgroup_parent: /
-#- name: zlog-4693e69
-#  image: ivotron/zlog-kv:4693e69
-#  command: /zlog/db 20000 2
-#  cgroup_parent: /
-#
-#- name: redisbench
-#  compose:
-#    version: '2'
-#    services:
-#      redis:
-#        image: redis:3.2
-#        network_mode: host
-#        cgroup_parent: /
-#        pid: host
-#      redisbench:
-#        image: redis:3.2
-#        entrypoint: /bin/bash
-#        command: -c "sleep 10 &&
-#           redispid=`ps aux | grep [r]edis | awk '{print $$2}'` &&
-#           echo \"$$redispid\" > /results/redispid && 
-#           perf record -a --call-graph dwarf --pid=$$redispid redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv &&
-#           perf report --symfs=/host -t ',' --sort comm,dso --stdio --pretty=raw > /results/perf.report "
-#        cgroup_parent: /
-#        network_mode: host
-#        privileged: true
-#        volumes:
-#        - '/:/host'
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#
-#- name: mysqlslap-mariadb-5.5.58
-#  compose:
-#    version: '2'
-#    services:
-#      mariadb:
-#        image: mariadb:5.5.58
-#        environment:
-#          MYSQL_ROOT_PASSWORD: pwd
-#        network_mode: host
-#        cgroup_parent: /
-#      mysqlslap:
-#        image: ivotron/mysqlslap:10.3
-#        environment:
-#          MYSQL_HOST: 127.0.0.1
-#          MYSQL_PASSWD: pwd
-#          ENGINES: memory innodb
-#        network_mode: host
-#        cgroup_parent: /
-#        volumes:
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: mysqlslap-mariadb-10.3.2
-#  compose:
-#    version: '2'
-#    services:
-#      mariadb:
-#        image: mariadb:10.3.2
-#        environment:
-#          MYSQL_ROOT_PASSWORD: pwd
-#        network_mode: host
-#        cgroup_parent: /
-#      mysqlslap:
-#        image: ivotron/mysqlslap:10.3
-#        environment:
-#          MYSQL_HOST: 127.0.0.1
-#          MYSQL_PASSWD: pwd
-#          ENGINES: memory innodb
-#        network_mode: host
-#        cgroup_parent: /
-#        volumes:
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: mysqlslap-mariadb-10.0.32
-#  compose:
-#    version: '2'
-#    services:
-#      mariadb:
-#        image: mariadb:10.0.32
-#        environment:
-#          MYSQL_ROOT_PASSWORD: pwd
-#        network_mode: host
-#        cgroup_parent: /
-#      mysqlslap:
-#        image: ivotron/mysqlslap:10.3
-#        environment:
-#          MYSQL_HOST: 127.0.0.1
-#          MYSQL_PASSWD: pwd
-#          ENGINES: memory innodb
-#        network_mode: host
-#        cgroup_parent: /
-#        volumes:
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: mysqlslap-mariadb-10.1.28
-#  compose:
-#    version: '2'
-#    services:
-#      mariadb:
-#        image: mariadb:10.1.28
-#        environment:
-#          MYSQL_ROOT_PASSWORD: pwd
-#        network_mode: host
-#        cgroup_parent: /
-#      mysqlslap:
-#        image: ivotron/mysqlslap:10.3
-#        environment:
-#          MYSQL_HOST: 127.0.0.1
-#          MYSQL_PASSWD: pwd
-#          ENGINES: memory innodb
-#        network_mode: host
-#        cgroup_parent: /
-#        volumes:
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: mysqlslap-mariadb-10.2.9
-#  compose:
-#    version: '2'
-#    services:
-#      mariadb:
-#        image: mariadb:10.2.9
-#        environment:
-#          MYSQL_ROOT_PASSWORD: pwd
-#        network_mode: host
-#        cgroup_parent: /
-#      mysqlslap:
-#        image: ivotron/mysqlslap:10.3
-#        environment:
-#          MYSQL_HOST: 127.0.0.1
-#          MYSQL_PASSWD: pwd
-#          ENGINES: memory innodb
-#        network_mode: host
-#        cgroup_parent: /
-#        volumes:
-#        - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: stream
-#  image: ivotron/stream-ncycles:5.10
-#  command: stream.100M.${CYCLES}C
-#  parameters:
-#    CYCLES: [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: scikit-learn
-#  image: ivotron/scikit-learn-bench:0.18.1
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: ssca
-#  image: ivotron/ssca2:v1.0
-#  command: 4 20
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: hpccg
-#  image: ivotron/hpccg:v1.0
-#  command: 128 128 128
-#  environment:
-#    SINGLE_NODE: 1
-#    MPIRUN_FLAGS: -np 4
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: comd
-#  image: ivotron/comd:v1.1
-#  command: --xproc 2 --yproc 2 --zproc 1 --nx 64 --ny 64 --nz 64 --printRate 50 --nSteps 40
-#  environment:
-#    SINGLE_NODE: 1
-#    MPIRUN_FLAGS: -np 4
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: lulesh
-#  image: ivotron/lulesh:v2.0.3
-#  command: -i 1 -s 100
-#  environment:
-#    SINGLE_NODE: 1
-#    MPIRUN_FLAGS: -np 8
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: miniaero
-#  image: ivotron/miniaero:v2.0.0
-#  environment:
-#    SINGLE_NODE: 1
-#    MPIRUN_FLAGS: -np 4
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: miniamr
-#  image: ivotron/miniamr:v2.0.0
-#  command: --num_refine 4 --max_blocks 4000 --init_x 1 --init_y 1 --init_z 1 --npx 1 --npy 2 --npz 2 --nx 8 --ny 8 --nz 8 --num_objects 2 --object 2 0 -1.10 -1.10 -1.10 0.030 0.030 0.030 1.5 1.5 1.5 0.0 0.0 0.0 --object 2 0 0.5 0.5 1.76 0.0 0.0 -0.025 0.75 0.75 0.75 0.0 0.0 0.0 --num_tsteps 100 --checksum_freq 4 --stages_per_ts 16
-#  environment:
-#    SINGLE_NODE: 1
-#    MPIRUN_FLAGS: -np 4
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: minife
-#  image: ivotron/minife:v2.0.0
-#  command: -i 1 -s 100
-#  environment:
-#    SINGLE_NODE: 1
-#    MPIRUN_FLAGS: -np 4
-#  cgroup_parent: /
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
-#
-#- name: 'fio'
-#  image: ivotron/fio:2.10
-#  entrypoint: genfio-test
-#  command: '-s -m $MODE -z 2g -d /tmp/fiofile -b $BSIZE -r 60'
-#  parameters:
-#    MODE: [write, read, rw]
-#    BSIZE: [4k, 4096k]
-#  volumes:
-#  - '{{ remote_results_path }}:/results'
-#  fetch:
-#  - '{{ remote_results_path }}'
+- name: zlog-2bb324f
+  image: ivotron/zlog-kv:2bb324f
+  command: /zlog/db 20000 2
+  cgroup_parent: /
+- name: zlog-4693e69
+  image: ivotron/zlog-kv:4693e69
+  command: /zlog/db 20000 2
+  cgroup_parent: /
+
+- name: redisbench
+  compose:
+    version: '2'
+    services:
+      redis:
+        image: redis:3.2
+        network_mode: host
+        cgroup_parent: /
+        pid: host
+      redisbench:
+        image: redis:3.2
+        entrypoint: /bin/bash
+        command: -c "sleep 10 &&
+           redispid=`ps aux | grep [r]edis | awk '{print $$2}'` &&
+           echo \"$$redispid\" > /results/redispid && 
+           perf record -a --call-graph dwarf --pid=$$redispid redis-benchmark -d 8 -r 1000000 -n 2000000 -t get,set,lpush,lpop -P 4 --csv > /results/out.csv &&
+           perf report --symfs=/host -t ',' --sort comm,dso --stdio --pretty=raw > /results/perf.report "
+        cgroup_parent: /
+        network_mode: host
+        privileged: true
+        volumes:
+        - '/:/host'
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+
+- name: mysqlslap-mariadb-5.5.58
+  compose:
+    version: '2'
+    services:
+      mariadb:
+        image: mariadb:5.5.58
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd
+        network_mode: host
+        cgroup_parent: /
+      mysqlslap:
+        image: ivotron/mysqlslap:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PASSWD: pwd
+          ENGINES: memory innodb
+        network_mode: host
+        cgroup_parent: /
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: mysqlslap-mariadb-10.3.2
+  compose:
+    version: '2'
+    services:
+      mariadb:
+        image: mariadb:10.3.2
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd
+        network_mode: host
+        cgroup_parent: /
+      mysqlslap:
+        image: ivotron/mysqlslap:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PASSWD: pwd
+          ENGINES: memory innodb
+        network_mode: host
+        cgroup_parent: /
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: mysqlslap-mariadb-10.0.32
+  compose:
+    version: '2'
+    services:
+      mariadb:
+        image: mariadb:10.0.32
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd
+        network_mode: host
+        cgroup_parent: /
+      mysqlslap:
+        image: ivotron/mysqlslap:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PASSWD: pwd
+          ENGINES: memory innodb
+        network_mode: host
+        cgroup_parent: /
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: mysqlslap-mariadb-10.1.28
+  compose:
+    version: '2'
+    services:
+      mariadb:
+        image: mariadb:10.1.28
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd
+        network_mode: host
+        cgroup_parent: /
+      mysqlslap:
+        image: ivotron/mysqlslap:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PASSWD: pwd
+          ENGINES: memory innodb
+        network_mode: host
+        cgroup_parent: /
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: mysqlslap-mariadb-10.2.9
+  compose:
+    version: '2'
+    services:
+      mariadb:
+        image: mariadb:10.2.9
+        environment:
+          MYSQL_ROOT_PASSWORD: pwd
+        network_mode: host
+        cgroup_parent: /
+      mysqlslap:
+        image: ivotron/mysqlslap:10.3
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PASSWD: pwd
+          ENGINES: memory innodb
+        network_mode: host
+        cgroup_parent: /
+        volumes:
+        - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: stream
+  image: ivotron/stream-ncycles:5.10
+  command: stream.100M.${CYCLES}C
+  parameters:
+    CYCLES: [1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: scikit-learn
+  image: ivotron/scikit-learn-bench:0.18.1
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: ssca
+  image: ivotron/ssca2:v1.0
+  command: 4 20
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: hpccg
+  image: ivotron/hpccg:v1.0
+  command: 128 128 128
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: -np 4
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: comd
+  image: ivotron/comd:v1.1
+  command: --xproc 2 --yproc 2 --zproc 1 --nx 64 --ny 64 --nz 64 --printRate 50 --nSteps 40
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: -np 4
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: lulesh
+  image: ivotron/lulesh:v2.0.3
+  command: -i 1 -s 100
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: -np 8
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: miniaero
+  image: ivotron/miniaero:v2.0.0
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: -np 4
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: miniamr
+  image: ivotron/miniamr:v2.0.0
+  command: --num_refine 4 --max_blocks 4000 --init_x 1 --init_y 1 --init_z 1 --npx 1 --npy 2 --npz 2 --nx 8 --ny 8 --nz 8 --num_objects 2 --object 2 0 -1.10 -1.10 -1.10 0.030 0.030 0.030 1.5 1.5 1.5 0.0 0.0 0.0 --object 2 0 0.5 0.5 1.76 0.0 0.0 -0.025 0.75 0.75 0.75 0.0 0.0 0.0 --num_tsteps 100 --checksum_freq 4 --stages_per_ts 16
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: -np 4
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: minife
+  image: ivotron/minife:v2.0.0
+  command: -i 1 -s 100
+  environment:
+    SINGLE_NODE: 1
+    MPIRUN_FLAGS: -np 4
+  cgroup_parent: /
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
+
+- name: 'fio'
+  image: ivotron/fio:2.10
+  entrypoint: genfio-test
+  command: '-s -m $MODE -z 2g -d /tmp/fiofile -b $BSIZE -r 60'
+  parameters:
+    MODE: [write, read, rw]
+    BSIZE: [4k, 4096k]
+  volumes:
+  - '{{ remote_results_path }}:/results'
+  fetch:
+  - '{{ remote_results_path }}'
