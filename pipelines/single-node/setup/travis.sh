@@ -15,6 +15,11 @@ docker run -d --name=node1 \
 
 echo "node1 ansible_host=localhost ansible_port=2221 ansible_user=root" > geni/machines
 
+# get insecure key
+curl -O https://raw.githubusercontent.com/ivotron/docker-openssh/master/insecure_rsa
+chmod 600 insecure_rsa
+
+# configure the test
 cat > vars.yml << EOL
 install_facter: false
 test_timeout: 600
@@ -36,11 +41,3 @@ benchmarks:
   fetch:
   - '/tmp/results'
 EOL
-
-# get insecure key out of container
-docker run --rm \
-  -v `pwd`:/mnt \
-  --entrypoint=/bin/bash \
-  ivotron/python-sshd:debian-9 -c 'cp /root/.ssh/insecure_rsa /mnt'
-sudo chown $USER:$USER insecure_rsa
-mv insecure_rsa $HOME/.ssh/id_rsa

@@ -5,8 +5,6 @@ if [ -n "$CI" ]; then
   exit 0
 fi
 
-docker pull ivotron/geni-lib:v0.9.4.7 &> /dev/null
-
 if [ -z $CLOUDLAB_USER ]; then
   echo "Expecting CLOUDLAB_USER variable"
   exit 1
@@ -34,9 +32,8 @@ docker run --rm \
   -e CLOUDLAB_PROJECT=$CLOUDLAB_PROJECT \
   -e CLOUDLAB_PUBKEY_PATH=$CLOUDLAB_PUBKEY_PATH \
   -e CLOUDLAB_CERT_PATH=$CLOUDLAB_CERT_PATH \
-  -v $CLOUDLAB_PUBKEY_PATH:$CLOUDLAB_PUBKEY_PATH \
-  -v $CLOUDLAB_CERT_PATH:$CLOUDLAB_CERT_PATH \
-  -v `pwd`/geni/release.py:/release.py \
-  -v `pwd`/vars.yml:/vars.yml \
+  -v $CLOUDLAB_PUBKEY_PATH:$CLOUDLAB_PUBKEY_PATH:z \
+  -v $CLOUDLAB_CERT_PATH:$CLOUDLAB_CERT_PATH:z \
+  -v `pwd`/geni/release.py:/release.py:z \
   --entrypoint=python \
   ivotron/geni-lib:v0.9.6.0 -u /release.py

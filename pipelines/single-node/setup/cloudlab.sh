@@ -30,9 +30,9 @@ docker run --rm \
   -e CLOUDLAB_PROJECT=$CLOUDLAB_PROJECT \
   -e CLOUDLAB_PUBKEY_PATH=$CLOUDLAB_PUBKEY_PATH \
   -e CLOUDLAB_CERT_PATH=$CLOUDLAB_CERT_PATH \
-  -v $CLOUDLAB_PUBKEY_PATH:$CLOUDLAB_PUBKEY_PATH \
-  -v $CLOUDLAB_CERT_PATH:$CLOUDLAB_CERT_PATH \
-  -v `pwd`/geni/:/output \
+  -v $CLOUDLAB_PUBKEY_PATH:$CLOUDLAB_PUBKEY_PATH:z \
+  -v $CLOUDLAB_CERT_PATH:$CLOUDLAB_CERT_PATH:z \
+  -v `pwd`/geni/:/output:z \
   --entrypoint=python \
   ivotron/geni-lib:v0.9.6.0 -u /output/request.py
 
