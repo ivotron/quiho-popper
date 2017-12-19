@@ -1,5 +1,9 @@
 #!/bin/bash
-set -e
+set -ex
+
+if [ -n "$CI" ]; then
+  exit 0
+fi
 
 docker pull ivotron/geni-lib:v0.9.4.7 &> /dev/null
 

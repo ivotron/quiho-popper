@@ -11,7 +11,7 @@ url=$(git remote -v | grep fetch | awk '{print $2}' | sed 's:[\/&]:\\&:g;$!s/$/\
 commit=$(git rev-parse --short HEAD)
 ts=$(date +%s)
 
-if [ -n "$TRAVIS" ]; then
+if [ -n "$CI" ]; then
   username='travis'
 else
   username=$USER

@@ -10,13 +10,12 @@ docker run --rm --name=jupyter_`basename $PWD` \
   jupyter/scipy-notebook:e89b2fe9974b nbconvert \
     --to notebook \
     --execute results/visualize.ipynb \
-    --output newvisualize.ipynb
+    --output newvisualize.ipynb \
+    --ExecutePreprocessor.timeout=-1
 
-for f in corrmatrix stressng_variability GET LPOP LPUSH SET hpccg sklearn ssca zlog ; do
+for f in corrmatrix stressng_variability GET LPOP LPUSH SET hpccg sklearn ssca ; do
   if [ ! -f results/figures/$f.png ]; then
     echo "Unable to find results/figures/$f.png"
     exit 1
   fi
 done
-
-# TODO: add validation for workloads
