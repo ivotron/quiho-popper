@@ -1,17 +1,16 @@
 #!/bin/bash
 set -e
 
-rm -rf results/figures/
-mkdir results/figures
+rm -f results/figures/*.png
 
 docker run --rm --name=jupyter \
   -v `pwd`:/experiment:z \
+  --user=root \
   --workdir=/experiment/results \
   --entrypoint=jupyter \
   jupyter/scipy-notebook:e89b2fe9974b nbconvert \
     --execute visualize.ipynb \
     --ExecutePreprocessor.timeout=-1 \
-    --to notebook \
     --inplace
 
 for f in corrmatrix stressng_variability GET LPOP LPUSH SET hpccg sklearn ssca ; do

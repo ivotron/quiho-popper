@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    steps:
+    - checkout
+    - run:
+        command: |
+          curl -O https://raw.githubusercontent.com/systemslab/popper/master/popper/_check/check.py
+          chmod 755 check.py
+          ./check.py
