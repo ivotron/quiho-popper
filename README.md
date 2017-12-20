@@ -1,59 +1,102 @@
 # _quiho_
 
-[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/ivotron/quiho-popper/master)
+[![build][1]][2] [![binder][3]][4] [![zenodo][5]][6]
 
-The [Popper](http://github.com/systemslab/popper) repository for the 
+[1]: https://travis-ci.org/ivotron/quiho-popper.svg?branch=master
+[2]: https://travis-ci.org/ivotron/quiho-popper
+[3]: http://mybinder.org/badge.svg
+[4]: http://beta.mybinder.org/v2/gh/ivotron/quiho-popper/master
+[5]: https://zenodo.org/badge/83738959.svg
+[6]: https://zenodo.org/badge/latestdoi/83738959
+
+[Popper](http://github.com/systemslab/popper) repository for the 
 _quiho_ paper submission. Contains experiments, results, and 
-manuscript.
+manuscript (see [here]() for how to cite).
+
+# Getting Started
+
+This repository contains all artifacts necessary to replicate results 
+or re-generate the PDF. For the replicating results, there are two 
+main components:
+
+  * Analysis. [`pandas`](https://pandas.pydata.org/) and 
+    [`sklearn`](http://scikit-learn.org) are used to obtain fine 
+    granularity resource utilization profiles (FGRUPs). For 
+    instructions on how to replicate these results, see 
+    [here](#analysis).
+
+  * Data Generation. To generate the data that is used in the analysis 
+    part, one has to re-execute the micro-benchmarks and applications 
+    mentioned in the paper. See [here](experiment) for a complete 
+    guide.
+
+Assuming one has Docker installed locally (we have only tested on 
+Linux and OSX), the following re-executes both, data generation and 
+the analysis:
+
+```bash
+cd quiho-popper/pipelines/single-node
+export CI=1
+./setup.sh
+./run.sh
+./post-run.sh
+./validate.sh
+./teardown.sh
+```
+
+The following is a diagram of the workflow of what these scripts do:
+
 
 # Replicating Results
 
-The `experiments/single-node` folder contains the main experiment of the 
+The `pipelines/single-node` folder contains the main experiment of the 
 paper.
 
 ## Analysis
 
-Every figure in the article has a `[source]` link in its caption 
-that points to a Jupyter notebook in this repository. The 
-notebook contains the analysis and source code for the figure (and 
-possibly others). GitHub renders Notebooks on the browser, so you 
-should be able to see the graphs and the code (for example 
-[this](https://github.com/ivotron/quiho-popper/blob/master/experiments/single-node/results/visualize.ipynb)). 
-If you need to re-run the analysis, the parent folder of the notebook 
-(following the 
-[Popper](http://popper.readthedocs.io/en/latest/protocol/intro_to_popper.html#repository-structure)'s 
-file organization convention) contains results that can be used to 
-re-execute the analysis. To interact with these notebooks in 
-real-time, you can click the Binder icon above (or here 
-[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/ivotron/quiho-popper/master)), 
-which will open a live [Jupyter](https://jupyter.org) notebook. 
+Every figure in the article was obtained from [this Jupyter 
+notebook](https://github.com/ivotron/quiho-popper/blob/master/pipelines/single-node/results/visualize.ipynb) 
+in this repository. The notebook contains the source code for all 
+figures (as well as others that didn't fit due to space constraints). 
+GitHub renders Notebooks on the browser, so you should be able to see 
+the graphs and the code directly on your browser if you click on the 
+link.
 
+If you need to re-run the analysis, the 
+[`datapackage/`](pipelines/single-node/datapackage/) folder contains 
+the raw data that can be used to re-execute the analysis. To interact 
+with the notebook in real-time, you can click the Binder icon above 
+(or here 
+[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/ivotron/quiho-popper/master)), 
+which will open a live [Jupyter](https://jupyter.org) notebook. To re-run the notebook, click on `Cell->Run All` (more info on how to use Jupyter [here](http://jupyter.org/documentation.html)).
 
 Alternatively, if you have [Docker](http://docker.com) installed, you 
-can clone this repo to your machine and run:
+can launch a local Jupyter server, clone this repo to your machine and 
+analyze locally:
 
 ```bash
 cd quiho-popper/
 
 docker run --rm -d -p 8888:8888 \
-  -v `pwd`:/home/jovyan/work \
+  -v `pwd`:/home/jovyan/ \
   jupyter/scipy-notebook start-notebook.sh --NotebookApp.token=""
-```
 
-Then point your browser to 
-[`http://localhost:8888`](http://localhost:8888).
+# go to http://localhost:8888
+```
 
 ## Experiment
 
 Re-executing the experiment requires having compute resources 
 available. If you happen to have a cluster of machines available, then 
-you can follow the steps on the "On-premises" section. These should be 
-Linux machines with [Docker](https://docs.docker.com) installed, and 
-passwordless SSH access.
+you can follow the steps on the [On-premises](#on-premises) section. 
+These should be Linux machines with [Docker](https://docs.docker.com) 
+and `rsync` installed, as well as passwordless SSH (and `sudo`) 
+access.
 
-> **NOTE**: The _quiho_ approach relies on having as much variability 
-as possible between the nodes it's running on. So running on a cluster 
-of homogeneous machines won't replicate the results in the paper.
+> **NOTE**: The _quiho_ approach relies on having as much performance 
+> variability as possible among the machines it's running on. So 
+> running on a cluster of homogeneous machines won't replicate the 
+> results in the paper.
 
 ### On-premises
 
@@ -63,10 +106,7 @@ on your machine. To execute:
 
  1. Write a `quiho-popper/geni/machines` file following the 
     [Ansible](http://docs.ansible.com/ansible/latest/intro_inventory.html) 
-    inventory format (an INI-like file).
-
- 2. If you need to, edit the `vars.yml` file in order to update any 
-    parameters of the experiment. For example:
+    inventory format (an INI-like file). For example:
 
     ```
     node1.my.domain ansible_user=myuser
@@ -74,15 +114,18 @@ on your machine. To execute:
     node3.my.domain ansible_user=myuser
     ```
 
+ 2. If you need to, edit the `vars.yml` file in order to update any 
+    parameters of the experiment.
+
  3. Define a `SSHKEY` variable containing the path or value of the SSH 
     key used to authenticate with the hosts.
 
- 4. Execute the `run.sh`.
+ 4. Execute the `run.sh` script.
 
 The following is an example bash session:
 
 ```bash
-cd quiho-popper/experiments/single-node
+cd quiho-popper/pipelines/single-node
 
 # edit machines file to add the hostnames of machines you have available
 # vim quiho-popper/machines file
@@ -96,73 +139,117 @@ export SSHKEY=`~/.ssh/mysshkey`
 
 ```
 
-### Via TravisCI
+### CloudLab
 
-This experiment is executed on CloudLab, so you need an account there. 
-After creating an account:
+The data in the paper was obtained by running the experiment on 
+CloudLab. It is possible to re-execute the experiment, provided one 
+has an account there. After creating an account:
 
  1. Obtain credentials (see 
     [here](http://docs.cloudlab.us/geni-lib/intro/creds/cloudlab.html)). 
     This will result in having a `cloudlab.pem` file on your machine.
- 2. Fork this repository to your GitHub account.
- 3. Login to [TravisCI](https://travis-ci.org) using your GitHub 
-    credentials and enable Travis awesomeness on your fork (see guide 
-    [here](https://docs.travis-ci.com/user/getting-started/#To-get-started-with-Travis-CI)).
- 4. Create the following environment variables (see guide 
-    [here](https://docs.travis-ci.com/user/environment-variables/#Defining-Variables-in-Repository-Settings)):
+ 2. Clone this repository.
+ 3. Create the following environment variables:
 
       * `CLOUDLAB_USER`. Your user at CloudLab.
       * `CLOUDLAB_PASSWORD`. Your password for CloudLab.
       * `CLOUDLAB_PROJECT`. The name of the project your account 
         belongs to on CloudLab.
-      * `CLOUDLAB_PUBKEY`. The value of your SSH key registered with 
-        CloudLab.
-      * `CLOUDLAB_SSHKEY`. The value of your **private** SSH key 
+      * `CLOUDLAB_PUBKEY_PATH`. The path to your SSH key registered 
+        with CloudLab.
+      * `CLOUDLAB_SSHKEY_PATH`. The path to your **private** SSH key 
         registered with CloudLab.
-      * `CLOUDLAB_CERT`. The value of the key contained in the 
-        `cloudlab.pem`.
+      * `CLOUDLAB_CERT_PATH`. The path to the `cloudlab.pem` file 
+        downloaded in step 1.
 
-    All these have to be strings (not paths) and they need to be 
-    properly escaped.
+ 4. Run the following steps:
 
-    **NOTE**: Make sure to enable leave the `Display value in build 
-    log` OFF. Otherwise, these will be available.
+    ```bash
+    cd quiho-popper/pipelines/single-node
+    ./setup.sh
+    ./run.sh
+    ./post-run.sh
+    ./validate.sh
+    ./teardown.sh
+    ```
 
- 5. Trigger an execution by pushing a commit. For example, modify the 
-    `vars.yml` file and commit it. Or to trigger with an empty commit 
-    do:
+### Travis
+
+The experiment is continuously tested via Travis. To run a test on 
+Travis yourself:
+
+ 1. Fork this repository to your GitHub account.
+
+ 2. Login to [TravisCI](https://travis-ci.org) using your GitHub
+    credentials and enable Travis awesomeness on your fork (see guide
+    [here](https://docs.travis-ci.com/user/getting-started/#To-get-started-with-Travis-CI)).
+
+ 3. Trigger an execution by creating and pushing a commit to your 
+    fork. For example, modify the `vars.yml` file and commit it. Or to 
+    trigger with an empty commit do:
 
     ```bash
     git commit -m 'trigger TravisCI build' --allow-empty
     ```
 
-**NOTE:** TravisCI has a limit of 120 minutes for a test, after which 
-a test is timed out and marked as failed. So you might want to 
-configure the experiment for a short run, for example, this should run 
-in a relatively short time:
+    **NOTE**: TravisCI has a limit of 2 hours, after which it timesout 
+    and fails a test.
 
-```yaml
-- name: stressng
-  image: ivotron/stress-ng:v0.07.29
-  command: --sequential 1 --timeout 10 --metrics-brief --times --yaml /results/stressng.yml --exclude apparmor,affinity,aio,aiol,bind-mount,cap,chdir,chmod,chown,chroot,clock,clone,context,copy-file,cpu-online,daemon,dccp,dentry,dir,dirdeep,dnotify,dup,epoll,eventfd,exec,fallocate,fanotify,fault,fcntl,fiemap,fifo,filename,flock,fork,fstat,fp-error,futex,get,getdent,getrandom,handle,hdd,icmp-flood,inotify,io,iomix,ioprio,itimer,kcmp,key,kill,klog,lease,link,locka,lockf,lockofd,madvise,membarrier,memfd,mergesort,mknod,mlock,mmapfork,mmapmany,mq,msg,netlink-proc,nice,open,personality,pipe,poll,procfs,pthread,ptrace,pty,quota,rdrand,readahead,rename,rlimit,rtc,schedpolicy,sctp,seal,seccomp,seek,sem,sem-sysv,sendfile,sigfd,sigfpe,sigpending,sigq,sigsegv,sigsuspend,sleep,sock,sockfd,sockpair,spawn,splice,switch,symlink,sync-file,sysfs,sysinfo,tee,timer,timerfd,tlb-shootdown,tmpfs,tsc,udp,udp-flood,unshare,urandom,userfaultfd,utime,vfork,vforkmany,wait,wcs,xattr,yield,zombie,zlib,zombie
-  network_mode: host
-  ipc: host
-  privileged: true
-  cap_add:
-  - ALL
-  volumes:
-  - '/tmp/results:/results'
-  fetch:
-  - '/tmp/results'
+# How To Evaluate
 
-- name: hpccg
-  image: ivotron/hpccg:v1.0
-  command: 128 128 128
-  environment:
-    SINGLE_NODE: 1
-    MPIRUN_FLAGS: -np 4
-  volumes:
-  - '/tmp/results:/results'
-  fetch:
-  - '/tmp/results'
-```
+One alternative workflow for evaluating these artifacts:
+
+  1. Inspect the bash scripts located 
+     [`pipelines/single-node`](pipelines/single-node) folder. See 
+     [this](#workflow) diagram to get a high-level view of what each 
+     script does. In particular, the 
+     [`vars.yml`](pipelines/single-node/vars.yml) file contains the 
+     complete list of all the benchmarks executed.
+
+  2. Test that the pipeline works on a subset of benchmarks:
+
+       * If testing locally, see [here]().
+       * If using Travis, see [here]().
+
+     The list applications for this test is defined [here]().
+
+  3. If reviewer has access to compute resources or an account at 
+     CloudLab, the full data generation step can be executed (see 
+     [On-Premises](#on-premises) or [CloudLab](#cloudlab)).
+
+  4. Click on [![zenodo][5]][6] badge to verify that there's an archive of 
+     this repository. Beside the infrastructure dependencies (Linux 
+     hosts running Docker), there are several dependencies:
+
+        * Benchmarks that get executed. These are maintained 
+          separately in [this 
+          repository](https://github.com/ivotron/docker-bench/) and 
+          all are available at [this DockerHub 
+          account](https://hub.docker.com/u/ivotron/).
+
+        * [`baseliner`](https://github.com/ivotron/baseliner), the 
+          test driver that executes the benchmarks on remotes 
+          machines. This is [maintained separately](https://github.com/ivotron/baseliner) and docker images 
+          are available on the corresponding [DockerHub 
+          repository](https://hub.docker.com/r/ivotron/baseliner/).
+
+        * When executing on CloudLab, the
+          [`geni-lib`](https://bitbucket.org/emulab/geni-lib) python 
+          library is used to automate the allocation of machines. This 
+          is packaged as a [Docker 
+          container](https://github.com/ivotron/docker-geni-lib) and 
+          images are available on 
+          [DockerHub](https://hub.docker.com/r/ivotron/geni-lib/).
+
+        * [Jupyter](http://jupyter.org/) data science stack. These 
+          Docker images are [maintained by the Jupyter 
+          project](https://github.com/jupyter/docker-stacks/) and 
+          images are available on 
+          [DockerHub](https://hub.docker.com/r/jupyter/scipy-notebook).
+
+     Given that compressing all these dependencies would result in a 
+     very large file, we have left them out of the tarball that has 
+     been submitted for review. However, we would be happy to make 
+     [tarballs for 
+     each](https://docs.docker.com/engine/reference/commandline/save/) 
+     available upon request.
