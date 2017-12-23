@@ -48,17 +48,41 @@ export CI=1
 ./teardown.sh
 ```
 
-# Replicating Results
+Quick description of what these commands do:
 
-The `pipelines/single-node` folder contains the main experiment of the 
-paper.
+  * `setup.sh`. setups the infrastructure to run the experiment, 
+    depending of where this is executed.
+      * `setup/travis.sh`. When the `CI` environment variable is 
+        defined, this "boots" a "node" on the machine where this 
+        script is executed, using Docker.
+      * `setup/cloudlab.sh`. Allocates as many different nodes as 
+        possible from all the available in CloudLab (and federated 
+        GENI) sites.
+
+  * `run.sh`. Invokes 
+    [`baseliner`](https://github.com/ivotron/baseliner) to run the 
+    data generation step on all the available machines. The list of 
+    machines as well as the variables of the experiment 
+    [`vars.yml`](pipelines/single-node/vars.yml) are used in this 
+    step.
+
+  * `post-run.sh`. Post-process the data gathered by the previous 
+    step.
+
+  * `validate.sh`. Executes the analysis contained in the notebook and 
+    double-checks that images contained in the article are generated.
+
+  * `teardown.sh`. If the experiment ran on CloudLab, this script 
+    releases all machines used by the experiment.
+
+# Replicating Results
 
 ## Analysis
 
-Every figure in the article was obtained from [this Jupyter 
+All the plots in the article were obtained from [this Jupyter 
 notebook](https://github.com/ivotron/quiho-popper/blob/master/pipelines/single-node/results/visualize.ipynb) 
 in this repository. The notebook contains the source code for all 
-figures (as well as others that didn't fit due to space constraints). 
+plots, as well as others that didn't fit due to space constraints. 
 GitHub renders Notebooks on the browser, so you should be able to see 
 the graphs and the code directly on your browser if you click on the 
 link.
@@ -66,10 +90,11 @@ link.
 If you need to re-run the analysis, the 
 [`datapackage/`](pipelines/single-node/datapackage/) folder contains 
 the raw data that can be used to re-execute the analysis. To interact 
-with the notebook in real-time, you can click the Binder icon above 
-(or here 
-[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/ivotron/quiho-popper/master)), 
-which will open a live [Jupyter](https://jupyter.org) notebook. To re-run the notebook, click on `Cell->Run All` (more info on how to use Jupyter [here](http://jupyter.org/documentation.html)).
+with the notebook in real-time, you can click on 
+[![Binder](http://mybinder.org/badge.svg)](http://beta.mybinder.org/v2/gh/ivotron/quiho-popper/master), 
+which will open a live [Jupyter](https://jupyter.org) notebook. To 
+re-run the notebook, click on `Cell->Run All` (more info on how to use 
+Jupyter [here](http://jupyter.org/documentation.html)).
 
 Alternatively, if you have [Docker](http://docker.com) installed, you 
 can launch a local Jupyter server, clone this repo to your machine and 
@@ -79,7 +104,7 @@ analyze locally:
 cd quiho-popper/
 
 docker run --rm -d -p 8888:8888 \
-  -v `pwd`:/home/jovyan/ \
+  -v `pwd`:/home/jovyan \
   jupyter/scipy-notebook start-notebook.sh --NotebookApp.token=""
 
 # go to http://localhost:8888
@@ -137,7 +162,6 @@ cd quiho-popper/pipelines/single-node
 export SSHKEY=`~/.ssh/mysshkey`
 
 ./run.sh
-
 ```
 
 ### CloudLab
@@ -193,28 +217,33 @@ Travis yourself:
     git commit -m 'trigger TravisCI build' --allow-empty
     ```
 
-    **NOTE**: TravisCI has a limit of 2 hours, after which it timesout 
-    and fails a test.
+    **NOTE**: TravisCI has a limit of 2 hours, after which the test is 
+    terminated and failed. For this reason, the `setup/travis.sh` 
+    modifies the `vars.yml` in order to generate parameters that take 
+    shorter to run (approx 15 mins).
 
 # How To Evaluate
 
 One alternative workflow for evaluating these artifacts:
 
-  1. Inspect the bash scripts located 
-     [`pipelines/single-node`](pipelines/single-node) folder. See 
-     [this](#workflow) diagram to get a high-level view of what each 
-     script does. In particular, the 
+  1. Inspect the bash scripts located in the
+     [`pipelines/single-node`](pipelines/single-node) folder. The 
+     [Getting Started](#getting-started) section above gives a 
+     high-level view of what each script does. In particular, the 
      [`vars.yml`](pipelines/single-node/vars.yml) file contains the 
-     complete list of all the benchmarks executed.
+     complete list of all the benchmarks executed for the paper.
 
-  2. Test that the pipeline works on a subset of benchmarks:
+  2. Quickly testing that the pipeline works on a subset of 
+     benchmarks:
 
-       * If testing locally, see [here]().
-       * If using Travis, see [here]().
+       * If testing locally, see the [Getting Started 
+         section](#getting-started).
+       * If using Travis, see the [Travis section above](#travis).
 
-     The list applications for this test is defined [here]().
+     The list of applications that is defined for this test is 
+     [here](https://github.com/ivotron/quiho-popper/blob/master/pipelines/single-node/setup/travis.sh#L23).
 
-  3. If reviewer has access to compute resources or an account at 
+  3. If reviewers have access to compute resources or an account at 
      CloudLab, the full data generation step can be executed (see 
      [On-Premises](#on-premises) or [CloudLab](#cloudlab)).
 
