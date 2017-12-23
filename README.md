@@ -11,7 +11,11 @@
 
 [Popper](http://github.com/systemslab/popper) repository for the 
 _quiho_ paper submission. Contains experiments, results, and 
-manuscript (see [here]() for how to cite).
+manuscript.
+
+<!--
+    (see [here]() for how to cite).
+-->
 
 # Getting Started
 
@@ -27,7 +31,7 @@ main components:
 
   * Data Generation. To generate the data that is used in the analysis 
     part, one has to re-execute the micro-benchmarks and applications 
-    mentioned in the paper. See [here](experiment) for a complete 
+    mentioned in the paper. See [here](#experiment) for a complete 
     guide.
 
 Assuming one has Docker installed locally (we have only tested on 
@@ -43,9 +47,6 @@ export CI=1
 ./validate.sh
 ./teardown.sh
 ```
-
-The following is a diagram of the workflow of what these scripts do:
-
 
 # Replicating Results
 
