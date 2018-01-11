@@ -15,8 +15,8 @@ docker run --rm --name=jupyter \
     --ExecutePreprocessor.timeout=-1 \
     --inplace
 
+# [wf] check that figures got created
 for f in corrmatrix stressng_variability GET LPOP LPUSH SET hpccg sklearn ssca ; do
-  # [wf] check that figures got created
   if [ ! -f results/figures/$f.png ]; then
     echo "Unable to find results/figures/$f.png"
     exit 1

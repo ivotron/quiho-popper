@@ -1,4 +1,5 @@
 #!/bin/bash
+# [wf] remove allocated resources
 set -ex
 
 if [ -n "$CI" ]; then
@@ -26,6 +27,7 @@ if [ -z $CLOUDLAB_CERT_PATH ]; then
   exit 1
 fi
 
+# [wf] release CloudLab nodes
 docker run --rm \
   -e CLOUDLAB_USER=$CLOUDLAB_USER \
   -e CLOUDLAB_PASSWORD=$CLOUDLAB_PASSWORD \

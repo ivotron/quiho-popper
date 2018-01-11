@@ -1,5 +1,5 @@
 #!/bin/bash
-# [wf] check SSHKEYS and execute baseliner
+# [wf] use SSHKEY variable to execute baseliner
 set -ex
 
 if [ -n "$CI" ]; then
@@ -26,7 +26,7 @@ mkdir -p results/baseliner_output
 
 docker pull ivotron/baseliner:0.1
 
-# [wf]: invoke baseliner
+# [wf] invoke baseliner
 docker run --rm --name=baseliner \
   --volume `pwd`:/experiment:z \
   --volume $SSHKEY:/root/.ssh/id_rsa:z \
