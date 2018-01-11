@@ -1,7 +1,7 @@
 *.sw?
 popper_status
 popper_logs
-experiments/regression/results/.ipynb_checkpoints/
 .ropeproject/
 experiments/regression/ansible/machines
 .DS_Store
+.ipynb_checkpoints
