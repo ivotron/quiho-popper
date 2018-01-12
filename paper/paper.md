@@ -1,5 +1,5 @@
 ---
-title: "_quiho_: Automated Performance Regression Using Fine Granularity Resource Utilization Profiles"
+title: "_quiho_: Automated Performance Regression Testing Using Fine Granularity Resource Utilization Profiles"
 shorttitle: _quiho_
 author:
 - name: Ivo Jimenez
@@ -137,15 +137,10 @@ applications. The contributions of our work are:
     determine their performance behavior, thus simulating different 
     "versions" of an application.
 
-  * A negative result: ineffectiveness of resource utilization 
-    profiles for predicting performance using ensemble learning.
-
 Next section (@Sec:intuition) shows the intuition behind _quiho_ and 
 how can be used to automate regression tests. We then do a more 
 in-depth description of _quiho_ (@Sec:quiho), followed by our 
-evaluation of this approach (@Sec:eval). We briefly show how _quiho_'s 
-resource utilization profiles can not be used to predict performance 
-using some common machine learning techniques (@Sec:negative). We then 
+evaluation of this approach (@Sec:eval). We then 
 discuss different aspects of our work (@Sec:discussion), review 
 (@Sec:sra) related work and we lastly close with a brief discussion on 
 challenges and opportunities enabled by _quiho_ (@Sec:conclusion).
@@ -227,13 +222,12 @@ application exhibits such performance behavior.
     machine doesn’t have just faster memory sticks, but also better 
     CPU, chipset, etc.).
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-An example profile showing the relative importance of features for an 
+![An example profile showing the relative importance of features for an 
 execution of the `hpccg` miniapp [@heroux_hpccg_2007]. The y-axis 
 denotes the relative performance with respect to the most importante 
 feature, which corresponds to the first one on the x-axis (from top to 
 bottom).
-](figures/hpccg.png){#fig:fgrup}
+](pipelines/single-node/results/figures/hpccg.png){#fig:fgrup}
 
 The advent of cloud computing allows us to solve (1) using solutions 
 like KVM [@kivity_kvm_2007] or software containers 
@@ -264,14 +258,15 @@ that characterizes the behavior of a machine
 over a sufficiently large set of machines[^how-big], can serve as the 
 foundation for building a prediction model of the performance of an 
 application when executed on new ("unseen") machines 
-[@boyse_straightforward_1975], a natural next step to take with a 
-dataset like this. As we show in @Sec:negative, this is not as good as 
-we would expect.
+[@boyse_straightforward_1975]. Thus, a natural next step to take with 
+a dataset like this is to try to build a prediction model.
 
-However, building a prediction model has a utility. If we use these 
-performance vectors to apply SRA and we focus on feature importance 
-[@kira_practical_1992] of the created models, we can see that they 
-give us fine granularity resource utilization patterns. In 
+While building a prediction model is obviously something that can be 
+used to estimate the performance of an application, building one can 
+also serve as a way of identifying resource utilization. If we use 
+these performance vectors to apply SRA and we focus on feature 
+importance [@kira_practical_1992] of the created models, we can see 
+that they give us fine granularity resource utilization patterns. In 
 @Fig:featureimportance-implies-bottleneck, we show the intuition 
 behind why this is so. The performance of an application is determined 
 by the performance of the subcomponents that get stressed the most by 
@@ -357,11 +352,10 @@ computers in our lab. \label{tbl:machines}
 \input{figures/machines.tex}
 \end{table}
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-Boxplots illustrating the variability of the performance vector 
+![Boxplots illustrating the variability of the performance vector 
 dataset. Each stressor was executed five times on each of the machines listed in 
 @Tbl:machines.
-](figures/stressng-variability.png){#fig:stressng-variability}
+](pipelines/single-node/results/figures/stressng_variability.png){#fig:stressng-variability}
 
 Using this battery of stressors, we can obtain a performance profile 
 of a machine (a performance vector). When this vector is compared 
@@ -382,14 +376,12 @@ obtained by executing `stress-ng` on all the distinct machine
 configurations available in CloudLab [@ricci_introducing_2014] 
 (@Tbl:machines shows a summary of their hardware specs). As the figure 
 shows, some stressors are slightly correlated (those near 0) while 
-others show high correlation between them (in @Sec:negative we apply 
-principal component analysis to this dataset).
+others show high correlation between them.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-heat-map of Pearson correlation coefficients for performance vectors 
+![Heat-map of Pearson correlation coefficients for performance vectors 
 obtained by executing `stress-ng` on all the distinct machine 
 configurations available in CloudLab.
-](figures/corrmatrix.png){#fig:corrmatrix}
+](pipelines/single-node/results/figures/corrmatrix.png){#fig:corrmatrix}
 
 In order to analyze this last point further, that is, to try to 
 discern whether there are a few orthogonal features that we could 
@@ -408,8 +400,12 @@ future work is to address whether we can reduce the number of features
 with the goal of improving the models, without having to lose 
 information about which stressors are involved in the prediction.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-Principal Component Analysis for the performance vector dataset. The y-axis (log-scale) corresponds to the explained variance ratio, while the x-axis denotes the number of components. The blue line denotes the amount of variance reduced by having a particular number of components. The green line corresponds to the cumulative sum of the explained variance.
+![Principal Component Analysis for the performance vector dataset. The 
+y-axis (log-scale) corresponds to the explained variance ratio, while 
+the x-axis denotes the number of components. The blue line denotes the 
+amount of variance reduced by having a particular number of 
+components. The green line corresponds to the cumulative sum of the 
+explained variance.
 ](figures/pca-var-reduction.png){#fig:pca}
 
 ## System Resource Utilization Via Feature Importance in SRA
@@ -499,8 +495,6 @@ In this section we answer the following questions:
     (@Sec:fgrups-for-simulated)
  3. Can FGRUPs work for identifying regressions in real world software 
     projects? (@Sec:fgrups-for-real)
- 4. Can performance vectors be used to create performance prediction 
-    models? (@Sec:negative)
 
 **Note on Replicability of Results**: This paper adheres to The Popper 
 Experimentation Protocol and convention[^popper-url] 
@@ -614,10 +608,9 @@ variability originating from executing these applications on an
 heterogeneous set of machines, @Fig:variability shows boxplots of the 
 these.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-Variability of the five applications presented in this subsection. 
+![Variability of the five applications presented in this subsection. 
 Y-axis has been normalized.
-](figures/variability.png){#fig:variability}
+](pipelines/single-node/results/figures/apps_variability.png){#fig:variability}
 
 In @Fig:others we show FGRUPs for these four applications. The first 
 two on the top correspond to two tests of Redis, a popular open-source 
@@ -628,9 +621,8 @@ utilization profiles suggest that `SET` and `GET` are memory intensive
 operations (first 3 stressors from each test, as shown in 
 @Tbl:stressng-categories), which is an obvious conclusion. 
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-FGRUPs of the four tests used in this section.
-](figures/redis.png){#fig:others}
+![FGRUPs for the four tests benchmarked in this section.
+](pipelines/single-node/results/figures/four.png){#fig:others}
 
 The next two FGRUPs (below) correspond to performance tests for 
 Scikit-learn and SSCA. In the case of Scikit-learn, this test runs a 
@@ -663,10 +655,13 @@ matrix shows why this is so: almost all the features are highly
 correlated. As mentioned before, an open problem is that one of 
 systematically reducing the number of required machines.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-hpccg-redis-sklearn-ssca.ipynb)\] 
-Correlation matrix and FGRUP obtained from only two randomly selected 
+![Correlation matrix obtained from only two randomly selected machines 
+from @Tbl:machines (`issdm-41` and `r320` in this case).
+](pipelines/single-node/results/figures/corrmatrix_underfit.png){#fig:corrmatrix_underfit}
+
+![FGRUP for `redis-set` obtained from only two randomly selected 
 machines from @Tbl:machines (`issdm-41` and `r320` in this case).
-](figures/underfit.png){#fig:underfit}
+](pipelines/single-node/results/figures/redis-set_underfit.png){#fig:redis_underfit}
 
 [^brevity]: For brevity, we omit other results that corroborate FGRUPs 
 can correctly identify resource utilization patterns. All these are 
@@ -696,9 +691,8 @@ performance characteristics. The two engines we use in this case are
 `innodb` and `memory`. @Fig:mariadb-innodb-vs-memory shows the 
 profiles of MariaDB performance for these two engines.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-MariaDB with innodb and in-memory backends.
-](figures/mariadb-innodb-vs-memory.png){#fig:mariadb-innodb-vs-memory}
+![MariaDB with innodb and in-memory backends.
+](pipelines/single-node/results/figures/mariadb-innodb-vs-memory.png){#fig:mariadb-innodb-vs-memory}
 
 The next test is a modified version of the STREAM benchmark 
 [@mccalpin_memory_1995], which we refer to as STREAM-NADDS (introduced 
@@ -713,13 +707,15 @@ more work, eventually moving the bottleneck from memory to being
 cpu-bound; the higher the value of the `NADDS` parameter, the more 
 cpu-bound the test gets. @Fig:stream-adds shows this behavior.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-General behavior of the STREAM-NADDS performance test. The y-axis is the throughput of the test in MB/s. The x-axis corresponds to the number of terms in the sum expression of the `Add` STREAM subtest. The regular ("vanilla") 
-STREAM add test is memory bound, so adding more terms to the `Add` 
-subtest moves the performance from memory- to cpu-bound; 
-the higher the value of the `NADDS` parameter, the more CPU-bound the 
-test gets. This test was executed across all available machines (5 times). The bars denote standard deviation.
-](figures/stream-nadds.png){#fig:stream-adds}
+![General behavior of the STREAM-NADDS performance test. The y-axis is 
+the throughput of the test in MB/s. The x-axis corresponds to the 
+number of terms in the sum expression of the `Add` STREAM subtest. The 
+regular ("vanilla") STREAM add test is memory bound, so adding more 
+terms to the `Add` subtest moves the performance from memory- to 
+cpu-bound; the higher the value of the `NADDS` parameter, the more 
+CPU-bound the test gets. This test was executed across all available 
+machines (5 times). The bars denote standard deviation.
+](pipelines/single-node/results/figures/stream-nadds-behavior.png){#fig:stream-adds}
 
 @Fig:stream-fgrups shows the FGRUPs for the four tests. On the left, 
 we see the resource utilization behavior of the "vanilla" version of 
@@ -731,12 +727,11 @@ for the sum increases, the test moves all the way to being CPU-bound
 `hsearch` features going up in importance as the number of additions 
 increases.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize.ipynb)\] 
-The FGRUPs for modified version of STREAM. The parameter of `NADDS` 
+![The FGRUPs for modified version of STREAM. The parameter of `NADDS` 
 increases by taking values of 1, 2, 4, ..., 20 and 30. We see that 
 they capture the simulated regression which causes this application to 
 be moving from being memory-bound to being cpu-bound.
-](figures/stream-nadds-increase.png){#fig:stream-fgrups}
+](pipelines/single-node/results/figures/stream-nadds.png){#fig:stream-fgrups}
 
 ## Real world Scenario {#sec:fgrups-for-real}
 
@@ -751,49 +746,15 @@ and run the `load` test. @Fig:mariadb-innodb-regression shows the
 corresponding FGRUPs. We can observe that the FGRUP generated by 
 _quiho_ can identify the difference in performance.
 
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-mysql-two-versions.ipynb)\] 
-A regression that appears from going in the reversed timeline (from 
+![A regression that appears from going in the reversed timeline (from 
 mariadb-10.0.3 to 5.5.38).
-](figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
+](pipelines/single-node/results/figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
 
 For brevity, we omit regressions found in other 4 applications (zlog, 
 postgres, redis, and apache web server).
 
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
-
-## Using Performance Vectors to Predict Performance {#sec:negative}
-
-As mentioned earlier, the set of performance vectors obtained as part 
-of the generation of FGRUPs could be used to create prediction models 
-that try to estimate the performance of an application using. 
-@Fig:prediction shows a plot with mean absolute percentage errors 
-(MAPE) corresponding to the outcome of doing 1-cross-validation 
-[@kohavi_study_1995] across the distinct type of hardware 
-architectures found in CloudLab. The 1-cross-validation is done by 
-creating a training dataset composed of performance vectors from all 
-but one machine. We then generate the model using this training subset 
-as the independent variables and the performance metric associated to 
-an application performance as the dependant variable. We then test 
-obtain the accuracy of the model on the data corresponding to the 
-machine that we left out. Before
-
-![\[[source](https://github.com/ivotron/quiho-popper/tree/icpe18-submission/experiments/single-node/results/visualize-predict.ipynb)\] 
-Mean Absolute Percentage Error of cross-validation.
-](figures/prediction.png){#fig:prediction}
-
-We create two prediction models. The first one is using random forest 
-[@liaw_classification_2002] to create a linear regression performance 
-model (blue line). We select random forest (as opposed to selecting other 
-alternatives), since it is the one with the highest estimation 
-accuracy from all the ones we tried. As mentioned previously, data is 
-first normalized to prevent dimensionality issues. The second model is 
-obtained by creating a pipeline, where principal component analysis 
-(PCA) is applied first and then random forest is applied next (green 
-line). As we can see, the prediction errors range from 3% up to almost 
-50% in the worst-case scenario. Compared to the status-quo 
-[@crume_automatic_2014], where good performance prediction models are 
-those with less than 2-3% MAPE.
 
 # Discussion {#sec:discussion}
 
@@ -844,7 +805,7 @@ results. Ideally, this information could be used as input for
 emulators and virtual machines, in order to recreate original 
 performance characteristics.
 
-**Enforcement Learning**. Over the course of its life, an application 
+**Reinforcement Learning**. Over the course of its life, an application 
 will be tested on many platforms. If we can have an ever-growing list 
 of machines where an application is tested, the more we run an 
 application in a scenario like this, the more rich the performance 
