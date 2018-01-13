@@ -1,5 +1,5 @@
 ---
-title: "_quiho_: Automated Performance Regression Testing Using Fine Granularity Resource Utilization Profiles"
+title: "_quiho_: Automated Performance Regression Testing Using Inferred Resource Utilization Profiles"
 shorttitle: _quiho_
 author:
 - name: Ivo Jimenez
@@ -23,16 +23,16 @@ abstract: |
   tests. _quiho_ profiles an application by applying sensitivity 
   analysis, in particular statistical regression analysis (SRA), using 
   application-independent performance feature vectors that 
-  characterize the performance of machines. The result of the SRA, in 
-  particular feature importance, is used as a proxy to identify 
+  characterize the performance of machines. The result of the SRA, 
+  feature importance specifically, is used as a proxy to identify 
   hardware and low-level system software behavior. The relative 
   importance of these features serve as a performance profile of an 
-  application (termed fine granularity resource utilization profile or 
-  FGRUP), which is used to automatically validate performance behavior 
-  across multiple revisions of an application's code base. We 
+  application (termed inferred resource utilization profile or 
+  IRUP), which is used to automatically validate performance behavior 
+  across multiple revisions of an application's code base without having to instrument code or obtain performance counters. We 
   demonstrate that _quiho_ can successfully discover performance 
   regressions by showing its effectiveness in profiling application 
-  performance for synthetically induced regressions as well as those 
+  performance for synthetically introduced regressions as well as those 
   found in real-world applications.
 keywords:
 - software testing
@@ -54,27 +54,38 @@ and compared for multiple versions of an application (usually current
 and past versions) and, if significant differences are found, this 
 constitutes a regression.
 
-![_quiho_'s workflow for obtaining a fine granularity resource 
-utilization profile (FGRUP). A FGRUP can be used as an alternative for 
-profiling application performance and can be used in automated 
-regression testing. FGRUPs can also aid in root cause analysis.
-](figures/fgrup-generation.png){#fig:fgrup-generation}
+![_quiho_'s workflow for generating inferred resource utilization profiles (IRUPs) for an application. An IRUP is used as an alternative for 
+profiling application performance and can complement automated 
+regression testing. For example, after a change in the runtime of an application has been detected across two revisions of the code base, an IRUP can be obtained in order to determine whether this change is significant. IRUPs can also aid in root cause analysis.
+](figures/irup-generation.png){#fig:irup-generation}
 
 One of the main challenges in automating performance regression tests 
-is defining the criteria to decide whether a change in an 
-application's performance behavior is significant 
+is defining the criteria to decide whether a change in 
+application performance behavior is significant 
 [@cherkasova_anomaly_2008]. Understanding the effects in performance 
 that distinct hardware and low-level system software[^system] 
 components have on applications demands highly-skilled performance 
 engineering [@jin_understanding_2012 ; @han_performance_2012 ; 
 @jovic_catch_2011]. Traditionally, this investigation is done by an 
 analyst in charge of looking at changes to the performance metrics 
-captured at runtime, possibly investigating deeply into by looking at 
+captured at runtime, possibly investigating deeply by looking at 
 performance counters, performance profiles, static code analysis, and 
 static/dynamic tracing. One common approach is to find bottlenecks by 
 generating a profile (e.g., using the `perf` Linux kernel tool) in 
 order to understand which parts of the system an application is 
-hammering on [@gregg_systems_2013].
+hammering on [@gregg_systems_2013]. Profiling involves recording resource utilization for 
+an application over time making use of tools such as `perf`. In 
+general, this can be done in two ways: timed- and event-based 
+profiles. Timed-based profiling samples the instruction pointer at 
+regular intervals and generates a function call tree with each node in 
+the three having a percentage of time associated with it, which 
+represents the amount of time that the CPU spends within that piece of 
+code. Event-based profiling samples at regular intervals different 
+events at the hardware and OS level in order to obtain a distribution 
+of events over the time that an application runs. In either case, the 
+system needs to execute the application in a "profiling" mode, in 
+order to have the OS enable the instrumentation mechanisms that has 
+available to carry out this task.
 
 Automated solutions have been proposed in recent years 
 [@jiang_automated_2010 ; @shang_automated_2015 ; 
@@ -83,36 +94,44 @@ runtime logs and/or metrics
 application in order to build a performance prediction model that can 
 be used to automatically determine whether a regression has occurred. 
 This relies on having accurate predictions and, as with any prediction 
-model, there is the risk of finding false/positive negatives. Rather 
-than striving for highly accurate predictions, one can use performance 
+model, there is the risk of finding false negatives/positives. In addition to
+striving for highly accurate predictions, one can also use performance 
 modeling as a profiling tool.
 
 In this work, we present _quiho_ an approach aimed at complementing 
-automated performance regression testing by using fine granularity 
-resource utilization profiles (FGRUP) associated to an application 
-(@Fig:fgrup-generation). FGRUPs are an alternative way of profiling 
-the performance of an application that relies on applying Statistical 
-Regression Analysis[^sra] (SRA) on a dataset of 
-application-independent performance vectors. The main assumption 
-behind _quiho_ is the availability of multiple machines when 
-exercising performance regression testing, a reasonable requirement 
-that is well-aligned with current software engineering practices 
-(performance regression is carried out on multiple architectures and 
-OS).
+automated performance regression testing by using inferred 
+resource utilization profiles (IRUP) associated to an application. 
+_quiho_ is 
+an alternative framework for profiling an application where the utilization 
+of one or more subsystems (e.g. virtual memory) is inferred by 
+applying Statistical Regression Analysis[^sra] (SRA) on 
+a dataset of application-independent performance vectors. 
+The main 
+assumption behind _quiho_ is the availability of multiple machines 
+when exercising performance regression testing, a reasonable 
+requirement that is well-aligned with current software engineering 
+practices (performance regression is carried out on multiple 
+architectures and OSs).
 
-When an application is profiled using _quiho_, the underlying system is 
-baselined by executing a battery of microbenchmarks. This matrix (or 
-dataset) of performance vectors characterizes the available machines 
+When an application is profiled using _quiho_ (@Fig:irup-generation, the machines available to the performance tests are 
+baselined by executing a battery of microbenchmarks on each. This matrix 
+of performance vectors characterizes the available machines 
 independently from any application and can be used (and re-used) as 
 the foundation for applying statistical learning techniques such as 
-SRA. In order to obtain a FGRUP, the application under study is 
+SRA. In order to infer resource utilization, the application under study is 
 executed on the same machines from where the performance vectors where 
-obtained, and SRA is applied. The results of the SRA for an 
+obtained, and SRA is applied. The result of the SRA for an 
 application, in particular feature importance, is used as a proxy to 
 characterize hardware and low-level system utilization behavior. The 
-relative importance of these features serve as a the FGRUP of an 
-application, which is used to automatically validate its performance 
-behavior across multiple revisions of its code base.
+relative importance of these features constitutes what we refer to as 
+an _inferred resource utilization profile_ (IRUP). @Fig:hpccg-irup 
+shows an example of an IRUP for an application. Each feature in this 
+relative ranking corresponds to a microbenchmark for a subcomponent of 
+a system (e.g. floating point unit, virtual memory, etc.). Thus, this 
+profile captures the resource utilization pattern of an application 
+which can be used to automatically validate its performance behavior 
+across multiple revisions of its code base, making _quiho_ an approach 
+to characterizing applications that is resilient to code refactoring.
 
 In this article, we demonstrate that _quiho_ can successfully identify 
 performance regressions. We show (@Sec:eval) that _quiho_ (1) obtains 
@@ -128,7 +147,8 @@ applications. The contributions of our work are:
   * An automated end-to-end framework (based on the above finding), 
     that aids analysts in identifying significant changes in resource 
     utilization behavior of applications which can also aid in 
-    identifying root cause of regressions.
+    identifying root cause of regressions, and that is resilient an 
+    application code refactoring.
 
   * Methodology for evaluating automated performance regression. We 
     introduce a set of synthetic benchmarks aimed at evaluating 
@@ -157,10 +177,10 @@ regression analysis in statistics.
 
 # Motivation and Intuition Behind _quiho_ {#sec:intuition}
 
-![Automated regression testing pipeline integrating fine granularity 
-resource utilization profiles (FGRUP). FGRUPs are obtained by _quiho_ 
-and can be used both, for identifying regressions, and to aid in the 
-quest for finding the root cause of a regression.
+![Automated regression testing pipeline integrating inferred resource 
+utilization profiles (IRUP). IRUPs are obtained by _quiho_ and can be 
+used both, for identifying regressions, and to aid in the quest for 
+finding the root cause of a regression.
 ](figures/pipeline.png){#fig:pipeline}
 
 @Fig:pipeline shows the workflow of an automated regression testing 
@@ -185,12 +205,12 @@ resources. This is usually done offline by analysts and involves
 eyeballing source code, static code analysis, or analyzing hardware/OS 
 performance counters/profiles.
 
-An alternative is to infer fine granularity resource utilization 
-behavior by comparing the performance of an application on platforms 
-with different system performance characteristics. For example, if we 
-know that machine A has higher memory bandwidth than machine B, and an 
-application is memory-bound, then this application will perform better 
-on machine A. There are several challenges with this approach:
+An alternative is to infer resource utilization behavior by comparing 
+the performance of an application on platforms with different 
+performance characteristics. For example, if we know that machine A 
+has higher memory bandwidth than machine B, and an application is 
+memory-bound, then this application will perform better on machine A. 
+There are several challenges with this approach:
 
 ![A matrix of performance feature vectors over a colection of CloudLab 
 servers (left), and an array of a performance metric for an 
@@ -227,7 +247,7 @@ execution of the `hpccg` miniapp [@heroux_hpccg_2007]. The y-axis
 denotes the relative performance with respect to the most importante 
 feature, which corresponds to the first one on the x-axis (from top to 
 bottom).
-](pipelines/single-node/results/figures/hpccg.png){#fig:fgrup}
+](pipelines/single-node/results/figures/hpccg.png){#fig:hpccg-irup}
 
 The advent of cloud computing allows us to solve (1) using solutions 
 like KVM [@kivity_kvm_2007] or software containers 
@@ -241,20 +261,19 @@ DevOps practices [@wiggins_twelvefactor_2011 ; @httermann_devops_2012]
 allows us to address (2), i.e. to reduce the amount of work required to 
 run tests.
 
-Thus, the main challenge to inferring fine granularity resource 
-utilization patterns (3,4) lies in quantifying the performance of 
-the platform in a consistent way. One alternative is to look at the 
-hardware specification and infer performance characteristics from 
-this, an almost impossible task. For example, the 
-spec might specify that the machine has DDR4 memory sticks, with a 
-theoretical peak throughput of 10 GB/s, but the actual memory 
-bandwidth could be less (usually is, by a non-deterministic fraction 
-of the advertised performance).
+Thus, the main challenge to inferring resource utilization patterns 
+lies in quantifying the performance of the platform in a consistent 
+way (3,4). One alternative is to look at the hardware specification 
+and infer performance characteristics from this, a highly inaccurate 
+task due to the lack of correspondence between advertised (or theoretical peak throughput) and actual performance observed in reality. For example, the spec of a platform might specify that the machine has DDR4 
+memory sticks, with a theoretical peak throughput of 10 GB/s, but the 
+actual memory bandwidth could be less (usually is, by a 
+non-deterministic fraction of the advertised performance).
 
 _quiho_ solves this problem by characterizing machine performance 
 using microbenchmarks. These performance vectors are the "fingerprint" 
 that characterizes the behavior of a machine 
-[@jimenez_characterizing_2016a]. These performance vectors, obtained 
+[@jimenez_characterizing_2016a]. These vectors, obtained 
 over a sufficiently large set of machines[^how-big], can serve as the 
 foundation for building a prediction model of the performance of an 
 application when executed on new ("unseen") machines 
@@ -265,8 +284,8 @@ While building a prediction model is obviously something that can be
 used to estimate the performance of an application, building one can 
 also serve as a way of identifying resource utilization. If we use 
 these performance vectors to apply SRA and we focus on feature 
-importance [@kira_practical_1992] of the created models, we can see 
-that they give us fine granularity resource utilization patterns. In 
+importance [@kira_practical_1992] of the generated models, we can see 
+that they allow us to infer resource utilization patterns. In 
 @Fig:featureimportance-implies-bottleneck, we show the intuition 
 behind why this is so. The performance of an application is determined 
 by the performance of the subcomponents that get stressed the most by 
@@ -287,8 +306,8 @@ identify the minimal set of machines needed to obtaining meaningful
 results from SRA.
 
 If we rank features by their relative importance, we obtain what we 
-call a fine granularity resource utilization profile (FGRUP), as shown 
-in @Fig:fgrup. In the next section we show how these FGRUPs can be 
+call an inferred resource utilization profile (IRUP), as shown 
+in @Fig:irup. In the next section we show how these IRUPs can be 
 used in automated performance regression tests. @Sec:eval empirically 
 validates this approach.
 
@@ -299,9 +318,9 @@ prototype. We first describe how we obtain the performance vectors
 that characterize system performance. We then show that we can feed 
 these vectors to SRA in order to build a performance model for an 
 application. Lastly, we describe how we obtain feature importance, how 
-this represents a fine granularity resource utilization profile 
-(FGRUP) and the algorithm (and alternative heuristics) to comparing 
-FGRUPs.
+this represents an inferred resource utilization profile 
+(IRUP) and the algorithm (and alternative heuristics) to comparing 
+IRUPs.
 
 ## Performance Feature Vectors As System Performance Characterization
 
@@ -441,9 +460,9 @@ function space by iteratively choosing a function (weak hypothesis)
 that points in the negative gradient direction.
 
 Once an ensemble of trees for an application is generated, feature 
-importances are obtained in order to use them as the FGRUP for an 
-application. @Fig:fgrup-generation shows the process applied to 
-obtaining FGRUPs for an application. `scikit-learn` implements the 
+importances are obtained in order to use them as the IRUP for an 
+application. @Fig:irup-generation shows the process applied to 
+obtaining IRUPs for an application. `scikit-learn` implements the 
 feature importance calculation algorithm introduced in 
 [@breiman_classification_1984]. This is sometimes called _gini 
 importance_ or _mean decrease impurity_ and is defined as the total 
@@ -459,12 +478,12 @@ quantify work consistently across stressors, we normalize the data in
 order to prevent some features from dominating in the process of 
 creating the prediction models (the data for @Fig:variability has been 
 normalized prior to being plotted). In section @Sec:eval we evaluate 
-the effectiveness of FGRUPs.
+the effectiveness of IRUPs.
 
-## Using FGRUPs in Automated Regression Tests {#sec:compare-fgrups}
+## Using IRUPs in Automated Regression Tests {#sec:compare-irups}
 
 As shown in @Fig:pipeline (step 4), when trying to determine whether a 
-performance degradation occurred, FGRUPs can be used to compare 
+performance degradation occurred, IRUPs can be used to compare 
 differences between current and past versions of an application. In 
 order to do so, we apply a simple algorithm. Given two profiles $A$ 
 and $B$, and an arbitrary $\epsilon$ value, look at first feature in 
@@ -476,7 +495,7 @@ values are similar (within $+/-\epsilon$), we move to the next, less
 important factor and the compare again. This is repeated for as many 
 features are present in the dataset.
 
-FGRUPs can also be used as a pointer to where to start with an 
+IRUPs can also be used as a pointer to where to start with an 
 investigation that looks for the root cause of the regression 
 (@Fig:pipeline, step 5). For example, if _memorymap_ ends up being the 
 most important feature, then we can start by looking at any 
@@ -489,12 +508,12 @@ make heavy use of the subcomponent in question.
 
 In this section we answer the following questions:
 
- 1. Can FGRUPs accurately capture application performance behavior? 
-    (@Sec:effective-fgrups)
- 2. Can FGRUPs work for identifying simulated regressions? 
-    (@Sec:fgrups-for-simulated)
- 3. Can FGRUPs work for identifying regressions in real world software 
-    projects? (@Sec:fgrups-for-real)
+ 1. How well can IRUPs accurately capture application performance behavior? 
+    (@Sec:effective-irups)
+ 2. How well can IRUPs work for identifying simulated regressions? 
+    (@Sec:irups-for-simulated)
+ 3. How well can IRUPs work for identifying regressions in real world software 
+    projects? (@Sec:irups-for-real)
 
 **Note on Replicability of Results**: This paper adheres to The Popper 
 Experimentation Protocol and convention[^popper-url] 
@@ -517,9 +536,9 @@ with the _Results Replicable_ category. In the event that our paper
 gets accepted, we plan to submit this work to the artifact review 
 track too.
 
-## Effectiveness of FGRUPs to Capture Resource Utilization Behavior {#sec:effective-fgrups}
+## Effectiveness of IRUPs to Capture Resource Utilization Behavior {#sec:effective-irups}
 
-In this subsection we show how FGRUPs can effectively describe the 
+In this subsection we show how IRUPs can effectively describe the 
 fine granularity resource utilization of an application with respect 
 to a set of machines. Our methodology is:
 
@@ -529,7 +548,7 @@ to a set of machines. Our methodology is:
      discovered features are indeed the cause of performance 
      differences.
 
-@Fig:fgrup shows the profile of an execution of the `hpccg` miniapp 
+@Fig:irup shows the profile of an execution of the `hpccg` miniapp 
 [@heroux_hpccg_2007]. This proxy (or miniapp) application 
 [@heroux_impheroux_improving_2009] is a "conjugate gradient benchmark 
 code for a 3D chimney domain on an arbitrary number of processors 
@@ -597,12 +616,12 @@ the ones denoting stalled cycles (which significantly determine
 application performance [@cepeda_pipeline_2011 ; 
 @mcnairy_itanium_2003]).
 
-Next, we analyze FGRUPs of other four applications[^brevity]. These 
+Next, we analyze IRUPs of other four applications[^brevity]. These 
 applications are Redis [@zawodny_redis_2009], Scikit-learn 
 [@pedregosa_scikitlearn_2011], and SSCA [@bader_design_2005]. Due to 
 space constraints we omit a similar detailed analysis as the one 
 presented above for `hpccg`. However, resource utilization 
-characteristics of these code bases is well known and we verify FGRUPs 
+characteristics of these code bases is well known and we verify IRUPs 
 using this high-level intuition. As a way to illustrate the 
 variability originating from executing these applications on an 
 heterogeneous set of machines, @Fig:variability shows boxplots of the 
@@ -612,7 +631,7 @@ these.
 Y-axis has been normalized.
 ](pipelines/single-node/results/figures/apps_variability.png){#fig:variability}
 
-In @Fig:others we show FGRUPs for these four applications. The first 
+In @Fig:others we show IRUPs for these four applications. The first 
 two on the top correspond to two tests of Redis, a popular open-source 
 in-memory key-value database. These two tests are `SET`, `GET` from 
 the `redis-benchmark` command that test operations that store and 
@@ -621,10 +640,10 @@ utilization profiles suggest that `SET` and `GET` are memory intensive
 operations (first 3 stressors from each test, as shown in 
 @Tbl:stressng-categories), which is an obvious conclusion. 
 
-![FGRUPs for the four tests benchmarked in this section.
+![IRUPs for the four tests benchmarked in this section.
 ](pipelines/single-node/results/figures/four.png){#fig:others}
 
-The next two FGRUPs (below) correspond to performance tests for 
+The next two IRUPs (below) correspond to performance tests for 
 Scikit-learn and SSCA. In the case of Scikit-learn, this test runs a 
 comparison of a several classifiers in on a synthetic dataset. 
 Scikit-learn uses NumPy [@walt_numpy_2011] internally, which is known 
@@ -642,14 +661,14 @@ workload.
 The reader might have noticed that, regardless of how the performance 
 of an application looks like, SRA will always produce a model with 
 associated feature importances. Thus, one can pose the following 
-question: is there any scenario where a FGRUP is _not_ correctly 
+question: is there any scenario where a IRUP is _not_ correctly 
 associated with what the application is doing? In other words, are 
-FGRUPs falsifiable? The answer is yes. A FGRUP can be incorrectly 
+IRUPs falsifiable? The answer is yes. A IRUP can be incorrectly 
 representing an application's performance behavior if there is under- 
 or over-fitting when generating the model. @Fig:underfit shows the 
-correlation matrix (left), as well as a FGRUP obtained from selecting 
+correlation matrix (left), as well as a IRUP obtained from selecting 
 two random machines from the set of available ones. The application in 
-question is Scikit-learn and, as the figures show, this FGRUP is of 
+question is Scikit-learn and, as the figures show, this IRUP is of 
 little use since many features have 100% relevance. The correlation 
 matrix shows why this is so: almost all the features are highly 
 correlated. As mentioned before, an open problem is that one of 
@@ -659,15 +678,15 @@ systematically reducing the number of required machines.
 from @Tbl:machines (`issdm-41` and `r320` in this case).
 ](pipelines/single-node/results/figures/corrmatrix_underfit.png){#fig:corrmatrix_underfit}
 
-![FGRUP for `redis-set` obtained from only two randomly selected 
+![IRUP for `redis-set` obtained from only two randomly selected 
 machines from @Tbl:machines (`issdm-41` and `r320` in this case).
 ](pipelines/single-node/results/figures/redis-set_underfit.png){#fig:redis_underfit}
 
-[^brevity]: For brevity, we omit other results that corroborate FGRUPs 
+[^brevity]: For brevity, we omit other results that corroborate IRUPs 
 can correctly identify resource utilization patterns. All these are 
 available in the github repository associated to this article.
 
-## Simulating Regressions {#sec:fgrups-for-simulated}
+## Simulating Regressions {#sec:irups-for-simulated}
 
 In this section we test the effectiveness of _quiho_ to detect 
 performance simulations that are artificially induced. We induce 
@@ -717,7 +736,7 @@ CPU-bound the test gets. This test was executed across all available
 machines (5 times). The bars denote standard deviation.
 ](pipelines/single-node/results/figures/stream-nadds-behavior.png){#fig:stream-adds}
 
-@Fig:stream-fgrups shows the FGRUPs for the four tests. On the left, 
+@Fig:stream-irups shows the IRUPs for the four tests. On the left, 
 we see the resource utilization behavior of the "vanilla" version of 
 STREAM (which corresponds to a value of 1 for the `NADDS` parameter). 
 As expected, the associated features (stressors) to these are from the 
@@ -727,13 +746,13 @@ for the sum increases, the test moves all the way to being CPU-bound
 `hsearch` features going up in importance as the number of additions 
 increases.
 
-![The FGRUPs for modified version of STREAM. The parameter of `NADDS` 
+![The IRUPs for modified version of STREAM. The parameter of `NADDS` 
 increases by taking values of 1, 2, 4, ..., 20 and 30. We see that 
 they capture the simulated regression which causes this application to 
 be moving from being memory-bound to being cpu-bound.
-](pipelines/single-node/results/figures/stream-nadds.png){#fig:stream-fgrups}
+](pipelines/single-node/results/figures/stream-nadds.png){#fig:stream-irups}
 
-## Real world Scenario {#sec:fgrups-for-real}
+## Real world Scenario {#sec:irups-for-real}
 
 In this section we show that _quiho_ works with regressions that can 
 be found in real software projects. It is documented that the changes 
@@ -741,9 +760,9 @@ made to the `innodb` storage engine in version 10.3.2 improves the
 performance in MariaDB, with respect to previous version 5.5.58. If we 
 take the development timeline and invert it, we can treat 5.5.58 as if 
 it was a "new" revision that introduces a performance regression. To 
-show that this can be captured with FGRUPs, we use `mysqlslap` again 
+show that this can be captured with IRUPs, we use `mysqlslap` again 
 and run the `load` test. @Fig:mariadb-innodb-regression shows the 
-corresponding FGRUPs. We can observe that the FGRUP generated by 
+corresponding IRUPs. We can observe that the IRUP generated by 
 _quiho_ can identify the difference in performance.
 
 ![A regression that appears from going in the reversed timeline (from 
@@ -778,9 +797,9 @@ a complement, not a replacement of `perf`, to existing performance
 engineering practices: once a test has failed _quiho_'s checks, then 
 proceed to make use of existing tools.
 
-**FGRUP Comparison**. The algorithm specified in @Sec:compare-fgrups 
+**IRUP Comparison**. The algorithm specified in @Sec:compare-irups 
 is a straight-forward one. One could think of more sophisticated ways 
-of doing FGRUP comparison and finding equivalences. For example, using 
+of doing IRUP comparison and finding equivalences. For example, using 
 the categories from @Tbl:stressng-categories, one could try to group 
 stressors and determine coarse-grained bottlenecks, instead of fine 
 grained ones. Another alternative is to do reduce the number of 
@@ -788,10 +807,10 @@ features by applying PCA, exploratory factor analysis (EFA), or
 singular value decomposition (SVD), and compare profiles in terms of 
 the mapped factors.
 
-**FGRUP as a visualization tool**. The reader might have noticed that 
-FGRUPs can be visually compared by the human eye (and are somewhat 
+**IRUP as a visualization tool**. The reader might have noticed that 
+IRUPs can be visually compared by the human eye (and are somewhat 
 similar in this regard to FlameGraphs [@gregg_flame_2016]). Adding a 
-coloring scheme to FGRUPs might make it easier to interpret the 
+coloring scheme to IRUPs might make it easier to interpret the 
 differences. For example, the categories in @Tbl:stressng-categories 
 could be used to define a color palette (by assigning a color to each 
 subset of the powerset of categories).
@@ -833,7 +852,7 @@ steps:
      category, the main difference being that, as opposed to existing 
      solutions, _quiho_ does not rely on having accurate prediction 
      models since its goal is to describe resource utilization (obtain 
-     FGRUPs).
+     IRUPs).
   3. If a regression is observed, automatically find the root cause or 
      aid an analyst to find it [@ibidunmoye_performance_2015 ; 
      @heger_automated_2013 ; @attariyan_xray_2012]. While _quiho_ does 
@@ -874,7 +893,7 @@ its potential use in this scenario.
 # Limitations and Future Work {#sec:conclusion}
 
 The main limitation in _quiho_ is the requirement of having to execute 
-a test on more than one machine in order to obtain FGRUPs. As 
+a test on more than one machine in order to obtain IRUPs. As 
 mentioned, an open problem is to precisely quantify the minimum amount 
 of required machines. On the other hand, we can avoid having to run 
 `stress-ng` every time the application gets tested by integrating this 
