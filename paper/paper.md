@@ -147,8 +147,8 @@ applications. The contributions of our work are:
   * An automated end-to-end framework (based on the above finding), 
     that aids analysts in identifying significant changes in resource 
     utilization behavior of applications which can also aid in 
-    identifying root cause of regressions, and that is resilient an 
-    application code refactoring.
+    identifying root cause of regressions, and that is resilient to 
+    code refactoring.
 
   * Methodology for evaluating automated performance regression. We 
     introduce a set of synthetic benchmarks aimed at evaluating 
@@ -773,12 +773,16 @@ postgres, redis, and apache web server).
 
 We briefly discuss some aspects related to _quiho_.
 
-**Application-Independent Performance Characterization**. We used a 
-subset of `stress-ng` microbenchmarks to quantify machine performance 
-but the approach is not limited to this benchmarking toolkit. Ideally, 
-we would like to extend the amount and type of stressors so that we 
-have more coverage over the distinct subcomponents of a system. An 
-open question is to systematically test whether the current set of 
+**Application-Independent Performance Characterization**. The main 
+advantage of the _quiho_ approach is its resiliency. By inferring 
+resource utilization instead of directly instrumenting code to 
+generate profiles, the _quiho_ approach is resilient to code 
+refactoring and requires no manual intervention. We used a subset of 
+`stress-ng` microbenchmarks to quantify machine performance but the 
+approach is not limited to this benchmarking toolkit. Ideally, we 
+would like to extend the amount and type of stressors so that we have 
+more coverage over the distinct subcomponents of a system. An open 
+question is to systematically test whether the current set of 
 stressors is sufficient to cover all subcomponents of a system, and at 
 the same time reduce the number of microbenchmarks.
 
