@@ -113,7 +113,7 @@ requirement that is well-aligned with current software engineering
 practices (performance regression is carried out on multiple 
 architectures and OSs).
 
-When an application is profiled using _quiho_ (@Fig:irup-generation, the machines available to the performance tests are 
+When an application is profiled using _quiho_ (@Fig:irup-generation), the machines available to the performance tests are 
 baselined by executing a battery of microbenchmarks on each. This matrix 
 of performance vectors characterizes the available machines 
 independently from any application and can be used (and re-used) as 
@@ -284,33 +284,52 @@ a dataset like this is to try to build a prediction model.
 While building a prediction model is obviously something that can be 
 used to estimate the performance of an application, building one can 
 also serve as a way of identifying resource utilization. If we use 
-these performance vectors to apply SRA and we focus on feature 
-importance [@kira_practical_1992] of the generated models, we can see 
-that they allow us to infer resource utilization patterns. In 
+these performance vectors to apply SRA and focus on feature 
+importance [@kira_practical_1992] of the generated models, 
+they can allow us to infer resource utilization patterns. In 
 @Fig:featureimportance-implies-bottleneck, we show the intuition 
 behind why this is so. The performance of an application is determined 
 by the performance of the subcomponents that get stressed the most by 
 the application's code. Thus, intuitively, if the performance of an 
 application across multiple machines resembles the performance of a 
-microbenchmark, then we can say that the application is heavily 
+microbenchmark over the same set of machines, then we can say that the application is heavily 
 influenced by that subcomponent. In other words, if the variability 
-pattern of a feature across multiple machines resembles the 
-variability pattern of application performance across those same 
+of a feature across multiple machines resembles the 
+variability of application performance across those same 
 machines, it is likely due to the application stressing the same 
 subcomponent that the corresponding microbenchmark stresses. While 
 this can be inferred by obtaining correlation coefficients, proper SRA 
 is needed in order to create prediction models, as well as to obtain a 
 relative rank of feature importances.
 
+Relying on SRA as a way of inferring resource utilization behavior has 
+the practical consequence of _quiho_ benefiting heavily from an 
+heterogeneous setup. The more the "performance diversity" of machines 
+that are available for testing, the easier that _quiho_ can discover 
+an application's resource utilization behavior. Intuitively, this can 
+be explained as follows. If we run a IO-bound application on distinct 
+machines with very different CPU and memory subsystem performance but 
+similar IO throughput, we won't be able to discover that the 
+application's bottleneck is on the IO subsystem. If we create a more 
+heterogeneous mix of machines, with larger IO performance variability, 
+we can discover that this application is IO-intensive since the 
+performance of the application will vary, depending on the 
+capabilities of the underlying IO subsystem of each distinct machine.
+
 [^how-big]: In @Sec:discussion we briefly sketch how we would apply 
 PAC to find the minimal set of machines needed to obtaining meaningful 
 results from SRA.
 
-If we rank features by their relative importance, we obtain what we 
-call an inferred resource utilization profile (IRUP), as shown in 
-@Fig:hpccg-irup. In the next section we explain how these IRUPs are 
-obtained and how they can be used in automated performance regression 
-tests. @Sec:eval empirically validates this approach.
+Thus, having high performance variability allows _quiho_ to infer 
+resource utilization patterns by discovering the underlying 
+correlations between the performance of microbenchmarks and an 
+application's performance. Since SRA results in creating a performance 
+prediction model for an application, we can rank features by sorting 
+them with respect to their relative performance prediction importance. 
+We call this ranking an _Inferred Resource Utilization Profile_ (IRUP), 
+as shown in @Fig:hpccg-irup. In the next section we explain how these 
+IRUPs are obtained and how they can be used in automated performance 
+regression tests. @Sec:eval empirically validates this approach.
 
 # Our Approach {#sec:quiho}
 
