@@ -527,14 +527,8 @@ link points to a Jupyter notebook that shows the analysis and source
 code for that graph. The parent folder of the notebook (following the 
 Popper's file organization convention) contains all the artifacts and 
 automation scripts for the experiments. All results presented here can 
-be replicated[^acm-badges], as long as the reader has an account at 
-Cloudlab (see repo for more details).
-
-[^acm-badges]: **Note to reviewers**: based on the terminology 
-described in the ACM Badging Policy [@acm_result_2016] this complies 
-with the _Results Replicable_ category. In the event that our paper 
-gets accepted, we plan to submit this work to the artifact review 
-track too.
+be replicated, as long as the reader has an account at Cloudlab (see 
+repo for more details).
 
 ## Effectiveness of IRUPs to Capture Resource Utilization Behavior {#sec:effective-irups}
 
@@ -624,7 +618,7 @@ presented above for `hpccg`. However, resource utilization
 characteristics of these code bases is well known and we verify IRUPs 
 using this high-level intuition. As a way to illustrate the 
 variability originating from executing these applications on an 
-heterogeneous set of machines, @Fig:variability shows boxplots of the 
+heterogeneous set of machines, @Fig:variability shows boxplots of 
 these.
 
 ![Variability of the five applications presented in this subsection. 
@@ -848,10 +842,9 @@ create rich performance models.
 
 # Related Work {#sec:sra}
 
-## Automated Regression Testing
-
-Automated regression testing can be broken down in the following three 
-steps:
+**Automated Regression Testing**. Automated regression testing 
+[@perl_performance_1993] can be broken down 
+in the following three steps:
 
   1. In the case of large software projects, decide which tests to 
      execute [@kazmi_effective_2017]. This line of work is 
@@ -870,15 +863,44 @@ steps:
      not find the root cause of regressions, it complements the 
      information that an analyst has available to investigate further.
 
-## Decision Trees In Performance Engineering
+Modeling based on application profiles has been studied before 
+[@snavely_modeling_2001 ; @ghaith_profilebased_2013a ; 
+@shen_automating_2015]. In [@snavely_modeling_2001], the MAPS 
+benchmark is used to characterize the performance of machines. These 
+profiles are then convoluted with application traces obtained by the 
+MetaSim tool in order to obtain a prediction on the performance of an 
+application. In [@shen_automating_2015] the authors use randomized 
+optimization (genetic algorithms) to systematically explore the 
+parameter space of an application in order to create a record of 
+`<input, runtime>` pairs. _quiho_ can be used in this case to augment 
+the available information and have an IRUP associated to the inputs of 
+the application under study.
 
-In [@jung_detecting_2006] the authors use decision trees to detect 
+**Performance Profile Visualization**. An IRUP can be used to 
+visualize performance and thus have a resemblance with a flame graph 
+[@gregg_flame_2016]. In [@bezemer_understanding_2015] the authors 
+introduce the concept of differential flame grahps, which can be used 
+to visually compare the changes between two or more flame graphs. A 
+similar approach could be applied to IRUPs in order to visualize the 
+differences between two flame graphs.
+
+**Inducing Performance Regressions**. In [@chen_exploratory_2017], the 
+authors analyzed the code repositories of two open source projects in 
+order to device a way of systematically inducing performance 
+regressions. In our methodology, we instrument an application in order 
+to parametrize performance and control when an application changes its 
+performance characteristics as a way of testing methods that are aimed 
+at detecting these changes.
+
+**Decision Trees In Performance Engineering**. In 
+[@jung_detecting_2006] the authors use decision trees to detect 
 anomalies and predict performance SLO violations. They validate their 
 approach using a TPC-W workload in a multi-tiered setting. In 
 [@shang_automated_2015], the authors use performance counters to build 
 a regression model aimed at filtering out irrelevant performance 
-counters. In [@nguyen_automated_2012a], the approach is similar but 
-statistical process control techniques are employed instead.
+counters. In [@nguyen_automated_2012a ; nguyen], the approach is 
+similar but statistical process control techniques are employed 
+instead.
 
 In the case of _quiho_, the goal is to use decision trees as a way of 
 obtaining feature performance, thus, as opposed to what it's proposed 
@@ -886,14 +908,14 @@ in [@shang_automated_2015], the leaves of the generated decision trees
 contain actual performance predictions instead of the name of 
 performance counters
 
-## Correlation-based Analysis and Supervised Learning
-
+**Correlation-based Analysis and Supervised Learning**. 
 Correlation-based and supervised learning approaches have been 
 proposed in the context of software testing, mainly for detecting 
-anomalies in application performance [@ibidunmoye_performance_2015]. In the former, runtime 
-performance metrics are correlated to application performance using a 
-variety of distinct metrics. In supervised learning, the goal is 
-the same (build prediction models) but using labeled datasets.
+anomalies in application performance [@ibidunmoye_performance_2015]. 
+In the former, runtime performance metrics are correlated to 
+application performance using a variety of distinct metrics. In 
+supervised learning, the goal is the same (build prediction models) 
+but using labeled datasets.
 
 Decision trees are a form of supervised learning, however, given that 
 _quiho_ applies regression rather than classification techniques, it 
@@ -912,11 +934,12 @@ week and make this information for every machine available to users).
 
 We are currently working in adapting this approach to profile 
 distributed and multi-tiered applications. We also plan to analyze the 
-viability of using _quiho_ in multi-tenant configurations. Lastly, 
-long-running (multi-stage) applications. e.g., a web-service or 
-big-data application with multiple stages. In this case, we would 
-define windows of time and we would apply _quiho_ to each. The 
-challenge: how do we automatically get the windows rightly placed.
+viability of applying _quiho_ in multi-tenant configurations and to 
+profile long-running (multi-stage) applications such as a web-service 
+or big-data applications. In these cases, we would define windows of 
+time and apply _quiho_ to each. The main challenge in this scenario is 
+to automatically define the windows in such a way that we can get 
+accurate profiles.
 
 In the era of cloud computing, even the most basic computer systems 
 are complex multi-layered pieces of software, whose performance 
