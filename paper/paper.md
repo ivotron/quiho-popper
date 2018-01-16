@@ -62,30 +62,30 @@ regression testing. For example, after a change in the runtime of an application
 One of the main challenges in automating performance regression tests 
 is defining the criteria to decide whether a change in 
 application performance behavior is significant 
-[@cherkasova_anomaly_2008]. Understanding the effects in performance 
-that distinct hardware and low-level system software[^system] 
-components have on applications demands highly-skilled performance 
-engineering [@jin_understanding_2012 ; @han_performance_2012 ; 
-@jovic_catch_2011]. Traditionally, this investigation is done by an 
-analyst in charge of looking at changes to the performance metrics 
-captured at runtime, possibly investigating deeply by looking at 
-performance counters, performance profiles, static code analysis, and 
-static/dynamic tracing. One common approach is to find bottlenecks by 
-generating a profile (e.g., using the `perf` Linux kernel tool) in 
-order to understand which parts of the system an application is 
-hammering on [@gregg_systems_2013]. Profiling involves recording resource utilization for 
-an application over time making use of tools such as `perf`. In 
-general, this can be done in two ways: timed- and event-based 
-profiles. Timed-based profiling samples the instruction pointer at 
-regular intervals and generates a function call tree with each node in 
-the three having a percentage of time associated with it, which 
-represents the amount of time that the CPU spends within that piece of 
-code. Event-based profiling samples at regular intervals different 
-events at the hardware and OS level in order to obtain a distribution 
-of events over the time that an application runs. In either case, the 
-system needs to execute the application in a "profiling" mode, in 
-order to have the OS enable the instrumentation mechanisms that has 
-available to carry out this task.
+[@cherkasova_anomaly_2008]. Understanding the impact that distinct 
+hardware and low-level system software[^system] components have on 
+the performance of applications demands highly-skilled performance engineering 
+[@jin_understanding_2012 ; @han_performance_2012 ; @jovic_catch_2011]. 
+Traditionally, this investigation is done by an analyst in charge of 
+looking at changes to the performance metrics captured at runtime, 
+possibly investigating deeply by looking at performance counters, 
+performance profiles, static code analysis, and static/dynamic 
+tracing. One common approach is to find bottlenecks by generating a 
+profile (e.g., using the `perf` Linux kernel tool) in order to 
+understand which parts of the system an application is hammering on 
+[@gregg_systems_2013]. Profiling involves recording resource 
+utilization for an application over time making use of tools such as 
+`perf`. In general, this can be done in two ways: timed- and 
+event-based profiles. Timed-based profiling samples the instruction 
+pointer at regular intervals and generates a function call tree with 
+each node in the three having a percentage of time associated with it, 
+which represents the amount of time that the CPU spends within that 
+piece of code. Event-based profiling samples at regular intervals 
+different events at the hardware and OS level in order to obtain a 
+distribution of events over the time that an application runs. In 
+either case, the system needs to execute the application in a 
+"profiling" mode, in order to have the OS enable the instrumentation 
+mechanisms that has available to carry out this task.
 
 Automated solutions have been proposed in recent years 
 [@jiang_automated_2010 ; @shang_automated_2015 ; 
@@ -242,11 +242,12 @@ application exhibits such performance behavior.
     machine doesn’t have just faster memory sticks, but also better 
     CPU, chipset, etc.).
 
-![An example profile showing the relative importance of features for an 
-execution of the `hpccg` miniapp [@heroux_hpccg_2007]. The y-axis 
-denotes the relative performance with respect to the most importante 
-feature, which corresponds to the first one on the x-axis (from top to 
-bottom).
+![An example profile showing the relative importance of features for 
+an execution of the `hpccg` miniapp [@heroux_hpccg_2007]. The x-axis 
+corresponds to the relative performance value, normalized with respect 
+to the most important feature, which corresponds to the first one on 
+the y-axis (from top to bottom). @Sec:feature-importance describes in 
+detail how feature importances are calculated.
 ](pipelines/single-node/results/figures/hpccg.png){#fig:hpccg-irup}
 
 The advent of cloud computing allows us to solve (1) using solutions 
@@ -307,9 +308,9 @@ results from SRA.
 
 If we rank features by their relative importance, we obtain what we 
 call an inferred resource utilization profile (IRUP), as shown in 
-@Fig:hpccg-irup. In the next section we show how these IRUPs can be 
-used in automated performance regression tests. @Sec:eval empirically 
-validates this approach.
+@Fig:hpccg-irup. In the next section we explain how these IRUPs are 
+obtained and how they can be used in automated performance regression 
+tests. @Sec:eval empirically validates this approach.
 
 # Our Approach {#sec:quiho}
 
@@ -327,7 +328,7 @@ IRUPs.
 While the hardware and software specification can serve to describe 
 the performance characteristics of a machine, the real performance 
 characteristics can only feasibly be obtained by executing programs 
-and capturing metrics. One can get generate arbitrary performance 
+and capturing metrics. One can generate arbitrary performance 
 characteristics by interposing a hardware emulation layer and 
 deterministically associate performance characteristics to each 
 instruction based on specific hardware specs. While possible, this is 
@@ -427,7 +428,7 @@ components. The green line corresponds to the cumulative sum of the
 explained variance.
 ](figures/pca-var-reduction.png){#fig:pca}
 
-## System Resource Utilization Via Feature Importance in SRA
+## System Resource Utilization Via Feature Importance in SRA {#sec:feature-importance}
 
 SRA is an approach for modeling the relationship between variables, 
 usually corresponding to observed data points 
@@ -525,9 +526,9 @@ investigation that looks for the root cause of the regression
 (@Fig:pipeline, step 5). For example, if _memorymap_ ends up being the 
 most important feature, then we can start by looking at any 
 code/libraries that make use of this subcomponent of the system. An 
-analyst could also trace an application using performance counters and 
-look at corresponding performance counters to see which code paths 
-make heavy use of the subcomponent in question.
+analyst could also trace an application by capturing performance 
+counters over time and look at corresponding counters to see which 
+code paths make heavy use of the subcomponent in question.
 
 # Evaluation {#sec:eval}
 
@@ -634,16 +635,15 @@ the ones denoting stalled cycles (which significantly determine
 application performance [@cepeda_pipeline_2011 ; 
 @mcnairy_itanium_2003]).
 
-Next, we analyze IRUPs of other four applications[^brevity]. These 
-applications are Redis [@zawodny_redis_2009], Scikit-learn 
+Next, we analyze the IRUPs of other three applications[^brevity]. 
+These applications are Redis [@zawodny_redis_2009], Scikit-learn 
 [@pedregosa_scikitlearn_2011], and SSCA [@bader_design_2005]. Due to 
 space constraints we omit a similar detailed analysis as the one 
 presented above for `hpccg`. However, resource utilization 
 characteristics of these code bases is well known and we verify IRUPs 
-using this high-level intuition. As a way to illustrate the 
-variability originating from executing these applications on an 
-heterogeneous set of machines, @Fig:variability shows boxplots of 
-these.
+using this knowledge. As a way of illustrating the 
+performance variability of these applications on an 
+heterogeneous set of machines, @Fig:variability shows boxplots of their runtime.
 
 ![Variability of the five applications presented in this subsection. 
 Y-axis has been normalized.
@@ -663,7 +663,7 @@ operations (first 3 stressors from each test, as shown in
 
 The next two IRUPs (below) correspond to performance tests for 
 Scikit-learn and SSCA. In the case of Scikit-learn, this test runs a 
-comparison of a several classifiers in on a synthetic dataset. 
+comparison of several classifiers in on a synthetic dataset. 
 Scikit-learn uses NumPy [@walt_numpy_2011] internally, which is known 
 to be memory-bound. The profile is aligned to this known behavior 
 since the `zero` microbenchmark stresses access.
@@ -756,15 +756,14 @@ take the development timeline and invert it, we can treat 5.5.58 as if
 it was a "new" revision that introduces a performance regression. To 
 show that this can be captured with IRUPs, we use `mysqlslap` again 
 and run the `load` test. @Fig:mariadb-innodb-regression shows the 
-corresponding IRUPs. We can observe that the IRUP generated by 
-_quiho_ can identify the difference in performance.
+corresponding IRUPs. We can observe that the IRUP generated by _quiho_ 
+can identify the difference in performance. For brevity, we omit 
+regressions found in other 4 applications (zlog, postgres, redis, and 
+apache web server).
 
 ![A regression that appears from going in the reversed timeline (from 
 mariadb-10.0.3 to 5.5.38).
 ](pipelines/single-node/results/figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
-
-For brevity, we omit regressions found in other 4 applications (zlog, 
-postgres, redis, and apache web server).
 
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
@@ -821,9 +820,9 @@ in this case).
 **Quiho vs. other tools**. The main advantage of _quiho_ over other 
 performance profiling tools is that it is automatic and 100% 
 hands-off. As mentioned before, the main assumption being that there 
-exist performance vectors (or they are obtained when the as part of 
-the test) for a sufficiently varied set of machines. We see _quiho_ as 
-a complement, not a replacement of `perf`, to existing performance 
+exist performance vectors (or they are obtained as part of the test) 
+for a sufficiently varied set of machines. We see _quiho_ as a 
+complement, not a replacement of `perf`, to existing performance 
 engineering practices: once a test has failed _quiho_'s checks, then 
 proceed to make use of existing tools.
 
@@ -979,7 +978,7 @@ and NSF Award #1450488.
 
 \noindent
 \vspace{-1em}
-\setlength{\parindent}{-0.175in}
+\setlength{\parindent}{-0.18in}
 \setlength{\leftskip}{0.2in}
 \setlength{\parskip}{0.5pt}
 \fontsize{7pt}{8pt}\selectfont
