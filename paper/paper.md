@@ -392,8 +392,12 @@ computers in our lab. \label{tbl:machines}
 \end{table}
 
 ![Boxplots illustrating the variability of the performance vector 
-dataset. Each stressor was executed five times on each of the machines listed in 
-@Tbl:machines.
+dataset. The data is normalized in order to guard against 
+dimensionality issues. Thus, the y-axis shows variability in terms of 
+the z-score (signed value representing the number of standard 
+deviations by which the value of an observation is below or above the 
+mean). Each stressor was executed five times on each of the machines 
+listed in @Tbl:machines.
 ](pipelines/single-node/results/figures/stressng_variability.png){#fig:stressng-variability}
 
 Using this battery of stressors, we can obtain a performance profile 
@@ -426,15 +430,14 @@ In order to analyze this last point further, that is, to try to
 discern whether there are a few orthogonal features that we could 
 focus on, rather than looking at the totality of the 42 stressors, we 
 applied principal component decomposition (PCA) 
-[@wold_principal_1987a]. @Fig:pca shows the result. The figure shows 
-the relative (blue) and cumulative (green) explained variance ratio. 
-As we can see, having 6-8 components would be enough to explain most 
+[@wold_principal_1987a]. @Fig:pca shows 
+the relative (blue) and cumulative (green) explained variance ratio. The explained variance ratio is the amount of variability that a component removes from the dataset. The higher the variance associated to a component, the more the data can be explained by that component. 
+Having 6-8 components would be enough to explain most 
 of the variability in the dataset. This confirms what we observe in 
 @Fig:corrmatrix, in terms of having many stressors that can be 
-explained in function of others. However, doing so would cause the 
-loss of information with respect to what stressors are explaining the 
-prediction. Instead of trying to reduce the number, we decide to leave 
-all the stressors in order to not lose this information. Part of our 
+explained in function of others. So the reader might wonder, why not remove stressors in order to simplify the analysis? If we use the correlation matrix, we would need to define an arbitrary correlation index threshold. If we use PCA, we lose information with respect to what stressors are explaining a 
+prediction. Instead of trying to reduce the number of features, we decide to leave 
+all the stressors in order to not lose any information or having to define arbitrary thresholds. Part of our 
 future work is to address whether we can reduce the number of features 
 with the goal of improving the models, without having to lose 
 information about which stressors are involved in the prediction.
@@ -516,13 +519,10 @@ variance impurity is employed and corresponds to the variance of all
 data points that are routed through that node.
 
 We note that before generating a regression model, we normalize the 
-data using the `StandardScaler` method from `scikit-learn`, which 
-removes the mean (centers it on zero) and scales the data to unit 
-variance. Given that the `bogo-ops-per-second` metric does not 
+data by obtaining the z-score of the dataset. Given that the `bogo-ops-per-second` metric does not 
 quantify work consistently across stressors, we normalize the data in 
 order to prevent some features from dominating in the process of 
-creating the prediction models (the data for @Fig:variability has been 
-normalized prior to being plotted). In section @Sec:eval we evaluate 
+creating the prediction models. In section @Sec:eval we evaluate 
 the effectiveness of IRUPs.
 
 ## Using IRUPs in Automated Regression Tests {#sec:compare-irups}
@@ -531,12 +531,12 @@ As shown in @Fig:pipeline (step 4), when trying to determine whether a
 performance degradation occurred, IRUPs can be used to compare 
 differences between current and past versions of an application. In 
 order to do so, we apply a simple algorithm. Given two profiles $A$ 
-and $B$, and an arbitrary $\epsilon$ value, look at first feature in 
+and $B$, look at first feature in 
 the ranking (highest in the chart). Then, compare the relative 
 importance value for the feature and importance values for $A$ and 
-$B$. If relative importance is not within $+/-\epsilon$, the 
+$B$. If relative importance does not have the same value, the 
 importance is considered not equivalent and the algorithm stops. If 
-values are similar (within $+/-\epsilon$), we move to the next, less 
+values are similar, we move to the next, less 
 important factor and the compare again. This is repeated for as many 
 features are present in the dataset.
 
@@ -664,7 +664,7 @@ using this knowledge. As a way of illustrating the
 performance variability of these applications on an 
 heterogeneous set of machines, @Fig:variability shows boxplots of their runtime.
 
-![Variability of the five applications presented in this subsection. 
+![Variability of the four applications presented in this subsection. 
 Y-axis has been normalized.
 ](pipelines/single-node/results/figures/apps_variability.png){#fig:variability}
 
@@ -898,7 +898,7 @@ _quiho_ does not rely on having accurate prediction models since its
 goal is to describe resource utilization (obtain IRUPs). 3) If a 
 regression is observed, automatically find the root cause or aid an 
 analyst to find it [@ibidunmoye_performance_2015 ; 
-@heger_automated_2013 ; @attariyan_xray_2012]. While _quiho_ does not 
+@heger_automated_2013]. While _quiho_ does not 
 find the root cause of regressions, it complements the information 
 that an analyst has available to investigate further.
 
