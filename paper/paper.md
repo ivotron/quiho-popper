@@ -74,18 +74,17 @@ tracing. One common approach is to find bottlenecks by generating a
 profile (e.g., using the `perf` Linux kernel tool) in order to 
 understand which parts of the system an application is hammering on 
 [@gregg_systems_2013]. Profiling involves recording resource 
-utilization for an application over time making use of tools such as 
-`perf`. In general, this can be done in two ways: timed- and 
+utilization for an application over time. In general, this can be done in two ways: timed- and 
 event-based profiles. Timed-based profiling samples the instruction 
 pointer at regular intervals and generates a function call tree with 
 each node in the three having a percentage of time associated with it, 
 which represents the amount of time that the CPU spends within that 
 piece of code. Event-based profiling samples at regular intervals 
-different events at the hardware and OS level in order to obtain a 
-distribution of events over the time that an application runs. In 
+different events at the hardware- and OS-level in order to obtain a 
+distribution of events over time. In 
 either case, the system needs to execute the application in a 
-"profiling" mode, in order to have the OS enable the instrumentation 
-mechanisms that has available to carry out this task.
+"profiling" mode in order to enable the instrumentation 
+mechanisms that the OS has available for carrying out this task.
 
 Automated solutions have been proposed in recent years 
 [@jiang_automated_2010 ; @shang_automated_2015 ; 
@@ -98,7 +97,7 @@ model, there is the risk of finding false negatives/positives. In addition to
 striving for highly accurate predictions, one can also use performance 
 modeling as a profiling tool.
 
-In this work, we present _quiho_ an approach aimed at complementing 
+In this work we present _quiho_, an approach aimed at complementing 
 automated performance regression testing by using inferred 
 resource utilization profiles (IRUP) associated to an application. 
 _quiho_ is 
@@ -131,7 +130,7 @@ a system (e.g. floating point unit, virtual memory, etc.). Thus, this
 profile captures the resource utilization pattern of an application 
 which can be used to automatically validate its performance behavior 
 across multiple revisions of its code base, making _quiho_ an approach 
-to characterizing applications that is resilient to code refactoring.
+to characterizing application performance that is resilient to code refactoring.
 
 In this article, we demonstrate that _quiho_ can successfully identify 
 performance regressions. We show (@Sec:eval) that _quiho_ (1) obtains 
@@ -140,7 +139,7 @@ codes do and (2) effectively uses these profiles to identify induced
 regressions as well as other regressions found in real-world 
 applications. The contributions of our work are:
 
-  * Insight: feature importance in SRA models (trained using these 
+  * Insight: feature importance in SRA models (trained using application-independent 
     performance vectors) gives us a resource utilization profile of an 
     application without having to look at the code.
 
@@ -175,7 +174,7 @@ Mexico.
 differentiate between regression testing in software engineering and 
 regression analysis in statistics.
 
-# Motivation and Intuition Behind _quiho_ {#sec:intuition}
+# Motivation and Intuition {#sec:intuition}
 
 ![Automated regression testing pipeline integrating inferred resource 
 utilization profiles (IRUP). IRUPs are obtained by _quiho_ and can be 
@@ -788,8 +787,6 @@ mariadb-10.0.3 to 5.5.38).
 [^gh]: http://github.com/ivotron/quiho-popper
 
 # Discussion {#sec:discussion}
-
-We briefly discuss some aspects related to _quiho_.
 
 **Application-Independent Performance Characterization**. The main 
 advantage of the _quiho_ approach is its resiliency. By inferring 
