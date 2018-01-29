@@ -30,6 +30,12 @@ docker run --rm -v $OUTDIR/benchmark:/data/benchmark \
     --filefilter '.*mysqlslap.*json' \
     ./ >> all.csv
 
+# redis
+docker run --rm -v $OUTDIR/benchmark:/data/benchmark \
+  ivotron/json-to-tabular:v0.0.5 \
+    --filefilter '.*redisbench.*.csv' \
+    ./ >> all.csv
+
 # runtime-based ones
 for w in comd lulesh hpccg miniamr miniaero minife scikit-learn ssca zlog ; do
   docker run --rm -v $OUTDIR/benchmark:/data/benchmark \
@@ -38,3 +44,6 @@ for w in comd lulesh hpccg miniamr miniaero minife scikit-learn ssca zlog ; do
       --shex "sed 's/\(.*\):\(.*\):\(.*\)/\1 \2 \3/' | awk '{ print \"$w,\"((\$1 * 3600) + (\$2 * 60) + \$3) }'" \
       ./ >> all.csv
 done
+
+# remove blank lines
+sed -i '/^\s*$/d' all.csv
