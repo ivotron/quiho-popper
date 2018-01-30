@@ -46,4 +46,5 @@ for w in comd lulesh hpccg miniamr miniaero minife scikit-learn ssca zlog ; do
 done
 
 # remove blank lines
-sed -i '/^\s*$/d' all.csv
+sed '/^\s*$/d' all.csv > all.csv.tmp
+mv all.csv.tmp all.csv

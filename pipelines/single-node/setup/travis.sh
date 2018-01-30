@@ -22,7 +22,6 @@ chmod 600 insecure_rsa
 # configure the test
 cat > vars.yml << EOL
 install_facter: false
-repetitions: 2
 benchmarks:
 - name: stressng
   image: ivotron/stress-ng:v0.07.29

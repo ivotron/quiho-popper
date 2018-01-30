@@ -220,7 +220,8 @@ Travis yourself:
     **NOTE**: TravisCI has a limit of 2 hours, after which the test is 
     terminated and failed. For this reason, the `setup/travis.sh` 
     modifies the `vars.yml` in order to generate parameters that take 
-    shorter to run (approx 15 mins).
+    shorter to run (approx 15 mins). The test in this case only 
+    obtains one data point for one application (`sklearn`).
 
 # How To Evaluate
 
