@@ -307,6 +307,19 @@ $endif$
 \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
 
+\copyrightyear{2018}
+\acmYear{2018}
+\setcopyright{acmcopyright}
+\acmConference[ICPE '18]{ACM/SPEC International Conference on Performance Engineering}{April 9--13, 2018}{Berlin, Germany}
+\acmBooktitle{ICPE '18: ACM/SPEC International Conference on Performance Engineering, April 9--13, 2018, Berlin, Germany}
+\acmPrice{15.00}
+\acmDOI{10.1145/3184407.3184422}
+\acmISBN{978-1-4503-5095-2/18/04}
+
+$if(keywords)$
+\keywords{$for(keywords)$ $keywords$ $sep$; $endfor$}
+$endif$
+
 \begin{document}
 
 $if(titlebanner)$
@@ -407,6 +420,13 @@ $if(no-page-number-on-titlepage)$
 $endif$
 $endif$
 
+\copyrightyear{2018}
+\setcopyright{acmcopyright}
+%\conferenceinfo{ICPE '18,}{April 9--13, 2018, Berlin, Germany}
+%\isbn{978-1-4503-5095-2/18/04}
+\acmPrice{\$$15.00}
+%\doi{https://doi.org/10.1145/3184407.3184422}
+
 % copyright thesis {
 $if(thesis)$
 $if(disable-copyright)$
@@ -431,7 +451,7 @@ $endif$
 $endif$
 
 $if(keywords)$
-\keywords{$for(keywords)$ $keywords$ $sep$, $endfor$}
+\keywords{$for(keywords)$ $keywords$ $sep$; $endfor$}
 $endif$
 
 $for(include-before)$

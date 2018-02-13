@@ -34,10 +34,11 @@ abstract: |
   regressions by showing its effectiveness in profiling application 
   performance for synthetically introduced regressions as well as those 
   found in real-world applications.
+
 keywords:
-- software testing
-- performance engineering
-- performance modeling
+- Software Testing
+- Performance Engineering
+- Performance Modeling
 ---
 
 # Introduction
@@ -786,6 +787,8 @@ mariadb-10.0.3 to 5.5.38).
 [^gh]: http://github.com/ivotron/quiho-popper
 
 # Discussion {#sec:discussion}
+
+In this section we provide a high-level discussion on several aspects of _quiho_.
 
 **Application-Independent Performance Characterization**. The main 
 advantage of the _quiho_ approach is its resiliency. By inferring 
