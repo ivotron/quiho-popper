@@ -57,7 +57,7 @@ constitutes a regression.
 ![_quiho_'s workflow for generating inferred resource utilization profiles (IRUPs) for an application. An IRUP is used as an alternative for 
 profiling application performance and can complement automated 
 regression testing. For example, after a change in the runtime of an application has been detected across two revisions of the code base, an IRUP can be obtained in order to determine whether this change is significant. IRUPs can also aid in root cause analysis.
-](figures/irup-generation.png){#fig:irup-generation}
+](figures/irup-generation.pdf){#fig:irup-generation}
 
 One of the main challenges in automating performance regression tests 
 is defining the criteria to decide whether a change in 
@@ -77,7 +77,7 @@ understand which parts of the system an application is hammering on
 utilization for an application over time. In general, this can be done in two ways: timed- and 
 event-based profiles. Timed-based profiling samples the instruction 
 pointer at regular intervals and generates a function call tree with 
-each node in the three having a percentage of time associated with it, 
+each node having a percentage of time associated with it, 
 which represents the amount of time that the CPU spends within that 
 piece of code. Event-based profiling samples at regular intervals 
 different events at the hardware- and OS-level in order to obtain a 
@@ -123,24 +123,17 @@ obtained, and SRA is applied. The result of the SRA for an
 application, in particular feature importance, is used as a proxy to 
 characterize hardware and low-level system utilization behavior. The 
 relative importance of these features constitutes what we refer to as 
-an _inferred resource utilization profile_ (IRUP). @Fig:hpccg-irup 
-shows an example of an IRUP for an application. Each feature in this 
-relative ranking corresponds to a microbenchmark for a subcomponent of 
-a system (e.g. floating point unit, virtual memory, etc.). Thus, this 
-profile captures the resource utilization pattern of an application 
-which can be used to automatically validate its performance behavior 
-across multiple revisions of its code base, making _quiho_ an approach 
-to characterizing application performance that is resilient to code refactoring.
+an _inferred resource utilization profile_ (IRUP).
 
-In this article, we demonstrate that _quiho_ can successfully identify 
-performance regressions. We show (@Sec:eval) that _quiho_ (1) obtains 
+In this article, we demonstrate that our approach successfully identifies 
+performance regressions by showing (@Sec:eval) that _quiho_ (1) obtains 
 resource utilization profiles for application that reflect what their 
 codes do and (2) effectively uses these profiles to identify induced 
 regressions as well as other regressions found in real-world 
 applications. The contributions of our work are:
 
   * Insight: feature importance in SRA models (trained using application-independent 
-    performance vectors) gives us a resource utilization profile of an 
+    performance vectors) gives us a resource utilization profile (an IRUP) of an 
     application without having to look at the code.
 
   * An automated end-to-end framework (based on the above finding), 
@@ -180,7 +173,7 @@ regression analysis in statistics.
 utilization profiles (IRUP). IRUPs are obtained by _quiho_ and can be 
 used both, for identifying regressions, and to aid in the quest for 
 finding the root cause of a regression.
-](figures/pipeline.png){#fig:pipeline}
+](figures/pipeline.pdf){#fig:pipeline}
 
 @Fig:pipeline shows the workflow of an automated regression testing 
 pipeline and shows how _quiho_ fits in this picture. A regression is 
@@ -221,7 +214,7 @@ example), resemble the same variability pattern of one or more
 performance microbenchmark(s). Thus, the system subcomponent exercised 
 by the microbenchmark is likely to be also the cause of why the 
 application exhibits such performance behavior.
-](figures/featureimportance-implies-bottleneck.png){#fig:featureimportance-implies-bottleneck}
+](figures/featureimportance-implies-bottleneck.pdf){#fig:featureimportance-implies-bottleneck}
 
  1. Consistent Software. We need to ensure that the software stack is 
     the same on all machines where the application runs.
@@ -247,7 +240,7 @@ corresponds to the relative performance value, normalized with respect
 to the most important feature, which corresponds to the first one on 
 the y-axis (from top to bottom). @Sec:feature-importance describes in 
 detail how feature importances are calculated.
-](pipelines/single-node/results/figures/hpccg.png){#fig:hpccg-irup}
+](pipelines/single-node/results/figures/hpccg.pdf){#fig:hpccg-irup}
 
 The advent of cloud computing allows us to solve (1) using solutions 
 like KVM [@kivity_kvm_2007] or software containers 
@@ -397,7 +390,7 @@ the z-score (signed value representing the number of standard
 deviations by which the value of an observation is below or above the 
 mean). Each stressor was executed five times on each of the machines 
 listed in @Tbl:machines.
-](pipelines/single-node/results/figures/stressng_variability.png){#fig:stressng-variability}
+](pipelines/single-node/results/figures/stressng_variability.pdf){#fig:stressng-variability}
 
 Using this battery of stressors, we can obtain a performance profile 
 of a machine (a performance vector). When this vector is compared 
@@ -423,7 +416,7 @@ others show high correlation between them.
 ![Heat-map of Pearson correlation coefficients for performance vectors 
 obtained by executing `stress-ng` on all the distinct machine 
 configurations available in CloudLab.
-](pipelines/single-node/results/figures/corrmatrix.png){#fig:corrmatrix}
+](pipelines/single-node/results/figures/corrmatrix.pdf){#fig:corrmatrix}
 
 In order to analyze this last point further, that is, to try to 
 discern whether there are a few orthogonal features that we could 
@@ -447,7 +440,7 @@ the x-axis denotes the number of components. The blue line denotes the
 amount of variance reduced by having a particular number of 
 components. The green line corresponds to the cumulative sum of the 
 explained variance.
-](figures/pca-var-reduction.png){#fig:pca}
+](pipelines/single-node/results/figures/pca-var-reduction.pdf){#fig:pca}
 
 ## System Resource Utilization Via Feature Importance in SRA {#sec:feature-importance}
 
@@ -521,7 +514,7 @@ We note that before generating a regression model, we normalize the
 data by obtaining the z-score of the dataset. Given that the `bogo-ops-per-second` metric does not 
 quantify work consistently across stressors, we normalize the data in 
 order to prevent some features from dominating in the process of 
-creating the prediction models. In section @Sec:eval we evaluate 
+creating the prediction models. In @Sec:eval we evaluate 
 the effectiveness of IRUPs.
 
 ## Using IRUPs in Automated Regression Tests {#sec:compare-irups}
@@ -541,7 +534,7 @@ features are present in the dataset.
 
 IRUPs can also be used as a pointer to where to start with an 
 investigation that looks for the root cause of the regression 
-(@Fig:pipeline, step 5). For example, if _memorymap_ ends up being the 
+(@Fig:pipeline, step 5). For example, if the _stream_ stressor (mimics the STREAM benchmark [@mccalpin_memory_1995]) ends up being the 
 most important feature, then we can start by looking at any 
 code/libraries that make use of this subcomponent of the system. An 
 analyst could also trace an application by capturing performance 
@@ -647,11 +640,13 @@ with those from the top three features (@Tbl:perf-counters shows the
 summary of hardware-level performance counters). Given that hardware 
 performance counters are architecture-dependent, we can not make 
 generalizations about given that we run an application on a multitude 
-of machines. However, we can see that in the case of the `stackmmap` 
-stressor, there are some similarities between the counters, specially 
-the ones denoting stalled cycles (which significantly determine 
+of machines. Having said this, we can try to analyze the counter results for the particular machine where we ran this test. We can see that the performance counters values for the `hpccg` 
+application correspond to a combination of values for the three most 
+relevant features (stressors). In the case of the `stackmmap` 
+stressor, similarities between stalled cycle counters are noticeable 
+denoting similarities in stalled cycles, which are associated to 
 application performance [@cepeda_pipeline_2011 ; 
-@mcnairy_itanium_2003]).
+@mcnairy_itanium_2003].
 
 Next, we analyze the IRUPs of other three applications[^brevity]. 
 These applications are Redis [@zawodny_redis_2009], Scikit-learn 
@@ -665,9 +660,9 @@ heterogeneous set of machines, @Fig:variability shows boxplots of their runtime.
 
 ![Variability of the four applications presented in this subsection. 
 Y-axis has been normalized.
-](pipelines/single-node/results/figures/apps_variability.png){#fig:variability}
+](pipelines/single-node/results/figures/apps_variability.pdf){#fig:variability}
 
-In @Fig:others we show IRUPs for these four applications. The first 
+In @Fig:others we show IRUPs for these four applications[^top5]. The first 
 two on the top correspond to two tests of Redis, a popular open-source 
 in-memory key-value database. These two tests are `SET`, `GET` from 
 the `redis-benchmark` command that test operations that store and 
@@ -676,8 +671,12 @@ utilization profiles suggest that `SET` and `GET` are memory intensive
 operations (first 3 stressors from each test, as shown in 
 @Tbl:stressng-categories), which is an obvious conclusion. 
 
-![IRUPs for the four tests benchmarked in this section.
-](pipelines/single-node/results/figures/four.png){#fig:others}
+[^top5]: In order to enhance the visualization of the IRUPs we only 
+show the top 5 most important features. Complete profiles can be 
+visualized on the Jupyter notebook contained in the github repository.
+
+![IRUPs for the four tests benchmarked in this section. This and subsequent figures show only the top 5 most important features in order to improve visualization of the plots.
+](pipelines/single-node/results/figures/four.pdf){#fig:others}
 
 The next two IRUPs (below) correspond to performance tests for 
 Scikit-learn and SSCA. In the case of Scikit-learn, this test runs a 
@@ -723,7 +722,7 @@ performance characteristics. The two engines we use in this case are
 profiles of MariaDB performance for these two engines.
 
 ![MariaDB with innodb and in-memory backends.
-](pipelines/single-node/results/figures/mariadb-innodb-vs-memory.png){#fig:mariadb-innodb-vs-memory}
+](pipelines/single-node/results/figures/mariadb-innodb-vs-memory.pdf){#fig:mariadb-innodb-vs-memory}
 
 The next test is a modified version of the STREAM benchmark 
 [@mccalpin_memory_1995], which we refer to as STREAM-NADDS (introduced 
@@ -746,7 +745,7 @@ terms to the `Add` subtest moves the performance from memory- to
 cpu-bound; the higher the value of the `NADDS` parameter, the more 
 CPU-bound the test gets. This test was executed across all available 
 machines (5 times). The bars denote standard deviation.
-](pipelines/single-node/results/figures/stream-nadds-behavior.png){#fig:stream-adds}
+](pipelines/single-node/results/figures/stream-nadds-behavior.pdf){#fig:stream-adds}
 
 @Fig:stream-irups shows the IRUPs for the four tests. On the left, 
 we see the resource utilization behavior of the "vanilla" version of 
@@ -762,7 +761,7 @@ increases.
 increases by taking values of 1, 2, 4, ..., 20 and 30. We see that 
 they capture the simulated regression which causes this application to 
 be moving from being memory-bound to being cpu-bound.
-](pipelines/single-node/results/figures/stream-nadds.png){#fig:stream-irups}
+](pipelines/single-node/results/figures/stream-nadds.pdf){#fig:stream-irups}
 
 ## Real world Scenario {#sec:irups-for-real}
 
@@ -781,7 +780,7 @@ apache web server).
 
 ![A regression that appears from going in the reversed timeline (from 
 mariadb-10.0.3 to 5.5.38).
-](pipelines/single-node/results/figures/mariadb-innodb-regression.png){#fig:mariadb-innodb-regression}
+](pipelines/single-node/results/figures/mariadb-innodb-regression.pdf){#fig:mariadb-innodb-regression}
 
 [^popper-url]: http://falsifiable.us
 [^gh]: http://github.com/ivotron/quiho-popper
@@ -804,34 +803,42 @@ the same time reduce the number of microbenchmarks.
 **Falsifiability of IRUPs** The reader might have noticed that, regardless of how the performance 
 of an application looks like, SRA will always produce a model with 
 associated feature importances. Thus, one can pose the following 
-question: is there any scenario where a IRUP is _not_ correctly 
+question: is there any scenario where an IRUP is _not_ correctly 
 associated with what the application is doing? In other words, are 
-IRUPs falsifiable? The answer is yes. A IRUP can be incorrectly 
+IRUPs falsifiable? The answer is yes. An IRUP can be incorrectly 
 representing an application's performance behavior if there is under- 
-or over-fitting when generating the model. @Fig:underfit (left) shows 
+or over-fitting when generating the model. @Fig:corrmatrix_underfit shows 
 the correlation matrix obtained from a dataset containing only 3 data 
 points (generated by selecting two random machines from the set of 
 available ones). Almost all stressors are highly correlated among each 
 other, which suggests (as explained in @Sec:quiho) there is little 
 that a prediction model can learn about the underlying resource 
 utilization behavior of an application in this dataset (which contains 
-only 4 points, coming from two machines with very similar 
-characteristics). This is confirmed by looking at the IRUP of an 
-application obtained from this small dataset (@Fig:underfit (right)). 
-The application in this case is `redis-set` and if we compare this 
-IRUP with the one in @Fig:others we can observe that the most 
-important features are CPU- (`af-alg` and `hsearch`) and IO-intensive 
-(`resources`) related, which is not what we observe in practice from 
-this dataset. The correlation matrix shows why this is so: almost all 
+only a couple of points, coming from two machines with very similar 
+characteristics). This is confirmed by obtaining an IRUP multiple 
+times for an application contained in this small dataset 
+(@Fig:redis-set_underfit). The application in this case is 
+`redis-set`. If we obtain the IRUP 3 times and compare them, we 
+observe that they give completely random and contradictory results 
+(for example, the bottom IRUP ranks CPU stressors as the top important 
+features). This is in contrast to what we observe with well-fitted 
+models, such as the ones in figure @Fig:four for which  multiple IRUPs 
+show consistent results in their results.
+The correlation matrix shows why this is so: almost all 
 the features are highly correlated. One way of determining the right 
 amount of machines needed in order to generate good models is to apply 
-PAC [@valiant_theory_1984] to this dataset in order to quantify the 
-probability of obtaining highly accurate estimations.
+probable aproximate correct learning (PAC) [@valiant_theory_1984] to 
+this dataset in order to quantify the probability of obtaining highly 
+accurate estimations.
 
-![Correlation matrix and IRUP for `redis-set`, obtained from only two 
-randomly selected machines from @Tbl:machines (`issdm-41` and `r320` 
-in this case).
-](pipelines/single-node/results/figures/underfit.png){#fig:underfit}
+![Correlation matrix, obtained from only two randomly selected 
+machines from @Tbl:machines.
+](pipelines/single-node/results/figures/corrmatrix_underfit.pdf){#fig:corrmatrix_underfit}
+
+![Three IRUPs for the `redis-set` benchmark, obtained sequentialy from 
+the same dataset, which consistes of only two randomly selected 
+machines from @Tbl:machines.
+](pipelines/single-node/results/figures/redis-set_underfit.pdf){#fig:redis-set_underfit}
 
 **Quiho vs. other tools**. The main advantage of _quiho_ over other 
 performance profiling tools is that it is automatic and 100% 

@@ -43,34 +43,3 @@ rm -r out
 rm build.log
 
 exit 0
-
-
-## commands for stitching figures (relative to pipelines/single-node/results/figures)
-#
-# montage \
-#   -border 0 \
-#   -mode concatenate \
-#   -tile 2x2 \
-#   redis-get.png redis-set.png ssca.png sklearn.png \
-#   four.png
-#
-# montage \
-#   -border 0 \
-#   -mode concatenate \
-#   -tile 2x2 \
-#   innodb_load.png memory_load.png \
-#   mariadb-innodb-vs-memory.png
-#
-# montage \
-#   -border 0 \
-#   -mode concatenate \
-#   -tile 2x6 \
-#   add-1.png add-2.png add-4.png add-6.png add-8.png add-10.png add-12.png add-14.png add-16.png add-18.png \
-#   stream-nadds.png
-#
-# montage \
-#   -border 0 \
-#   -mode concatenate \
-#   -tile 2x6 \
-#   mariadb-10.3.2-innodb_load.png mariadb-5.5.58-innodb_load.png \
-#   mariadb-innodb-regression.png

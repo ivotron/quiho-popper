@@ -13,3 +13,4 @@ machine,timestamp,cpu,cores,num_cpus,threads_per_core,vcpus,board_name,board_ser
 "r320.clapp0-ivotron.schedock-pg0.apt.emulab.net","1512873230","GenuineIntel",8,1,2,16,"PowerEdge R320","9681DZ1","4C4C4544-0036-3810-8031-B9C04F445A31","NA"
 "rackform2","1512873230","AuthenticAMD",4,2,2,16,"H8DGT","NA","NA","1234567890"
 "scruffy","1512873230","GenuineIntel",4,1,2,8,"X8DTG-QF","NA","NA","1234567890"
+"f0e505a29961","1517278307","GenuineIntel",1,6,1,6,"BHYVE","None","A6F846C1-D03D-D139-917F-07660903C4FF","1.0"
