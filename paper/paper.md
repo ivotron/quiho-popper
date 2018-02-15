@@ -126,11 +126,11 @@ characterize hardware and low-level system utilization behavior. The
 relative importance of these features constitutes what we refer to as 
 an _inferred resource utilization profile_ (IRUP).
 
-In this article, we demonstrate that our approach successfully identifies 
-performance regressions by showing (@Sec:eval) that _quiho_ (1) obtains 
-resource utilization profiles for application that reflect what their 
-codes do and (2) effectively uses these profiles to identify induced 
-regressions as well as other regressions found in real-world 
+In this article, we demonstrate that our approach successfully 
+identifies performance regressions by showing that _quiho_ (1) obtains 
+resource utilization profiles for applications that accurately reflect 
+what their code do and (2) effectively uses these profiles to identify 
+induced regressions as well as other regressions found in real-world 
 applications. The contributions of our work are:
 
   * Insight: feature importance in SRA models (trained using application-independent 
@@ -223,17 +223,17 @@ application exhibits such performance behavior.
     applications on a multitude of platforms is not negligible.
  3. Hardware Performance Characterization. It is difficult to obtain 
     the performance characteristics of a machine by just looking at 
-    the hardware spec, so other more practical alternative is 
-    required.
+    the hardware specs. Therefore, another more practical alternative 
+    is required.
  4. Correlating Performance. Even if we could solve the above issue 
     (Hardware Performance Characterization) and infer performance 
-    characteristics by just looking at the hardware specification of a 
-    machine, there is still the problem of not being able to correlate 
-    baseline performance with application behavior, since between two 
-    platforms is rarely the case where the change of performance is 
-    observed in only one subcomponent of the system (e.g., a newer 
-    machine doesn’t have just faster memory sticks, but also better 
-    CPU, chipset, etc.).
+    characteristics by just looking at the machine hardware 
+    specifications, there is still the problem of not being able to 
+    correlate baseline performance with application behavior. The 
+    problem is that between two platforms, it is rarely the case that 
+    the performance change is observed in only one subcomponent of the 
+    system. For example, a newer machine doesn’t have just faster 
+    memory sticks, but also a better CPU and chipset.
 
 ![An example profile showing the relative importance of features for 
 an execution of the `hpccg` miniapp [@heroux_hpccg_2007]. The x-axis 
@@ -259,10 +259,12 @@ Thus, the main challenge to inferring resource utilization patterns
 lies in quantifying the performance of the platform in a consistent 
 way (3,4). One alternative is to look at the hardware specification 
 and infer performance characteristics from this, a highly inaccurate 
-task due to the lack of correspondence between advertised (or theoretical peak throughput) and actual performance observed in reality. For example, the spec of a platform might specify that the machine has DDR4 
-memory sticks, with a theoretical peak throughput of 10 GB/s, but the 
-actual memory bandwidth could be less (usually is, by a 
-non-deterministic fraction of the advertised performance).
+task due to the lack of correspondence between advertised (or 
+theoretical peak throughput) and actual performance observed in 
+reality. For example, the platform spec might specify that the machine 
+has DDR4 memory sticks with a theoretical peak throughput of 10 GB/s. 
+But the actual memory bandwidth is typically less in practice. How 
+much less is non-deterministic and depends on access patterns.
 
 _quiho_ solves this problem by characterizing machine performance 
 using microbenchmarks. These performance vectors are the "fingerprint" 
@@ -367,14 +369,14 @@ test a computer system in various selectable ways. It was designed to
 exercise various physical subsystems of a computer as well as the 
 various operating system kernel interfaces". There are multiple 
 stressors for CPU, CPU cache, memory, OS, network and filesystem. 
-Since we focus on system performance bandwidth, we execute the (as of 
-version 0.07.29) 42 stressors for CPU, CPU cache, memory and virtual 
-memory stressors (@Tbl:stressng-categories shows the list of stressors 
-used in this paper). A _stressor_ (or microbenchmark) is a function that loops for a 
-fixed amount of time, exercising a particular 
-subcomponent of the system. At the end of its execution, `stress-ng` 
-reports the rate of iterations executed for the specified period of 
-time (referred to as `bogo-ops-per-second`).
+Since we focus on system performance bandwidth, we execute 42 
+stressors for CPU, CPU cache, memory and virtual memory stressors 
+(@Tbl:stressng-categories shows the list of stressors used in this 
+paper). A _stressor_ (or microbenchmark) is a function that loops for 
+a fixed amount of time, exercising a particular subcomponent of the 
+system. At the end of its execution, `stress-ng` reports the rate of 
+iterations executed for the specified period of time (referred to as 
+`bogo-ops-per-second`).
 
 \begin{table}\caption{
 Table of machines from CloudLab. The last three entries correspond to 
@@ -398,7 +400,8 @@ of a machine (a performance vector). When this vector is compared
 against the one corresponding to another machine, we can quantify the 
 difference in performance between the two at a per-stressor level. 
 @Fig:stressng-variability shows the variability in these performance 
-vectors.
+vectors. We have significant variability coming from the hardware 
+differences of the underlying nodes. As mentioned in @Sec:intuition, in contrast to what one might expect, we prefer higher variability since, as we will show later, the higher the variability among performance between machines, the more information the prediction models have available to identify the underlying system characteristics that affect application performance.
 
 Every stressor (element in the vector) can be mapped to basic features 
 of the underlying platform. For example, `bigheap` is directly 
@@ -440,7 +443,7 @@ y-axis (log-scale) corresponds to the explained variance ratio, while
 the x-axis denotes the number of components. The blue line denotes the 
 amount of variance reduced by having a particular number of 
 components. The green line corresponds to the cumulative sum of the 
-explained variance.
+explained variance. We omit the last point due to space constraints, but we note that the variability at this point, while relatively (in the image), numerically is insignificant (y-axis is in log-scale).
 ](pipelines/single-node/results/figures/pca-var-reduction.pdf){#fig:pca}
 
 ## System Resource Utilization Via Feature Importance in SRA {#sec:feature-importance}
@@ -462,7 +465,7 @@ properties such as consistency and asymptotic efficiency. Some of the
 more common estimation techniques for linear regression are 
 least-squares, maximum-likelihood estimation, among others.
 
-`scikit-learn` [@pedregosa_scikitlearn_2011] provides with many of the 
+`scikit-learn` [@pedregosa_scikitlearn_2011] provides many of the 
 previously mentioned techniques for building regression models. 
 Another technique available in `scikit-learn` is gradient boosting 
 [@prettenhofer_gradient_2014]. Gradient boosting is a machine learning 
@@ -559,14 +562,12 @@ Experimentation Protocol and convention[^popper-url]
 the repository for this article[^gh]. We note that rather than 
 including all the results in the paper, we instead include 
 representative ones for each section and leave the rest on the paper 
-repository. Experiments can be examined in more detail, or even 
-re-executed, by visiting the `[source]` link next to each figure. That 
-link points to a Jupyter notebook that shows the analysis and source 
-code for that graph. The parent folder of the notebook (following the 
-Popper's file organization convention) contains all the artifacts and 
-automation scripts for the experiments. All results presented here can 
-be replicated, as long as the reader has an account at Cloudlab (see 
-repo for more details).
+repository. The dataset associated to this study is open and can be 
+examined in more detail on binder. The dataset can also be 
+re-generated on other platforms by executing the Popper pipeline 
+associated to this experiment. All results presented here are 
+continuously validated and can be replicated easily on Cloudlab (see 
+README on our Github repository for more details).
 
 ## Effectiveness of IRUPs to Capture Resource Utilization Behavior {#sec:effective-irups}
 
@@ -581,7 +582,7 @@ to a set of machines. Our methodology is:
      differences.
 
 @Fig:hpccg-irup shows the profile of an execution of the `hpccg` 
-miniapp [@heroux_hpccg_2007]. This proxy (or miniapp) application 
+miniapp [@heroux_hpccg_2007]. This proxy application (or miniapp) 
 [@heroux_improving_2009] is a "conjugate gradient benchmark code for a 
 3D chimney domain on an arbitrary number of processors [that] 
 generates a 27-point finite difference matrix with a user-prescribed 
@@ -696,7 +697,7 @@ workload.
 
 [^brevity]: For brevity, we omit other results that corroborate IRUPs 
 can correctly identify resource utilization patterns. All these are 
-available in the github repository associated to this article.
+available in the Github repository accompanying this article.
 
 ## Simulating Regressions {#sec:irups-for-simulated}
 
@@ -825,8 +826,8 @@ times for an application contained in this small dataset
 observe that they give completely random and contradictory results 
 (for example, the bottom IRUP ranks CPU stressors as the top important 
 features). This is in contrast to what we observe with well-fitted 
-models, such as the ones in figure @Fig:four for which  multiple IRUPs 
-show consistent results in their results.
+models, such as the ones in @Fig:others for which  multiple IRUPs show 
+consistent results in their results.
 The correlation matrix shows why this is so: almost all 
 the features are highly correlated. One way of determining the right 
 amount of machines needed in order to generate good models is to apply 
@@ -887,7 +888,7 @@ vector dataset (and associated application performance history). This
 can serve as the foundation to applycbecomes we learn about its 
 properties. For example, if we had performance vectors captured as 
 part of executions of the Phoronix benchmark suite (which has public 
-data on <openbenchmarking.org), we could leverage such a dataset to 
+data on <https://openbenchmarking.org>), we could leverage such a dataset to 
 create rich performance models.
 
 # Related Work {#sec:sra}
@@ -966,7 +967,7 @@ rely on labeled datasets. Lastly, _quiho_ is not intended to be used
 as a way of detecting anomalies, although we have not analyzed its 
 potential use in this scenario.
 
-# Limitations and Future Work {#sec:conclusion}
+# Future Work {#sec:conclusion}
 
 The main limitation in _quiho_ is the requirement of having to execute 
 a test on more than one machine in order to obtain IRUPs. On the other 
@@ -993,9 +994,16 @@ application of _quiho_ we have in mind is to couple it with automated
 black-box (or even gray-box) testing frameworks to improve our 
 understanding of complex systems.
 
-**Acknowledgments**: This work was partially funded by the Center for 
-Research in Open Source Software[^cross], Sandia National Laboratories 
-and NSF Award #1450488.
+**Acknowledgments**: We would like to thank Bernardo Gonzalez for his 
+feedback on a preliminary version of this paper, as well as all the 
+anonymous reviewers. Special thanks go to our ICPE shepherd. This work 
+was partially funded by the Center for Research in Open Source 
+Software[^cross], Sandia National Laboratories, NSF Award #1450488 and 
+DOE Award #DE-SC0016074. Sandia National Laboratories is a 
+multimission laboratory managed and operated by National Technology 
+and Engineering Solutions of Sandia, LLC, a wholly owned subsidiary of 
+Honeywell International, Inc., for the U.S. Department of Energy’s 
+National Nuclear Security Administration under contract DE-NA0003525.
 
 [^cross]: http://cross.ucsc.edu
 
