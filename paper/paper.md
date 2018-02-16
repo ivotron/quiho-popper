@@ -251,7 +251,7 @@ like KVM [@kivity_kvm_2007] or software containers
 infrastructure available to researchers that can be used to automate 
 regression testing pipelines for the purposes of investigating new 
 approaches. These solutions to infrastructure automation coupled with 
-DevOps practices [@wiggins_twelvefactor_2011 ; @httermann_devops_2012] 
+DevOps practices [@wiggins_twelvefactor_2011 ; @huttermann_devops_2012] 
 allows us to address (2), i.e. to reduce the amount of work required to 
 run tests.
 

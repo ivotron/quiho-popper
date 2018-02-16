@@ -320,6 +320,8 @@ $if(keywords)$
 \keywords{$for(keywords)$ $keywords$ $sep$; $endfor$}
 $endif$
 
+\fancyhead{}
+
 \begin{document}
 
 $if(titlebanner)$

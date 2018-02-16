@@ -10,12 +10,15 @@
 [6]: https://zenodo.org/badge/latestdoi/83738959
 
 [Popper](http://github.com/systemslab/popper) repository for the 
-_quiho_ paper submission. Contains experiments, results, and 
-manuscript.
+_quiho_ paper:
 
-<!--
-    (see [here]() for how to cite).
--->
+Ivo Jimenez, Noah Watkins, Michael Sevilla, Jay Lofstead, and Carlos 
+Maltzahn. 2018. _quiho_: Automated Performance Regression Testing Using Inferred 
+Resource Utilization Profiles. [_In ICPE '18: ACM/SPEC International Conference 
+on Performance Engineering, April 9–13, 2018, Berlin, Germany_](https://icpe2018.spec.org/). ACM, New York, 
+NY, USA, 12 pages. https://doi.org/10.1145/3184407.3184422
+
+This repository contains experiments, results, and manuscript. 
 
 # Getting Started
 
