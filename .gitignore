@@ -5,3 +5,5 @@ popper_logs
 experiments/regression/ansible/machines
 .DS_Store
 .ipynb_checkpoints
+popper_logs
+popper_status
