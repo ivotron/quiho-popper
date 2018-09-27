@@ -1,13 +1,24 @@
-version: 1
 metadata:
-  abstract: |
-    We introduce _quiho_, a framework for profiling application performance that can be used in automated performance regression tests. _quiho_ profiles an application by applying sensitivity analysis, in particular statistical regression analysis (SRA), using application-independent performance feature vectors that characterize the performance of machines. The result of the SRA, feature importance specifically, is used as a proxy to identify hardware and low-level system software behavior. The relative importance of these features serve as a performance profile of an application (termed inferred resource utilization profile or IRUP), which is used to automatically validate performance behavior across multiple revisions of an application's code base without having to instrument code or obtain performance counters. We demonstrate that _quiho_ can successfully discover performance regressions by showing its effectiveness in profiling application performance for synthetically introduced regressions as well as those found in real-world applications.
+  abstract: 'We introduce _quiho_, a framework for profiling application performance
+    that can be used in automated performance regression tests. _quiho_ profiles an
+    application by applying sensitivity analysis, in particular statistical regression
+    analysis (SRA), using application-independent performance feature vectors that
+    characterize the performance of machines. The result of the SRA, feature importance
+    specifically, is used as a proxy to identify hardware and low-level system software
+    behavior. The relative importance of these features serve as a performance profile
+    of an application (termed inferred resource utilization profile or IRUP), which
+    is used to automatically validate performance behavior across multiple revisions
+    of an application''s code base without having to instrument code or obtain performance
+    counters. We demonstrate that _quiho_ can successfully discover performance regressions
+    by showing its effectiveness in profiling application performance for synthetically
+    introduced regressions as well as those found in real-world applications.'
   access_right: open
   author1: Ivo Jimenez, ivo.jimenez@ucsc.edu, UC Santa Cruz
   author2: Noah Watkins, nmwatkin@ucsc.edu, UC Santa Cruz
   author3: Michael Sevilla, msevilla@ucsc.edu, UC Santa Cruz
   author4: Jay Lofstead, gflofst@sandia.gov, Sandia National Laboratories
   author5: Carlos Maltzahn, carlosm@ucsc.edu, UC Santa Cruz
+  categories: '1656'
   keywords: performance prediction, ML-based performance modeling
   license: CC-BY-4.0
   publication_type: article
@@ -16,7 +27,8 @@ metadata:
 pipelines:
   single-node:
     envs:
-    - host
+      host:
+        args: []
     path: pipelines/single-node/
     stages:
     - setup
@@ -24,3 +36,5 @@ pipelines:
     - post-run
     - validate
     - teardown
+version: 1
+badge-server-url: http://badges.falsifiable.us
